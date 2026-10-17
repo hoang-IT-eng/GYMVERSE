@@ -13,6 +13,12 @@ interface GymDao {
     @Insert
     suspend fun insertExercises(exercises: List<ExerciseEntity>)
 
+    @Insert
+    suspend fun insertExercise(exercise: ExerciseEntity): Long
+
+    @Query("SELECT * FROM exercises ORDER BY name")
+    suspend fun getAllExercises(): List<ExerciseEntity>
+
     @Query("SELECT * FROM exercises ORDER BY name")
     fun observeExercises(): Flow<List<ExerciseEntity>>
 
@@ -60,4 +66,31 @@ interface GymDao {
 
     @Query("SELECT * FROM sets")
     fun observeSets(): Flow<List<SetEntity>>
+
+    @Insert
+    suspend fun insertCustomRoutine(routine: CustomRoutineEntity): Long
+
+    @Query("UPDATE custom_routines SET name = :name WHERE id = :id")
+    suspend fun renameCustomRoutine(id: Long, name: String)
+
+    @Query("DELETE FROM custom_routines WHERE id = :id")
+    suspend fun deleteCustomRoutine(id: Long)
+
+    @Query("SELECT * FROM custom_routines")
+    fun observeCustomRoutines(): Flow<List<CustomRoutineEntity>>
+
+    @Insert
+    suspend fun insertCustomDay(day: CustomRoutineDayEntity): Long
+
+    @Query("DELETE FROM custom_routine_days WHERE routineId = :routineId")
+    suspend fun deleteDaysForRoutine(routineId: Long)
+
+    @Query("SELECT * FROM custom_routine_days")
+    fun observeCustomDays(): Flow<List<CustomRoutineDayEntity>>
+
+    @Insert
+    suspend fun insertCustomDayExercises(links: List<CustomRoutineExerciseEntity>)
+
+    @Query("SELECT * FROM custom_routine_exercises")
+    fun observeCustomDayExercises(): Flow<List<CustomRoutineExerciseEntity>>
 }

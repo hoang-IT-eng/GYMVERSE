@@ -40,7 +40,8 @@ class RestTimerService : Service() {
         try {
             when (intent?.action) {
                 RestTimerController.ACTION_STOP -> skip()
-                RestTimerController.ACTION_ADD_30 -> addThirty()
+                RestTimerController.ACTION_ADD_30 -> adjustBy(30_000L)
+                RestTimerController.ACTION_SUB_15 -> adjustBy(-15_000L)
                 RestTimerController.ACTION_START -> startFrom(intent)
                 else -> restoreOrStop()
             }
@@ -96,7 +97,7 @@ class RestTimerService : Service() {
         arm(snapshot.endElapsedRealtime)
     }
 
-    private fun addThirty() {
+    private fun adjustBy(deltaMs: Long) {
         val saved = RestTimerStore.read(this)
         val now = SystemClock.elapsedRealtime()
         if (saved == null || saved.endElapsedRealtime <= now) {
@@ -104,16 +105,16 @@ class RestTimerService : Service() {
             return
         }
         val maxEnd = now + MAX_REST_MS
-        val newEnd = (saved.endElapsedRealtime + 30_000L).coerceAtMost(maxEnd)
-        val added = newEnd - saved.endElapsedRealtime
-        if (added <= 0L) {
-            begin(saved)
+        val newEnd = (saved.endElapsedRealtime + deltaMs).coerceAtMost(maxEnd)
+        if (newEnd <= now + 1_000L) {
+            finishNaturally()
             return
         }
+        val deltaApplied = newEnd - saved.endElapsedRealtime
         begin(
             saved.copy(
                 endElapsedRealtime = newEnd,
-                durationMs = saved.durationMs + added,
+                durationMs = (saved.durationMs + deltaApplied).coerceAtLeast(15_000L),
             ),
         )
     }

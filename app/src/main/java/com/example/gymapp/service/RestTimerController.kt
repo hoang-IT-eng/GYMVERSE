@@ -45,6 +45,14 @@ object RestTimerStore {
     private const val DURATION = "duration"
     private const val SESSION = "session_id"
     private const val REST_SECONDS = "rest_seconds"
+    private const val INCREMENT_KG = "increment_kg"
+    private const val BODY_WEIGHT_KG = "body_weight_kg"
+    private const val BODY_FAT_PCT = "body_fat_pct"
+    private const val HEIGHT_CM = "height_cm"
+    private const val AUDIO_BELL = "audio_bell"
+    private const val HAPTIC_ENABLED = "haptic_enabled"
+    private const val ACTIVE_ROUTINE = "active_routine"
+    private const val ATHLETE_NAME = "athlete_name"
 
     fun save(context: Context, snapshot: RestSnapshot) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -85,11 +93,67 @@ object RestTimerStore {
             .getInt(REST_SECONDS, 90)
             .coerceIn(15, 15 * 60)
     }
+
+    fun saveSmallestIncrementKg(context: Context, kg: Float) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putFloat(INCREMENT_KG, kg)
+            .apply()
+    }
+
+    fun readSmallestIncrementKg(context: Context): Double {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getFloat(INCREMENT_KG, 1.25f)
+            .toDouble()
+    }
+
+    fun saveBodyMetrics(context: Context, weightKg: Float, bodyFatPct: Float, heightCm: Int, name: String) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putFloat(BODY_WEIGHT_KG, weightKg)
+            .putFloat(BODY_FAT_PCT, bodyFatPct)
+            .putInt(HEIGHT_CM, heightCm)
+            .putString(ATHLETE_NAME, name.ifBlank { "Minh Quân" })
+            .apply()
+    }
+
+    fun readBodyWeightKg(context: Context): Double =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getFloat(BODY_WEIGHT_KG, 74.5f).toDouble()
+
+    fun readBodyFatPct(context: Context): Double =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getFloat(BODY_FAT_PCT, 14.2f).toDouble()
+
+    fun readHeightCm(context: Context): Int =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt(HEIGHT_CM, 175)
+
+    fun readAthleteName(context: Context): String =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(ATHLETE_NAME, "Minh Quân") ?: "Minh Quân"
+
+    fun saveFeedbackPrefs(context: Context, audioBell: Boolean, haptic: Boolean) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putBoolean(AUDIO_BELL, audioBell)
+            .putBoolean(HAPTIC_ENABLED, haptic)
+            .apply()
+    }
+
+    fun readAudioBell(context: Context): Boolean =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(AUDIO_BELL, true)
+
+    fun readHapticEnabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(HAPTIC_ENABLED, true)
+
+    fun saveActiveRoutineId(context: Context, routineId: String) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putString(ACTIVE_ROUTINE, routineId)
+            .apply()
+    }
+
+    fun readActiveRoutineId(context: Context): String =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(ACTIVE_ROUTINE, "ppl_6d") ?: "ppl_6d"
 }
 
 object RestTimerController {
     const val ACTION_START = "com.example.gymapp.rest.START"
     const val ACTION_ADD_30 = "com.example.gymapp.rest.ADD_30"
+    const val ACTION_SUB_15 = "com.example.gymapp.rest.SUB_15"
     const val ACTION_STOP = "com.example.gymapp.rest.STOP"
     const val ACTION_RESTORE = "com.example.gymapp.rest.RESTORE"
     const val EXTRA_END = "end"
@@ -168,6 +232,13 @@ object RestTimerController {
         startService(
             context,
             Intent(context, RestTimerService::class.java).setAction(ACTION_ADD_30),
+        )
+    }
+
+    fun subtractFifteen(context: Context) {
+        startService(
+            context,
+            Intent(context, RestTimerService::class.java).setAction(ACTION_SUB_15),
         )
     }
 

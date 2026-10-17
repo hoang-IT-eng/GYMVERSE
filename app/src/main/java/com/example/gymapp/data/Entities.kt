@@ -43,6 +43,7 @@ data class SessionEntity(
     ],
     indices = [
         Index("sessionId"),
+        Index("exerciseId"),
         Index(value = ["sessionId", "exerciseId"], unique = true),
     ],
 )
@@ -79,4 +80,56 @@ data class SetEntity(
     val weightKg: Double,
     val reps: Int,
     val completedAt: Long,
+)
+
+@Entity(tableName = "custom_routines")
+data class CustomRoutineEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val createdAt: Long,
+)
+
+@Entity(
+    tableName = "custom_routine_days",
+    foreignKeys = [
+        ForeignKey(
+            entity = CustomRoutineEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["routineId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("routineId")],
+)
+data class CustomRoutineDayEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val routineId: Long,
+    val position: Int,
+    val title: String,
+    val isRest: Boolean,
+)
+
+@Entity(
+    tableName = "custom_routine_exercises",
+    foreignKeys = [
+        ForeignKey(
+            entity = CustomRoutineDayEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["dayId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+        ForeignKey(
+            entity = ExerciseEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["exerciseId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("dayId"), Index("exerciseId")],
+)
+data class CustomRoutineExerciseEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val dayId: Long,
+    val exerciseId: Long,
+    val position: Int,
 )

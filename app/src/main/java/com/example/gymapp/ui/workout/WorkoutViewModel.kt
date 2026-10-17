@@ -90,6 +90,13 @@ class WorkoutViewModel(
         _drafts.value = _drafts.value + (exerciseId to draft.copy(weightKg = next))
     }
 
+    fun addDeltaWeight(exerciseId: Long, deltaKg: Double) {
+        val item = item(exerciseId) ?: return
+        val draft = draftFor(item)
+        val next = normalizeKg(draft.weightKg + deltaKg).coerceIn(0.0, 999.0)
+        _drafts.value = _drafts.value + (exerciseId to draft.copy(weightKg = next))
+    }
+
     fun nudgeReps(exerciseId: Long, direction: Int) {
         val item = item(exerciseId) ?: return
         val draft = draftFor(item)

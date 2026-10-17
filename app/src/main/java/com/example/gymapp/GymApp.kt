@@ -15,7 +15,10 @@ class GymApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val database = Room.databaseBuilder(this, GymDatabase::class.java, "gym.db").build()
+        val database = Room.databaseBuilder(this, GymDatabase::class.java, "gym.db")
+            .addMigrations(GymDatabase.MIGRATION_1_2, GymDatabase.MIGRATION_2_3)
+            .fallbackToDestructiveMigration()
+            .build()
         repository = GymRepository(database.dao())
         RestTimerController.ensureChannels(this)
         RestTimerController.restorePhase(this)

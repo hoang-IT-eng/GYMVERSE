@@ -70,7 +70,11 @@ class WorkoutViewModel(
             repository.ensureSeeded()
             repository.observeGym().collect { snapshot ->
                 latest = snapshot
-                val next = snapshot.toWorkout(sessionId)
+                val next = snapshot.toWorkout(
+                    sessionId,
+                    RestTimerStore.readAutoOverload(app),
+                    RestTimerStore.readSmallestIncrementKg(app),
+                )
                 syncDrafts(next.items)
                 _state.value = next
             }
@@ -203,7 +207,7 @@ class WorkoutViewModel(
     }
 }
 
-private fun GymSnapshot.toWorkout(sessionId: Long): WorkoutUiState {
+private fun GymSnapshot.toWorkout(sessionId: Long, autoIncrease: Boolean, plateStepKg: Double): WorkoutUiState {
     val session = sessions.find { it.id == sessionId }
     val byId = exercises.associateBy { it.id }
     val sessionSets = sets.filter { it.sessionId == sessionId }
@@ -220,6 +224,8 @@ private fun GymSnapshot.toWorkout(sessionId: Long): WorkoutUiState {
                 repMax = exercise.repMax,
                 incrementKg = exercise.incrementKg,
                 startKg = exercise.startKg,
+                autoIncrease = autoIncrease,
+                plateStepKg = plateStepKg,
             )
             WorkoutExerciseItem(
                 exercise = exercise,

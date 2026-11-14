@@ -133,3 +133,37 @@ data class CustomRoutineExerciseEntity(
     val exerciseId: Long,
     val position: Int,
 )
+
+@Entity(tableName = "meals")
+data class MealEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val eatenAt: Long,
+    val title: String,
+    val source: String,
+    val confidence: String? = null,
+    val photoName: String? = null,
+)
+
+@Entity(
+    tableName = "meal_items",
+    foreignKeys = [
+        ForeignKey(
+            entity = MealEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["mealId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("mealId")],
+)
+data class MealItemEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val mealId: Long,
+    val position: Int,
+    val name: String,
+    val grams: Double,
+    val kcalPer100g: Double,
+    val proteinPer100g: Double,
+    val carbsPer100g: Double,
+    val fatPer100g: Double,
+)

@@ -44,7 +44,6 @@ import com.example.gymapp.ui.theme.IronOnSurfaceVariant
 import com.example.gymapp.ui.theme.IronSurface
 import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
 
@@ -199,7 +198,7 @@ fun CustomRoutineEditor(
                                 }
                                 Text(
                                     text = "Thêm bài",
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.clickable { pickingDay = index },
                                 )
@@ -269,7 +268,7 @@ fun CustomRoutineEditor(
                                     Text(exercise.muscle.label, color = IronOnSurfaceVariant, style = MaterialTheme.typography.labelSmall)
                                 }
                                 if (selected) {
-                                    Icon(Icons.Filled.Add, contentDescription = null, tint = NeonPrimary)
+                                    Icon(Icons.Filled.Add, contentDescription = null, tint = IronOnSurface)
                                 }
                             }
                         }

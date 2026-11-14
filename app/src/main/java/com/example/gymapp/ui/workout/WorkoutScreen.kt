@@ -72,6 +72,7 @@ import com.example.gymapp.domain.formatEstimate
 import com.example.gymapp.domain.formatKg
 import com.example.gymapp.ui.appViewModelFactory
 import com.example.gymapp.ui.components.RestTimerBar
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.EmeraldTertiary
 import com.example.gymapp.ui.theme.IronOnSurface
@@ -80,7 +81,6 @@ import com.example.gymapp.ui.theme.IronSurface
 import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceLowest
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
 import kotlinx.coroutines.delay
@@ -150,7 +150,7 @@ fun WorkoutScreen(
         val session = state.session
         if (state.loading || session == null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = NeonPrimary)
+                CircularProgressIndicator(color = IronOnSurface)
             }
         } else {
             val totalSets = state.items.sumOf { it.sets.size }
@@ -295,7 +295,7 @@ fun WorkoutScreen(
                         ) {
                             DockAuxButton(
                                 icon = Icons.Filled.AddCircle,
-                                iconTint = NeonPrimary,
+                                iconTint = IronOnSurface,
                                 label = "Thêm bài",
                                 onClick = { picking = true },
                                 modifier = Modifier.weight(1f),
@@ -322,7 +322,7 @@ fun WorkoutScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(54.dp),
-                                shape = RoundedCornerShape(14.dp),
+                                shape = RoundedCornerShape(28.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = NeonPrimaryContainer,
                                     contentColor = OnNeonPrimary,
@@ -458,9 +458,9 @@ private fun LiveWorkoutTopBar(
             }
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = if (finished) "BUỔI TẬP ĐÃ LƯU" else "BUỔI TẬP ĐANG DIỄN RA",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = NeonPrimaryContainer,
+                    text = if (finished) "Buổi tập đã lưu" else "Đang tập",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = IronOnSurfaceVariant,
                     maxLines = 1,
                 )
                 Text(
@@ -573,7 +573,7 @@ private fun SessionOverviewPanel(
                     Text(
                         text = if (session.finishedAt == null) "ĐANG GHI BUỔI TẬP" else "ĐÃ HOÀN THÀNH",
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -589,7 +589,7 @@ private fun SessionOverviewPanel(
                         Icon(
                             imageVector = Icons.Filled.Schedule,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(14.dp),
                         )
                         Text(
@@ -633,7 +633,7 @@ private fun SessionOverviewPanel(
                         Icon(
                             imageVector = Icons.Filled.FitnessCenter,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(20.dp),
                         )
                         Column {
@@ -641,7 +641,7 @@ private fun SessionOverviewPanel(
                             Text(
                                 text = "${String.format(Locale.US, "%,d", totalVolumeKg.toLong())} kg",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                                 fontWeight = FontWeight.ExtraBold,
                             )
                         }
@@ -749,7 +749,7 @@ private fun ConfirmDialog(
             TextButton(onClick = onConfirm) {
                 Text(
                     text = confirm,
-                    color = if (destructive) MaterialTheme.colorScheme.error else NeonPrimary,
+                    color = if (destructive) MaterialTheme.colorScheme.error else IronOnSurface,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -788,7 +788,7 @@ private fun NumberDialog(
                     val parsed = text.trim().replace(',', '.').toDoubleOrNull()
                     if (parsed != null && parsed >= 0.0) onConfirm(parsed)
                 },
-            ) { Text("Lưu", color = NeonPrimary, fontWeight = FontWeight.Bold) }
+            ) { Text("Lưu", color = IronOnSurface, fontWeight = FontWeight.Bold) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Hủy") } },
     )
@@ -835,7 +835,7 @@ private fun EditSetDialog(
                         onSave(parsedWeight, parsedReps)
                     }
                 },
-            ) { Text("Lưu", color = NeonPrimary, fontWeight = FontWeight.Bold) }
+            ) { Text("Lưu", color = IronOnSurface, fontWeight = FontWeight.Bold) }
         },
         dismissButton = {
             Row {

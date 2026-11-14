@@ -13,10 +13,12 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.IronSurface
 import com.example.gymapp.ui.theme.IronSurfaceHighest
-import com.example.gymapp.ui.theme.NeonPrimary
+import com.example.gymapp.ui.theme.IronOnSurface
+import com.example.gymapp.ui.theme.IronOutline
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 
 @Composable
@@ -118,14 +120,14 @@ fun ProgressLineChart(
             val isLatest = index == floats.lastIndex
             if (isLatest) {
                 drawLine(
-                    color = NeonPrimaryContainer.copy(alpha = 0.6f),
+                    color = IronOutline.copy(alpha = 0.9f),
                     start = center,
                     end = Offset(center.x, bottom),
                     strokeWidth = 1.5.dp.toPx(),
                     pathEffect = dash,
                 )
                 drawCircle(NeonPrimary.copy(alpha = 0.25f), radius = 10.dp.toPx(), center = center)
-                drawCircle(NeonPrimary, radius = 6.dp.toPx(), center = center)
+                drawCircle(IronOnSurface, radius = 6.dp.toPx(), center = center)
                 drawCircle(IronSurface, radius = 2.5.dp.toPx(), center = center)
             } else {
                 drawCircle(color, radius = 4.dp.toPx(), center = center)

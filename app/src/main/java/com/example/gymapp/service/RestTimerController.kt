@@ -12,6 +12,8 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.core.content.ContextCompat
 import com.example.gymapp.GymApp
+import com.example.gymapp.domain.BodyProfile
+import com.example.gymapp.domain.Sex
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +55,11 @@ object RestTimerStore {
     private const val HAPTIC_ENABLED = "haptic_enabled"
     private const val ACTIVE_ROUTINE = "active_routine"
     private const val ATHLETE_NAME = "athlete_name"
+    private const val AUTO_OVERLOAD = "auto_overload"
+    private const val NUTRITION_GOAL = "nutrition_goal"
+    private const val AGE_YEARS = "age_years"
+    private const val SEX = "sex"
+    private const val ACTIVITY_LEVEL = "activity_level"
 
     fun save(context: Context, snapshot: RestSnapshot) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -139,6 +146,54 @@ object RestTimerStore {
 
     fun readHapticEnabled(context: Context): Boolean =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(HAPTIC_ENABLED, true)
+
+    fun saveAutoOverload(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putBoolean(AUTO_OVERLOAD, enabled)
+            .apply()
+    }
+
+    fun readAutoOverload(context: Context): Boolean =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(AUTO_OVERLOAD, true)
+
+    fun saveNutritionGoal(context: Context, key: String) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putString(NUTRITION_GOAL, key)
+            .apply()
+    }
+
+    fun readNutritionGoal(context: Context): String? =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(NUTRITION_GOAL, null)
+
+    fun saveAgeAndSex(context: Context, ageYears: Int, sexKey: String) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putInt(AGE_YEARS, ageYears.coerceIn(14, 90))
+            .putString(SEX, sexKey)
+            .apply()
+    }
+
+    fun readAgeYears(context: Context): Int =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt(AGE_YEARS, 25)
+
+    fun readSex(context: Context): String? =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(SEX, null)
+
+    fun saveActivityLevel(context: Context, key: String) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putString(ACTIVITY_LEVEL, key)
+            .apply()
+    }
+
+    fun readActivityLevel(context: Context): String? =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(ACTIVITY_LEVEL, null)
+
+    fun readBodyProfile(context: Context) = BodyProfile(
+        weightKg = readBodyWeightKg(context),
+        bodyFatPct = readBodyFatPct(context),
+        heightCm = readHeightCm(context),
+        ageYears = readAgeYears(context),
+        sex = Sex.fromKey(readSex(context)),
+    )
 
     fun saveActiveRoutineId(context: Context, routineId: String) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()

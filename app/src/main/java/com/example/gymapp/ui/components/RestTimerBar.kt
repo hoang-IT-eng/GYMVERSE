@@ -44,7 +44,6 @@ import com.example.gymapp.ui.theme.IronOnSurfaceVariant
 import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnBurntSecondaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
@@ -175,7 +174,7 @@ fun RestTimerBar(
                                 .padding(horizontal = 10.dp),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Text("+30s", style = MaterialTheme.typography.labelMedium, color = NeonPrimary, fontWeight = FontWeight.Bold)
+                            Text("+30s", style = MaterialTheme.typography.labelMedium, color = IronOnSurface, fontWeight = FontWeight.Bold)
                         }
                         Row(
                             modifier = Modifier
@@ -235,7 +234,7 @@ fun RestTimerBar(
                             Text(
                                 text = "${sec}s",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = if (active) NeonPrimary else IronOnSurfaceVariant,
+                                color = if (active) IronOnSurface else IronOnSurfaceVariant,
                                 fontWeight = if (active) FontWeight.ExtraBold else FontWeight.SemiBold,
                             )
                         }
@@ -310,7 +309,7 @@ fun ActiveRestBanner(onOpenSession: (Long) -> Unit) {
                             .padding(horizontal = 8.dp),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text("+30s", style = MaterialTheme.typography.labelSmall, color = NeonPrimary)
+                        Text("+30s", style = MaterialTheme.typography.labelSmall, color = IronOnSurface)
                     }
                     Box(
                         modifier = Modifier

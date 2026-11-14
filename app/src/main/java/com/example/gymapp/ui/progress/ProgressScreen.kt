@@ -72,6 +72,7 @@ import com.example.gymapp.domain.formatSignedEstimate
 import com.example.gymapp.domain.formatVolume
 import com.example.gymapp.service.RestPhase
 import com.example.gymapp.service.RestTimerBus
+import com.example.gymapp.service.RestTimerStore
 import com.example.gymapp.ui.appViewModelFactory
 import com.example.gymapp.ui.components.ActiveRestBanner
 import com.example.gymapp.ui.components.ProgressLineChart
@@ -85,7 +86,6 @@ import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
 import com.example.gymapp.ui.theme.IronSurfaceLow
 import com.example.gymapp.ui.theme.IronSurfaceLowest
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
 import kotlin.math.abs
@@ -102,7 +102,14 @@ fun ProgressScreen(
 ) {
     val viewModel: ProgressViewModel = viewModel(
         key = "progress-$exerciseId",
-        factory = appViewModelFactory { ProgressViewModel(it.repository, exerciseId) },
+        factory = appViewModelFactory {
+            ProgressViewModel(
+                it.repository,
+                exerciseId,
+                RestTimerStore.readAutoOverload(it),
+                RestTimerStore.readSmallestIncrementKg(it),
+            )
+        },
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
     val restPhase by RestTimerBus.phase.collectAsStateWithLifecycle()
@@ -146,7 +153,7 @@ fun ProgressScreen(
 
         if (state.loading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = NeonPrimary)
+                CircularProgressIndicator(color = IronOnSurface)
             }
             return
         }
@@ -204,7 +211,7 @@ fun ProgressScreen(
                                         Icon(
                                             imageVector = Icons.Filled.FitnessCenter,
                                             contentDescription = null,
-                                            tint = NeonPrimary,
+                                            tint = IronOnSurface,
                                         )
                                     }
                                     Column(Modifier.weight(1f)) {
@@ -242,7 +249,7 @@ fun ProgressScreen(
                                                     text = "${exercise.muscle.label} (CHÍNH)",
                                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    color = NeonPrimary,
+                                                    color = IronOnSurface,
                                                 )
                                             }
                                         }
@@ -291,7 +298,7 @@ fun ProgressScreen(
                                     Text(
                                         text = label,
                                         style = MaterialTheme.typography.labelMedium,
-                                        color = if (active) NeonPrimary else IronOnSurfaceVariant,
+                                        color = if (active) IronOnSurface else IronOnSurfaceVariant,
                                         fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
                                     )
                                 }
@@ -330,13 +337,13 @@ fun ProgressScreen(
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.TrendingUp,
                                         contentDescription = null,
-                                        tint = NeonPrimary,
+                                        tint = IronOnSurface,
                                         modifier = Modifier.size(16.dp),
                                     )
                                     Text(
                                         text = "DOUBLE PROGRESSION + RIR",
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                         fontWeight = FontWeight.Bold,
                                     )
                                 }
@@ -383,7 +390,7 @@ fun ProgressScreen(
                                         "${formatLoad(exercise.startKg, exercise.addedLoad)} × ${exercise.repMin}-${exercise.repMax} reps"
                                     },
                                     style = MaterialTheme.typography.headlineMedium,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.ExtraBold,
                                 )
                                 Text(
@@ -409,7 +416,7 @@ fun ProgressScreen(
                                 Icon(
                                     imageVector = Icons.Filled.AutoAwesome,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                     modifier = Modifier.size(18.dp),
                                 )
                                 Text(
@@ -465,13 +472,13 @@ fun ProgressScreen(
                                             Icon(
                                                 imageVector = Icons.Filled.NorthEast,
                                                 contentDescription = null,
-                                                tint = NeonPrimary,
+                                                tint = IronOnSurface,
                                                 modifier = Modifier.size(14.dp),
                                             )
                                             Text(
                                                 text = "${formatSignedEstimate(delta)} kg",
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = NeonPrimary,
+                                                color = IronOnSurface,
                                                 fontWeight = FontWeight.Bold,
                                             )
                                         }
@@ -540,7 +547,7 @@ fun ProgressScreen(
                         if (values.isNotEmpty()) {
                             ProgressLineChart(
                                 values = values,
-                                color = NeonPrimaryContainer,
+                                color = IronOnSurface,
                                 secondaryValues = rirSeries,
                                 modifier = Modifier.semantics {
                                     contentDescription = "Biểu đồ 1RM ước tính"
@@ -559,7 +566,7 @@ fun ProgressScreen(
                                     Text(
                                         text = formatSessionWhen(chartPoints.last().startedAt),
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                         fontWeight = FontWeight.Bold,
                                     )
                                 }
@@ -584,7 +591,7 @@ fun ProgressScreen(
                                 Icon(
                                     imageVector = Icons.Filled.Lightbulb,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                     modifier = Modifier.size(18.dp),
                                 )
                                 Text(
@@ -709,7 +716,7 @@ fun ProgressScreen(
                                 Icon(
                                     imageVector = Icons.Filled.School,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                     modifier = Modifier.size(20.dp),
                                 )
                                 Text(
@@ -824,7 +831,7 @@ private fun ThresholdMiniCard(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = NeonPrimary,
+                    tint = IronOnSurface,
                     modifier = Modifier.size(15.dp),
                 )
             }
@@ -837,7 +844,7 @@ private fun ThresholdMiniCard(
             Text(
                 text = sub,
                 style = MaterialTheme.typography.labelSmall,
-                color = NeonPrimary,
+                color = IronOnSurface,
             )
         }
     }

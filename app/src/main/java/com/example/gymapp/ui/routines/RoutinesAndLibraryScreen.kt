@@ -73,6 +73,7 @@ import com.example.gymapp.domain.formatEstimate
 import com.example.gymapp.domain.formatKg
 import com.example.gymapp.service.RestTimerStore
 import com.example.gymapp.ui.home.HomeViewModel
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.BurntSecondaryContainer
 import com.example.gymapp.ui.theme.EmeraldTertiary
@@ -82,7 +83,7 @@ import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
 import com.example.gymapp.ui.theme.IronSurfaceLow
-import com.example.gymapp.ui.theme.NeonPrimary
+import com.example.gymapp.ui.theme.IronSurfaceLowest
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnBurntSecondaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
@@ -110,8 +111,8 @@ fun RoutinesAndLibraryScreen(
         // Top Segmented Switcher: Giáo án vs Thư viện bài tập
         Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
             Surface(
-                shape = RoundedCornerShape(14.dp),
-                color = IronSurfaceLow,
+                shape = RoundedCornerShape(22.dp),
+                color = IronSurfaceHigh,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Row(
@@ -122,8 +123,8 @@ fun RoutinesAndLibraryScreen(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(if (isRoutines) IronSurfaceHigh else androidx.compose.ui.graphics.Color.Transparent)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(if (isRoutines) IronSurfaceLowest else androidx.compose.ui.graphics.Color.Transparent)
                             .clickable { activeTab = "routines" }
                             .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center,
@@ -135,7 +136,7 @@ fun RoutinesAndLibraryScreen(
                             Text(
                                 text = "Giáo án Khoa Học",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = if (isRoutines) NeonPrimary else IronOnSurfaceVariant,
+                                color = if (isRoutines) IronOnSurface else IronOnSurfaceVariant,
                                 fontWeight = if (isRoutines) FontWeight.Bold else FontWeight.Medium,
                             )
                             Surface(
@@ -146,7 +147,7 @@ fun RoutinesAndLibraryScreen(
                                     text = "${IronLogCatalog.routines.size}",
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                 )
                             }
                         }
@@ -156,8 +157,8 @@ fun RoutinesAndLibraryScreen(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(if (isLibrary) IronSurfaceHigh else androidx.compose.ui.graphics.Color.Transparent)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(if (isLibrary) IronSurfaceLowest else androidx.compose.ui.graphics.Color.Transparent)
                             .clickable { activeTab = "library" }
                             .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center,
@@ -169,7 +170,7 @@ fun RoutinesAndLibraryScreen(
                             Text(
                                 text = "Thư viện bài tập",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = if (isLibrary) NeonPrimary else IronOnSurfaceVariant,
+                                color = if (isLibrary) IronOnSurface else IronOnSurfaceVariant,
                                 fontWeight = if (isLibrary) FontWeight.Bold else FontWeight.Medium,
                             )
                             Surface(
@@ -331,7 +332,7 @@ private fun RoutinesPane(
                             Text(
                                 text = "HYPERTROPHY SPLITS",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                             )
                         }
                     }
@@ -445,7 +446,7 @@ private fun RoutinesPane(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.TrendingUp,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(26.dp),
                         )
                     }
@@ -545,13 +546,13 @@ private fun RoutinePlanCard(
                                         Icon(
                                             imageVector = Icons.Filled.Star,
                                             contentDescription = null,
-                                            tint = NeonPrimary,
+                                            tint = IronOnSurface,
                                             modifier = Modifier.size(13.dp),
                                         )
                                         Text(
                                             text = "Áp dụng giáo án",
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = NeonPrimary,
+                                            color = IronOnSurface,
                                         )
                                     }
                                 }
@@ -581,7 +582,7 @@ private fun RoutinePlanCard(
                             Icon(
                                 imageVector = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                                 contentDescription = null,
-                                tint = NeonPrimary,
+                                tint = IronOnSurface,
                             )
                         }
                     }
@@ -596,7 +597,7 @@ private fun RoutinePlanCard(
                         Text(
                             text = plan.subtitle,
                             style = MaterialTheme.typography.labelMedium,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                         )
                         if (onEdit != null || onDelete != null) {
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -604,7 +605,7 @@ private fun RoutinePlanCard(
                                     Text(
                                         text = "Sửa",
                                         style = MaterialTheme.typography.labelMedium,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.clickable(onClick = onEdit),
                                     )
@@ -668,7 +669,7 @@ private fun RoutinePlanCard(
                         Text(
                             text = "${plan.days.count { !it.isRest }} buổi tập",
                             style = MaterialTheme.typography.labelSmall,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -781,7 +782,7 @@ private fun RoutinePlanCard(
                                                 text = "Trọng tâm",
                                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = NeonPrimary,
+                                                color = IronOnSurface,
                                             )
                                         }
                                     }
@@ -909,7 +910,7 @@ private fun RoutinePlanCard(
                                         Icon(
                                             imageVector = Icons.Filled.ChevronRight,
                                             contentDescription = "Bắt đầu",
-                                            tint = NeonPrimary,
+                                            tint = IronOnSurface,
                                         )
                                     }
                                 }
@@ -942,7 +943,7 @@ private fun RoutineMiniStat(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = NeonPrimary,
+                    tint = IronOnSurface,
                     modifier = Modifier.size(14.dp),
                 )
                 Text(label, style = MaterialTheme.typography.labelSmall, color = IronOnSurfaceVariant)
@@ -1019,7 +1020,7 @@ private fun ExerciseLibraryPane(
                             Text(
                                 text = "KHO BÀI TẬP KHOA HỌC",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                             )
                         }
                     }
@@ -1066,13 +1067,13 @@ private fun ExerciseLibraryPane(
                         Icon(
                             imageVector = Icons.Filled.Add,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(18.dp),
                         )
                         Text(
                             text = "Tạo mới",
                             style = MaterialTheme.typography.labelMedium,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -1096,7 +1097,7 @@ private fun ExerciseLibraryPane(
                         Icon(
                             imageVector = Icons.Filled.Search,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(20.dp),
                         )
                         androidx.compose.foundation.text.BasicTextField(
@@ -1194,7 +1195,7 @@ private fun ExerciseLibraryPane(
                                 text = label,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = if (active) NeonPrimary else IronOnSurfaceVariant,
+                                color = if (active) IronOnSurface else IronOnSurfaceVariant,
                                 fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
                             )
                         }
@@ -1229,7 +1230,7 @@ private fun ExerciseLibraryPane(
                         Icon(
                             imageVector = Icons.Filled.FitnessCenter,
                             contentDescription = null,
-                            tint = if (meta.tier == "Tier S") NeonPrimary else EmeraldTertiary,
+                            tint = if (meta.tier == "Tier S") IronOnSurface else EmeraldTertiary,
                             modifier = Modifier.size(26.dp),
                         )
                     }
@@ -1260,7 +1261,7 @@ private fun ExerciseLibraryPane(
                                     text = meta.tier,
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = if (meta.tier == "Tier S") OnBurntSecondaryContainer else NeonPrimary,
+                                    color = if (meta.tier == "Tier S") OnBurntSecondaryContainer else IronOnSurface,
                                     fontWeight = FontWeight.ExtraBold,
                                 )
                             }
@@ -1286,7 +1287,7 @@ private fun ExerciseLibraryPane(
                                     text = ex.muscle.label,
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                 )
                             }
                             Surface(
@@ -1314,14 +1315,14 @@ private fun ExerciseLibraryPane(
                             Icon(
                                 imageVector = Icons.Filled.MilitaryTech,
                                 contentDescription = null,
-                                tint = NeonPrimary,
+                                tint = IronOnSurface,
                                 modifier = Modifier.size(14.dp),
                             )
                             if (prog?.latestE1rm != null) {
                                 Text(
                                     text = "e1RM ${formatEstimate(prog.latestE1rm)} kg • Tốt nhất ${prog.bestReps} reps",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                 )
                             } else {
@@ -1365,7 +1366,7 @@ private fun ExerciseLibraryPane(
                         Icon(
                             imageVector = Icons.Filled.SmartToy,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                         )
                     }
                     Column(
@@ -1375,7 +1376,7 @@ private fun ExerciseLibraryPane(
                         Text(
                             text = "TRỢ LÝ AI IRONLOG",
                             style = MaterialTheme.typography.labelSmall,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
@@ -1496,7 +1497,7 @@ private fun CreateCustomExerciseDialog(
                     }
                 },
             ) {
-                Text("Lưu bài tập", color = NeonPrimary, fontWeight = FontWeight.Bold)
+                Text("Lưu bài tập", color = IronOnSurface, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {

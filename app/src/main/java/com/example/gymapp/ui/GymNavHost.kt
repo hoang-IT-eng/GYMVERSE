@@ -33,6 +33,8 @@ import com.example.gymapp.ui.components.IronLogTopBar
 import com.example.gymapp.ui.components.MainTab
 import com.example.gymapp.ui.home.HomeScreen
 import com.example.gymapp.ui.home.HomeViewModel
+import com.example.gymapp.ui.nutrition.NutritionScreen
+import com.example.gymapp.ui.nutrition.NutritionViewModel
 import com.example.gymapp.ui.profile.ProfileScreen
 import com.example.gymapp.ui.progress.ProgressHubScreen
 import com.example.gymapp.ui.progress.ProgressScreen
@@ -51,6 +53,11 @@ fun GymNavHost() {
         factory = appViewModelFactory { app -> HomeViewModel(app) },
     )
     val homeState by homeViewModel.state.collectAsStateWithLifecycle()
+    val nutritionViewModel: NutritionViewModel = viewModel(
+        factory = appViewModelFactory { app -> NutritionViewModel(app) },
+    )
+    val nutritionEaten by nutritionViewModel.todayEaten.collectAsStateWithLifecycle()
+    val nutritionTargets by nutritionViewModel.todayTargets.collectAsStateWithLifecycle()
     val restPhase by RestTimerBus.phase.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -116,6 +123,10 @@ fun GymNavHost() {
                 startDestination = MainTab.HOME.route,
             ) {
                 composable(MainTab.HOME.route) {
+                    LaunchedEffect(Unit) {
+                        homeViewModel.refresh()
+                        nutritionViewModel.refreshTargets()
+                    }
                     HomeScreen(
                         viewModel = homeViewModel,
                         onOpenWorkout = { id -> nav.navigate("workout/$id") { launchSingleTop = true } },
@@ -125,6 +136,16 @@ fun GymNavHost() {
                         onOpenLibrary = {
                             nav.navigate("library") { launchSingleTop = true }
                         },
+                        nutritionEaten = nutritionEaten,
+                        nutritionTargets = nutritionTargets,
+                        onOpenNutrition = { nav.navigate("nutrition") { launchSingleTop = true } },
+                    )
+                }
+
+                composable("nutrition") {
+                    NutritionScreen(
+                        viewModel = nutritionViewModel,
+                        onBack = { nav.popBackStack() },
                     )
                 }
 
@@ -156,7 +177,7 @@ fun GymNavHost() {
 
                 composable(MainTab.PROFILE.route) {
                     ProfileScreen(
-                        totalSessionsCount = homeState.recent.size + (if (homeState.active != null) 1 else 0),
+                        totalSessionsCount = homeState.totalSessions,
                     )
                 }
 

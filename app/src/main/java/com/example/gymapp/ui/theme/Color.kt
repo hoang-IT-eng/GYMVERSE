@@ -2,36 +2,38 @@ package com.example.gymapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// IronLog Hypertrophy palette from Stitch design system
-val IronSurface = Color(0xFF131315)
-val IronSurfaceLowest = Color(0xFF0E0E10)
-val IronSurfaceLow = Color(0xFF1B1B1D)
-val IronSurfaceContainer = Color(0xFF201F21)
-val IronSurfaceHigh = Color(0xFF2A2A2C)
-val IronSurfaceHighest = Color(0xFF353437)
-val IronSurfaceBright = Color(0xFF39393B)
+// Calm light fitness palette. Lime is a fill (buttons, active rows, marks).
+// Type and icons stay ink so they remain readable on white.
 
-val NeonPrimary = Color(0xFF73FF9A)
-val NeonPrimaryContainer = Color(0xFF22E575)
-val OnNeonPrimary = Color(0xFF003917)
-val OnNeonPrimaryContainer = Color(0xFF00210B)
+val IronSurface = Color(0xFFF3F4EF)
+val IronSurfaceLowest = Color(0xFFFFFFFF)
+val IronSurfaceLow = Color(0xFFFFFFFF)
+val IronSurfaceContainer = Color(0xFFFFFFFF)
+val IronSurfaceHigh = Color(0xFFEEF1E6)
+val IronSurfaceHighest = Color(0xFFE3E7DA)
+val IronSurfaceBright = Color(0xFFFFFFFF)
 
-val BurntSecondary = Color(0xFFFFB59D)
-val BurntSecondaryContainer = Color(0xFFB83900)
-val AlertOrange = Color(0xFFFF6B35)
-val OnBurntSecondary = Color(0xFF5D1900)
-val OnBurntSecondaryContainer = Color(0xFFFFDDD2)
+val NeonPrimary = Color(0xFFD6F53C)
+val NeonPrimaryContainer = Color(0xFFD6F53C)
+val OnNeonPrimary = Color(0xFF1A1C16)
+val OnNeonPrimaryContainer = Color(0xFF1A1C16)
 
-val EmeraldTertiary = Color(0xFF71FDBF)
-val EmeraldTertiaryContainer = Color(0xFF50E0A4)
-val OnEmeraldTertiary = Color(0xFF003824)
+val BurntSecondary = Color(0xFFC4521A)
+val BurntSecondaryContainer = Color(0xFFE25B1A)
+val AlertOrange = Color(0xFFE25B1A)
+val OnBurntSecondary = Color(0xFFFFFFFF)
+val OnBurntSecondaryContainer = Color(0xFFFFFFFF)
 
-val IronOnSurface = Color(0xFFE5E1E4)
-val IronOnSurfaceVariant = Color(0xFFBACBB9)
-val IronOutline = Color(0xFF859585)
-val IronOutlineVariant = Color(0xFF3C4A3D)
+val EmeraldTertiary = Color(0xFF1F7A4D)
+val EmeraldTertiaryContainer = Color(0xFFD7F3E4)
+val OnEmeraldTertiary = Color(0xFFFFFFFF)
 
-val CoralError = Color(0xFFFFB4AB)
-val CoralErrorContainer = Color(0xFF93000A)
-val OnCoralError = Color(0xFF690005)
-val OnCoralErrorContainer = Color(0xFFFFDAD6)
+val IronOnSurface = Color(0xFF1A1C16)
+val IronOnSurfaceVariant = Color(0xFF6A7164)
+val IronOutline = Color(0xFF8E9586)
+val IronOutlineVariant = Color(0xFFD9DECE)
+
+val CoralError = Color(0xFFBA1A1A)
+val CoralErrorContainer = Color(0xFFFFDAD6)
+val OnCoralError = Color(0xFFFFFFFF)
+val OnCoralErrorContainer = Color(0xFF410002)

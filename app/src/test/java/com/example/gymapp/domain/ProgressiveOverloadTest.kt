@@ -25,6 +25,23 @@ class ProgressiveOverloadTest {
     }
 
     @Test
+    fun holdsWeightAtTheCeilingWhenAutoIncreaseIsOff() {
+        val suggestion = ProgressiveOverload.suggest(
+            lastSessionSets = listOf(
+                SetPerformance(60.0, 10),
+                SetPerformance(60.0, 10),
+            ),
+            repMin = 6,
+            repMax = 10,
+            incrementKg = 2.5,
+            startKg = 20.0,
+            autoIncrease = false,
+        )
+        assertEquals(60.0, suggestion.weightKg, 0.001)
+        assertEquals(10, suggestion.targetReps)
+    }
+
+    @Test
     fun stepsTheWeakestSetUpByOneRep() {
         val suggestion = ProgressiveOverload.suggest(
             listOf(
@@ -99,6 +116,45 @@ class ProgressiveOverloadTest {
         )
         assertEquals(0.0, suggestion.weightKg, 0.001)
         assertEquals(5, suggestion.targetReps)
+    }
+
+    @Test
+    fun plateStepRaisesASmallerIncrementAndSnapsTheLoad() {
+        val suggestion = ProgressiveOverload.suggest(
+            listOf(SetPerformance(61.0, 10), SetPerformance(61.0, 10)),
+            repMin = 6,
+            repMax = 10,
+            incrementKg = 1.0,
+            startKg = 20.0,
+            plateStepKg = 2.5,
+        )
+        assertEquals(62.5, suggestion.weightKg, 0.001)
+    }
+
+    @Test
+    fun plateStepKeepsAHeldWeightAsLifted() {
+        val suggestion = ProgressiveOverload.suggest(
+            listOf(SetPerformance(61.0, 8)),
+            repMin = 6,
+            repMax = 10,
+            incrementKg = 2.5,
+            startKg = 20.0,
+            plateStepKg = 2.5,
+        )
+        assertEquals(61.0, suggestion.weightKg, 0.001)
+    }
+
+    @Test
+    fun plateStepSnapsTheStartingWeight() {
+        val suggestion = ProgressiveOverload.suggest(
+            emptyList(),
+            repMin = 8,
+            repMax = 12,
+            incrementKg = 2.5,
+            startKg = 21.0,
+            plateStepKg = 1.25,
+        )
+        assertEquals(21.25, suggestion.weightKg, 0.001)
     }
 
     @Test

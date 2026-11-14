@@ -31,7 +31,9 @@ import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.HealthAndSafety
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.Button
@@ -53,6 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.gymapp.domain.DayCheckItem
 import com.example.gymapp.domain.IronLogCatalog
+import com.example.gymapp.domain.Macros
 import com.example.gymapp.domain.MuscleRecoveryItem
 import com.example.gymapp.domain.formatDuration
 import com.example.gymapp.domain.formatElapsed
@@ -69,6 +73,8 @@ import com.example.gymapp.domain.formatEstimate
 import com.example.gymapp.domain.formatSessionWhen
 import com.example.gymapp.domain.formatSignedEstimate
 import com.example.gymapp.ui.components.Sparkline
+import com.example.gymapp.ui.nutrition.NutritionTodayCard
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.BurntSecondaryContainer
 import com.example.gymapp.ui.theme.EmeraldTertiary
@@ -79,7 +85,7 @@ import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
 import com.example.gymapp.ui.theme.IronSurfaceLow
-import com.example.gymapp.ui.theme.NeonPrimary
+import com.example.gymapp.ui.theme.IronSurfaceLowest
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
 import kotlinx.coroutines.delay
@@ -97,6 +103,9 @@ fun HomeScreen(
     onOpenExerciseDetail: (Long) -> Unit,
     onOpenRoutines: () -> Unit,
     onOpenLibrary: () -> Unit,
+    nutritionEaten: Macros,
+    nutritionTargets: Macros,
+    onOpenNutrition: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -104,7 +113,7 @@ fun HomeScreen(
 
     if (state.loading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = NeonPrimary)
+            CircularProgressIndicator(color = IronOnSurface)
         }
         return
     }
@@ -141,18 +150,49 @@ fun HomeScreen(
                 }
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(IronSurfaceContainer)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(IronSurfaceHigh)
                         .clickable(onClick = onOpenRoutines)
-                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(
                         text = state.activeRoutine.name.take(16),
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.Bold,
                     )
                 }
+            }
+        }
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                BloomAction(
+                    label = "Tập",
+                    icon = Icons.Filled.FitnessCenter,
+                    filled = true,
+                    onClick = {
+                        scope.launch { onOpenWorkout(viewModel.startOrResume()) }
+                    },
+                )
+                BloomAction(
+                    label = "Giáo án",
+                    icon = Icons.Filled.CalendarToday,
+                    onClick = onOpenRoutines,
+                )
+                BloomAction(
+                    label = "Ăn uống",
+                    icon = Icons.Filled.Restaurant,
+                    onClick = onOpenNutrition,
+                )
+                BloomAction(
+                    label = "Kho bài",
+                    icon = Icons.AutoMirrored.Filled.MenuBook,
+                    onClick = onOpenLibrary,
+                )
             }
         }
 
@@ -160,7 +200,7 @@ fun HomeScreen(
         item {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Surface(
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(22.dp),
                     color = IronSurfaceHigh,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -205,7 +245,7 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.MenuBook,
                                 contentDescription = "Thư viện bài tập",
-                                tint = NeonPrimary,
+                                tint = IronOnSurface,
                                 modifier = Modifier.size(18.dp),
                             )
                         }
@@ -244,7 +284,7 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = Icons.Filled.ChevronRight,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                 )
                             }
                         }
@@ -269,13 +309,13 @@ fun HomeScreen(
                             Text(
                                 text = "Xem giáo án",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                                 fontWeight = FontWeight.Bold,
                             )
                             Icon(
                                 imageVector = Icons.Filled.ChevronRight,
                                 contentDescription = null,
-                                tint = NeonPrimary,
+                                tint = IronOnSurface,
                                 modifier = Modifier.size(14.dp),
                             )
                         }
@@ -296,6 +336,14 @@ fun HomeScreen(
                 onOpenExercise = { id ->
                     if (id != null) onOpenExerciseDetail(id)
                 },
+            )
+        }
+
+        item {
+            NutritionTodayCard(
+                eaten = nutritionEaten,
+                targets = nutritionTargets,
+                onOpen = onOpenNutrition,
             )
         }
 
@@ -339,7 +387,7 @@ fun HomeScreen(
                     Text(
                         text = "Chạm để phân tích",
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                     )
                 }
             }
@@ -389,7 +437,7 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Filled.Bolt,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(18.dp),
                         )
                         Text(
@@ -418,57 +466,44 @@ private fun TodayHeroWorkoutCard(
 ) {
     val active = state.active
     Surface(
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(28.dp),
         color = IronSurfaceContainer,
-        shadowElevation = 8.dp,
+        shadowElevation = 2.dp,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // Header Badges
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = NeonPrimaryContainer.copy(alpha = 0.20f),
+                    color = NeonPrimary,
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .clip(CircleShape)
-                                .background(NeonPrimary),
-                        )
-                        Text(
-                            text = if (active != null) "ĐANG DIỄN RA" else "LỊCH TẬP HÔM NAY",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = NeonPrimary,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
+                    Text(
+                        text = if (active != null) "Đang diễn ra" else "Hôm nay",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = OnNeonPrimary,
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
                 Surface(
                     shape = CircleShape,
-                    color = IronSurfaceHighest,
+                    color = IronSurfaceHigh,
                 ) {
                     Text(
-                        text = "Chu kỳ 12W • Khối lượng MAV",
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall,
+                        text = "Chu kỳ 12 tuần",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        style = MaterialTheme.typography.labelMedium,
                         color = IronOnSurface,
                     )
                 }
             }
 
-            // Workout Title
             Column {
                 Text(
                     text = state.heroTitle,
@@ -477,17 +512,16 @@ private fun TodayHeroWorkoutCard(
                     fontWeight = FontWeight.ExtraBold,
                 )
                 Text(
-                    text = state.heroFocus.uppercase(),
+                    text = state.heroFocus,
                     style = MaterialTheme.typography.titleMedium,
-                    color = NeonPrimary,
-                    fontWeight = FontWeight.Bold,
+                    color = IronOnSurfaceVariant,
+                    fontWeight = FontWeight.Medium,
                 )
             }
 
-            // 4-Column Key Targets Row
             Surface(
-                shape = RoundedCornerShape(14.dp),
-                color = IronSurfaceLow,
+                shape = RoundedCornerShape(18.dp),
+                color = IronSurfaceHigh,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Row(
@@ -506,71 +540,74 @@ private fun TodayHeroWorkoutCard(
             // Mini Exercise Preview List
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    text = "DANH SÁCH BÀI TẬP TRỌNG TÂM",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = IronOutline,
+                    text = "Bài sắp tới",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = IronOnSurface,
                     fontWeight = FontWeight.Bold,
                 )
                 state.heroPreviews.take(3).forEachIndexed { idx, preview ->
                     val isMain = idx == 0
                     Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (isMain) IronSurfaceHigh else IronSurfaceLow,
+                        shape = RoundedCornerShape(22.dp),
+                        color = if (isMain) NeonPrimary else IronSurfaceHigh,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onOpenExercise(preview.exerciseId) },
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 modifier = Modifier.weight(1f),
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .size(28.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(if (isMain) NeonPrimaryContainer else IronSurfaceHighest),
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                        .background(if (isMain) IronSurfaceLowest else IronSurfaceHighest),
                                     contentAlignment = Alignment.Center,
                                 ) {
-                                    Text(
-                                        text = "${preview.order}",
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = if (isMain) OnNeonPrimary else IronOutline,
-                                        fontWeight = FontWeight.Bold,
+                                    Icon(
+                                        imageVector = Icons.Filled.FitnessCenter,
+                                        contentDescription = null,
+                                        tint = OnNeonPrimary,
+                                        modifier = Modifier.size(18.dp),
                                     )
                                 }
                                 Column(Modifier.weight(1f)) {
                                     Text(
                                         text = preview.name,
                                         style = MaterialTheme.typography.titleMedium,
-                                        color = IronOnSurface,
+                                        color = OnNeonPrimary,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
+                                        fontWeight = FontWeight.Bold,
                                     )
                                     Text(
                                         text = preview.targetLine,
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = if (isMain) NeonPrimary else IronOnSurfaceVariant,
+                                        color = if (isMain) OnNeonPrimary.copy(alpha = 0.72f) else IronOnSurfaceVariant,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                     )
                                 }
                             }
-                            Surface(
-                                shape = CircleShape,
-                                color = IronSurfaceHighest,
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(if (isMain) IronSurfaceLowest else IronSurfaceHighest),
+                                contentAlignment = Alignment.Center,
                             ) {
-                                Text(
-                                    text = "${preview.targetSets} sets",
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = if (isMain) IronOnSurface else IronOutline,
-                                    fontWeight = FontWeight.Bold,
+                                Icon(
+                                    imageVector = Icons.Filled.PlayArrow,
+                                    contentDescription = "Mở bài",
+                                    tint = OnNeonPrimary,
+                                    modifier = Modifier.size(18.dp),
                                 )
                             }
                         }
@@ -604,7 +641,7 @@ private fun TodayHeroWorkoutCard(
                                         modifier = Modifier.weight(1f),
                                     )
                                     Text(
-                                        text = "${preview.targetSets}s",
+                                        text = "${preview.targetSets} hiệp",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = IronOnSurface,
                                         fontWeight = FontWeight.Bold,
@@ -626,17 +663,26 @@ private fun TodayHeroWorkoutCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = NeonPrimaryContainer,
-                        contentColor = OnNeonPrimary,
+                        containerColor = IronOnSurface,
+                        contentColor = IronSurfaceLowest,
                     ),
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.PlayArrow,
-                        contentDescription = null,
-                        modifier = Modifier.size(26.dp),
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clip(CircleShape)
+                            .background(NeonPrimary),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.PlayArrow,
+                            contentDescription = null,
+                            tint = OnNeonPrimary,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
                     Spacer(Modifier.width(8.dp))
                     if (active == null) {
                         Text(
@@ -713,15 +759,15 @@ private fun StreakAndWeekCard(
                     Column {
                         Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = "$streakDays Ngày",
+                                text = "$streakDays",
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = BurntSecondary,
+                                color = IronOnSurface,
                                 fontWeight = FontWeight.ExtraBold,
                             )
                             Text(
-                                text = "liên tục",
+                                text = "ngày",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = IronOnSurface,
+                                color = IronOnSurfaceVariant,
                             )
                         }
                         Text(
@@ -739,7 +785,7 @@ private fun StreakAndWeekCard(
                         text = "Tuần 4/4 🔥",
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -765,7 +811,7 @@ private fun StreakAndWeekCard(
                         Text(
                             text = day.label,
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (day.isToday) NeonPrimary else IronOutline,
+                            color = if (day.isToday) IronOnSurface else IronOutline,
                             fontWeight = FontWeight.Bold,
                         )
                         Box(
@@ -863,7 +909,7 @@ private fun MuscleRecoveryCard(recovery: List<MuscleRecoveryItem>) {
                 Icon(
                     imageVector = Icons.Filled.HealthAndSafety,
                     contentDescription = null,
-                    tint = NeonPrimary,
+                    tint = IronOnSurface,
                     modifier = Modifier.size(22.dp),
                 )
                 Text(
@@ -903,7 +949,7 @@ private fun MuscleRecoveryCard(recovery: List<MuscleRecoveryItem>) {
                                         text = "TỐI ƯU",
                                         modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp),
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                     )
                                 }
                             }
@@ -911,7 +957,7 @@ private fun MuscleRecoveryCard(recovery: List<MuscleRecoveryItem>) {
                         Text(
                             text = item.statusText,
                             style = MaterialTheme.typography.labelMedium,
-                            color = if (item.isOptimal) NeonPrimary else EmeraldTertiary,
+                            color = if (item.isOptimal) IronOnSurface else EmeraldTertiary,
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -946,13 +992,13 @@ private fun MuscleRecoveryCard(recovery: List<MuscleRecoveryItem>) {
                     Icon(
                         imageVector = Icons.Filled.TipsAndUpdates,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(18.dp),
                     )
                     Text(
                         text = buildAnnotatedString {
                             append("Nhóm cơ đẩy ")
-                            withStyle(SpanStyle(color = NeonPrimary, fontWeight = FontWeight.Bold)) {
+                            withStyle(SpanStyle(color = IronOnSurface, fontWeight = FontWeight.Bold)) {
                                 append("(Push)")
                             }
                             append(" đã hồi phục. Đây là ")
@@ -983,8 +1029,8 @@ private fun QuickStatsRow(
     ) {
         // Volume Stat Card
         Surface(
-            shape = RoundedCornerShape(18.dp),
-            color = IronSurfaceLow,
+            shape = RoundedCornerShape(24.dp),
+            color = NeonPrimary,
             modifier = Modifier.weight(1f),
         ) {
             Column(
@@ -997,17 +1043,25 @@ private fun QuickStatsRow(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "TỔNG VOLUME TUẦN",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = IronOutline,
+                        text = "Volume tuần",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = OnNeonPrimary,
                         fontWeight = FontWeight.Bold,
                     )
-                    Icon(
-                        imageVector = Icons.Filled.FitnessCenter,
-                        contentDescription = null,
-                        tint = NeonPrimary,
-                        modifier = Modifier.size(18.dp),
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(IronSurfaceLowest),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.FitnessCenter,
+                            contentDescription = null,
+                            tint = OnNeonPrimary,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
                 }
                 val formattedVolume = if (weeklyVolumeKg >= 1000.0) {
                     String.format(Locale.US, "%.1fk", weeklyVolumeKg / 1000.0)
@@ -1024,14 +1078,14 @@ private fun QuickStatsRow(
                     Text(
                         text = "kg",
                         style = MaterialTheme.typography.titleMedium,
-                        color = IronOutline,
+                        color = OnNeonPrimary.copy(alpha = 0.7f),
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Icon(
                         imageVector = Icons.Filled.ArrowUpward,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(14.dp),
                     )
                     Text(
@@ -1041,7 +1095,7 @@ private fun QuickStatsRow(
                             "Chu kỳ tích lũy MAV"
                         },
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -1050,8 +1104,8 @@ private fun QuickStatsRow(
 
         // PR Record Card
         Surface(
-            shape = RoundedCornerShape(18.dp),
-            color = IronSurfaceLow,
+            shape = RoundedCornerShape(24.dp),
+            color = IronSurfaceContainer,
             modifier = Modifier.weight(1f),
         ) {
             Column(
@@ -1080,7 +1134,7 @@ private fun QuickStatsRow(
                     Text(
                         text = "$weeklyPrCount",
                         style = MaterialTheme.typography.displaySmall,
-                        color = BurntSecondary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.ExtraBold,
                     )
                     Text(
@@ -1093,7 +1147,7 @@ private fun QuickStatsRow(
                 Text(
                     text = topPrLine,
                     style = MaterialTheme.typography.labelSmall,
-                    color = NeonPrimary,
+                    color = IronOnSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -1125,7 +1179,7 @@ private fun ProgressSparkCard(card: ExerciseProgressUi, onClick: () -> Unit) {
                     Text(
                         text = formatEstimate(card.latestE1rm),
                         style = MaterialTheme.typography.headlineMedium,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.ExtraBold,
                     )
                     Text("kg e1RM", style = MaterialTheme.typography.labelSmall, color = IronOnSurfaceVariant)
@@ -1135,7 +1189,7 @@ private fun ProgressSparkCard(card: ExerciseProgressUi, onClick: () -> Unit) {
                     Text(
                         text = "${formatSignedEstimate(delta)} kg",
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (delta > 0) NeonPrimary else MaterialTheme.colorScheme.error,
+                        color = if (delta > 0) IronOnSurface else MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -1143,13 +1197,13 @@ private fun ProgressSparkCard(card: ExerciseProgressUi, onClick: () -> Unit) {
                 Text(
                     text = "${card.bestReps} reps",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = NeonPrimary,
+                    color = IronOnSurface,
                     fontWeight = FontWeight.ExtraBold,
                 )
             }
             Sparkline(
                 values = card.sparkline,
-                color = NeonPrimaryContainer,
+                color = IronOnSurface,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(34.dp)
@@ -1183,7 +1237,7 @@ private fun RecentSessionCard(session: RecentSessionUi, onClick: () -> Unit) {
                 Text(
                     text = "${session.volumeKg.toInt()} kg",
                     style = MaterialTheme.typography.titleMedium,
-                    color = NeonPrimary,
+                    color = IronOnSurface,
                     fontWeight = FontWeight.ExtraBold,
                 )
             }
@@ -1194,7 +1248,7 @@ private fun RecentSessionCard(session: RecentSessionUi, onClick: () -> Unit) {
                 Text(
                     text = formatSessionWhen(session.startedAt),
                     style = MaterialTheme.typography.labelMedium,
-                    color = NeonPrimary,
+                    color = IronOnSurface,
                     fontWeight = FontWeight.Bold,
                 )
                 Text("•", color = IronOnSurfaceVariant)
@@ -1214,6 +1268,44 @@ private fun RecentSessionCard(session: RecentSessionUi, onClick: () -> Unit) {
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun BloomAction(
+    label: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    filled: Boolean = false,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 4.dp, vertical = 2.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .clip(CircleShape)
+                .background(if (filled) NeonPrimary else IronSurfaceHigh),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = IronOnSurface,
+                modifier = Modifier.size(24.dp),
+            )
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = IronOnSurface,
+            fontWeight = FontWeight.SemiBold,
+        )
     }
 }
 

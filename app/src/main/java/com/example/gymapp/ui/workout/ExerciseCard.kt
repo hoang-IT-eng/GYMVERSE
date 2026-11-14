@@ -54,6 +54,7 @@ import com.example.gymapp.domain.IronLogCatalog
 import com.example.gymapp.domain.SetEntry
 import com.example.gymapp.domain.formatKg
 import com.example.gymapp.domain.formatLoad
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.EmeraldTertiary
 import com.example.gymapp.ui.theme.IronOnSurface
@@ -63,7 +64,6 @@ import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
 import com.example.gymapp.ui.theme.IronSurfaceLow
 import com.example.gymapp.ui.theme.IronSurfaceLowest
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
 
@@ -88,9 +88,9 @@ fun ExerciseCard(
     var selectedRir by rememberSaveable(exercise.id) { mutableIntStateOf(2) }
 
     Surface(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(24.dp),
         color = IronSurfaceContainer,
-        shadowElevation = 6.dp,
+        shadowElevation = 2.dp,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
@@ -145,7 +145,7 @@ fun ExerciseCard(
                             Icon(
                                 imageVector = Icons.Filled.Timeline,
                                 contentDescription = "Chi tiết Overload",
-                                tint = NeonPrimary,
+                                tint = IronOnSurface,
                                 modifier = Modifier.size(18.dp),
                             )
                         }
@@ -185,7 +185,7 @@ fun ExerciseCard(
                             text = "${exercise.muscle.label.uppercase()} (CHÍNH)",
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                             style = MaterialTheme.typography.labelSmall,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -290,14 +290,14 @@ fun ExerciseCard(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.TrendingUp,
                                 contentDescription = null,
-                                tint = NeonPrimary,
+                                tint = IronOnSurface,
                                 modifier = Modifier.size(18.dp),
                             )
                             Column {
                                 Text(
                                     text = buildAnnotatedString {
                                         append("Mục tiêu hôm nay: ")
-                                        withStyle(SpanStyle(color = NeonPrimary, fontWeight = FontWeight.Black)) {
+                                        withStyle(SpanStyle(color = IronOnSurface, fontWeight = FontWeight.Black)) {
                                             append("${formatLoad(item.suggestion.weightKg, exercise.addedLoad)} × ${item.suggestion.targetReps} reps @ RIR 2")
                                         }
                                     },
@@ -390,7 +390,7 @@ fun ExerciseCard(
                             Text(
                                 text = "$selectedRir",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.width(44.dp),
                             )
@@ -408,7 +408,7 @@ fun ExerciseCard(
                                     Icon(
                                         imageVector = Icons.Filled.Check,
                                         contentDescription = "Đã xong",
-                                        tint = NeonPrimary,
+                                        tint = IronOnSurface,
                                         modifier = Modifier.size(18.dp),
                                     )
                                 }
@@ -479,7 +479,7 @@ fun ExerciseCard(
                                 Text(
                                     text = formatKg(draft.weightKg),
                                     style = MaterialTheme.typography.titleLarge,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Black,
                                 )
                             }
@@ -498,7 +498,7 @@ fun ExerciseCard(
                                 Text(
                                     text = "${draft.reps}",
                                     style = MaterialTheme.typography.titleLarge,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Black,
                                 )
                             }
@@ -517,13 +517,13 @@ fun ExerciseCard(
                                     Text(
                                         text = "$selectedRir",
                                         style = MaterialTheme.typography.labelLarge,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                         fontWeight = FontWeight.Black,
                                     )
                                     Text(
                                         text = "RIR",
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                     )
                                 }
                             }
@@ -582,7 +582,7 @@ fun ExerciseCard(
                                         text = "Gợi ý: 2",
                                         modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp),
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                     )
                                 }
                             }

@@ -75,8 +75,10 @@ import com.example.gymapp.domain.formatKg
 import com.example.gymapp.domain.formatLoad
 import com.example.gymapp.domain.formatSessionWhen
 import com.example.gymapp.domain.formatVolume
+import com.example.gymapp.service.RestTimerStore
 import com.example.gymapp.ui.appViewModelFactory
 import com.example.gymapp.ui.progress.ProgressViewModel
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.BurntSecondaryContainer
 import com.example.gymapp.ui.theme.CoralError
@@ -91,7 +93,6 @@ import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
 import com.example.gymapp.ui.theme.IronSurfaceLow
 import com.example.gymapp.ui.theme.IronSurfaceLowest
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnCoralErrorContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
@@ -106,7 +107,14 @@ fun ExerciseDetailScreen(
 ) {
     val viewModel: ProgressViewModel = viewModel(
         key = "ex-detail-$exerciseId",
-        factory = appViewModelFactory { ProgressViewModel(it.repository, exerciseId) },
+        factory = appViewModelFactory {
+            ProgressViewModel(
+                it.repository,
+                exerciseId,
+                RestTimerStore.readAutoOverload(it),
+                RestTimerStore.readSmallestIncrementKg(it),
+            )
+        },
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
     val exercise = state.exercise
@@ -159,7 +167,7 @@ fun ExerciseDetailScreen(
                             text = exercise.muscle.label.uppercase(),
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                             style = MaterialTheme.typography.labelSmall,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -169,7 +177,7 @@ fun ExerciseDetailScreen(
 
         if (state.loading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = NeonPrimary)
+                CircularProgressIndicator(color = IronOnSurface)
             }
             return
         }
@@ -205,7 +213,7 @@ fun ExerciseDetailScreen(
                         Text(
                             text = "HYPERTROPHY ${meta.tier.uppercase()}",
                             style = MaterialTheme.typography.labelMedium,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -221,7 +229,7 @@ fun ExerciseDetailScreen(
                             Icon(
                                 imageVector = Icons.Filled.FitnessCenter,
                                 contentDescription = null,
-                                tint = NeonPrimary,
+                                tint = IronOnSurface,
                                 modifier = Modifier.size(14.dp),
                             )
                             Text(
@@ -284,7 +292,7 @@ fun ExerciseDetailScreen(
                                         Text(
                                             text = "Loop 4K Form chuẩn",
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = NeonPrimary,
+                                            color = IronOnSurface,
                                         )
                                     }
                                 }
@@ -314,13 +322,13 @@ fun ExerciseDetailScreen(
                                     Icon(
                                         imageVector = Icons.Filled.SlowMotionVideo,
                                         contentDescription = null,
-                                        tint = NeonPrimary,
+                                        tint = IronOnSurface,
                                         modifier = Modifier.size(14.dp),
                                     )
                                     Text(
                                         text = if (slowMo) "0.5x Slow" else "1.0x",
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                     )
                                 }
                             }
@@ -342,7 +350,7 @@ fun ExerciseDetailScreen(
                                 Icon(
                                     imageVector = Icons.Filled.PlayArrow,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                     modifier = Modifier.size(28.dp),
                                 )
                             }
@@ -392,7 +400,7 @@ fun ExerciseDetailScreen(
                                 Text(
                                     text = "${exercise.repMin}–${exercise.repMax} reps",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                 )
                             }
                             Box(
@@ -425,7 +433,7 @@ fun ExerciseDetailScreen(
                         label = "KIỂU BÀI TẬP",
                         value = if (meta.isCompound) "Compound" else "Isolation",
                         sub = if (meta.isCompound) "Đa khớp" else "Cô lập cơ",
-                        subColor = NeonPrimary,
+                        subColor = IronOnSurface,
                         modifier = Modifier.weight(1f),
                     )
                     SpecBox(
@@ -549,7 +557,7 @@ fun ExerciseDetailScreen(
                                     Icon(
                                         imageVector = Icons.Filled.Checklist,
                                         contentDescription = null,
-                                        tint = NeonPrimary,
+                                        tint = IronOnSurface,
                                         modifier = Modifier.size(20.dp),
                                     )
                                     Text(
@@ -587,7 +595,7 @@ fun ExerciseDetailScreen(
                                             Text(
                                                 text = "${idx + 1}",
                                                 style = MaterialTheme.typography.labelMedium,
-                                                color = NeonPrimary,
+                                                color = IronOnSurface,
                                                 fontWeight = FontWeight.Bold,
                                             )
                                         }
@@ -633,7 +641,7 @@ fun ExerciseDetailScreen(
                                 Icon(
                                     imageVector = Icons.Filled.TipsAndUpdates,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                     modifier = Modifier.size(20.dp),
                                 )
                             }
@@ -641,7 +649,7 @@ fun ExerciseDetailScreen(
                                 Text(
                                     text = "Mẹo Hypertrophy tối ưu ${exercise.muscle.label}",
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                 )
                                 Spacer(Modifier.height(4.dp))
@@ -758,7 +766,7 @@ fun ExerciseDetailScreen(
                                     Icon(
                                         imageVector = Icons.Filled.Security,
                                         contentDescription = null,
-                                        tint = NeonPrimary,
+                                        tint = IronOnSurface,
                                         modifier = Modifier.size(20.dp),
                                     )
                                     Column(Modifier.weight(1f)) {
@@ -793,6 +801,8 @@ fun ExerciseDetailScreen(
                     repMax = exercise.repMax,
                     incrementKg = exercise.incrementKg,
                     startKg = exercise.startKg,
+                    autoIncrease = viewModel.autoIncrease,
+                    plateStepKg = viewModel.plateStepKg,
                 )
 
                 item {
@@ -817,7 +827,7 @@ fun ExerciseDetailScreen(
                                     Icon(
                                         imageVector = Icons.Filled.EmojiEvents,
                                         contentDescription = null,
-                                        tint = NeonPrimary,
+                                        tint = IronOnSurface,
                                     )
                                     Text(
                                         text = "Kỷ lục cá nhân (All-time PR)",
@@ -837,7 +847,7 @@ fun ExerciseDetailScreen(
                                 Text(
                                     text = bestPoint?.bestE1rm?.let { formatEstimate(it) } ?: formatKg(exercise.startKg),
                                     style = MaterialTheme.typography.displaySmall,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.ExtraBold,
                                 )
                                 Text(
@@ -869,7 +879,7 @@ fun ExerciseDetailScreen(
                                     Text(
                                         text = latestPoint?.let { formatVolume(it.volumeKg) } ?: "0 kg",
                                         style = MaterialTheme.typography.titleMedium,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                         fontWeight = FontWeight.Bold,
                                     )
                                 }
@@ -947,7 +957,7 @@ fun ExerciseDetailScreen(
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = IronSurfaceHigh,
-                            contentColor = NeonPrimary,
+                            contentColor = IronOnSurface,
                         ),
                     ) {
                         Icon(imageVector = Icons.Filled.Timeline, contentDescription = null)
@@ -1044,7 +1054,7 @@ private fun MuscleAnatomyCard(
                     Icon(
                         imageVector = Icons.Filled.AccessibilityNew,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(20.dp),
                     )
                     Text(
@@ -1062,7 +1072,7 @@ private fun MuscleAnatomyCard(
                         text = "EMG TỐI ĐA",
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -1131,7 +1141,7 @@ private fun MuscleAnatomyCard(
                         text = "$primaryLabel: 100%",
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                     )
                 }
             }

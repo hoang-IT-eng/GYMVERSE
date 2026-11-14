@@ -1,8 +1,13 @@
 package com.example.gymapp.data
 
+import androidx.room.withTransaction
+import com.example.gymapp.domain.AnalysisConfidence
 import com.example.gymapp.domain.CustomRoutine
 import com.example.gymapp.domain.CustomRoutineDay
 import com.example.gymapp.domain.Exercise
+import com.example.gymapp.domain.FoodItem
+import com.example.gymapp.domain.Meal
+import com.example.gymapp.domain.MealSource
 import com.example.gymapp.domain.MuscleGroup
 import com.example.gymapp.domain.Session
 import com.example.gymapp.domain.SessionLink
@@ -28,7 +33,8 @@ data class RoutineDayDraft(
     val exerciseIds: List<Long>,
 )
 
-class GymRepository(private val dao: GymDao) {
+class GymRepository(private val db: GymDatabase) {
+    private val dao: GymDao = db.dao()
     private val seedLock = Mutex()
     private var seeded = false
 
@@ -224,7 +230,130 @@ class GymRepository(private val dao: GymDao) {
     suspend fun deleteSet(id: Long) {
         dao.deleteSet(id)
     }
+
+    fun observeMeals(fromMs: Long, toMs: Long): Flow<List<Meal>> {
+        return combine(
+            dao.observeMealsBetween(fromMs, toMs),
+            dao.observeMealItemsBetween(fromMs, toMs),
+        ) { meals, items -> assembleMeals(meals, items) }
+    }
+
+    suspend fun getMeals(fromMs: Long, toMs: Long): List<Meal> =
+        assembleMeals(dao.getMealsBetween(fromMs, toMs), dao.getMealItemsBetween(fromMs, toMs))
+
+    private fun assembleMeals(meals: List<MealEntity>, items: List<MealItemEntity>): List<Meal> {
+        val byMeal = items.groupBy { it.mealId }
+        return meals.map { meal ->
+            Meal(
+                id = meal.id,
+                eatenAt = meal.eatenAt,
+                title = meal.title,
+                source = MealSource.fromKey(meal.source),
+                confidence = AnalysisConfidence.fromKey(meal.confidence),
+                items = byMeal[meal.id].orEmpty().sortedBy { it.position }.map { it.toDomain() },
+                photoName = meal.photoName,
+            )
+        }
+    }
+
+    suspend fun saveMeal(
+        title: String,
+        source: MealSource,
+        confidence: AnalysisConfidence?,
+        items: List<FoodItem>,
+        eatenAt: Long = System.currentTimeMillis(),
+        photoName: String? = null,
+    ): Long = db.withTransaction {
+        val mealId = dao.insertMeal(
+            MealEntity(
+                eatenAt = eatenAt,
+                title = mealTitle(title),
+                source = source.key,
+                confidence = confidence?.key,
+                photoName = photoName,
+            ),
+        )
+        dao.insertMealItems(itemEntities(mealId, items))
+        mealId
+    }
+
+    /** Rewrites title and items; time, source and photo stay as first logged. */
+    suspend fun updateMeal(id: Long, title: String, items: List<FoodItem>) = db.withTransaction {
+        dao.updateMealTitle(id, mealTitle(title))
+        dao.deleteMealItems(id)
+        dao.insertMealItems(itemEntities(id, items))
+    }
+
+    private fun mealTitle(title: String) = title.trim().ifBlank { "Bữa ăn" }
+
+    private fun itemEntities(mealId: Long, items: List<FoodItem>) = items.mapIndexed { index, item ->
+        MealItemEntity(
+            mealId = mealId,
+            position = index,
+            name = item.name.trim().ifBlank { "Món ${index + 1}" },
+            grams = item.grams.coerceIn(0.0, 5000.0),
+            kcalPer100g = item.kcalPer100g.coerceIn(0.0, 900.0),
+            proteinPer100g = item.proteinPer100g.coerceIn(0.0, 100.0),
+            carbsPer100g = item.carbsPer100g.coerceIn(0.0, 100.0),
+            fatPer100g = item.fatPer100g.coerceIn(0.0, 100.0),
+        )
+    }
+
+    suspend fun deleteMeal(id: Long) {
+        dao.deleteMeal(id)
+    }
+
+    suspend fun exportBackup(): BackupData {
+        ensureSeeded()
+        return db.withTransaction {
+            BackupData(
+                exercises = dao.getAllExercises(),
+                sessions = dao.getAllSessions(),
+                sessionExercises = dao.getAllSessionExercises(),
+                sets = dao.getAllSets(),
+                customRoutines = dao.getAllCustomRoutines(),
+                customRoutineDays = dao.getAllCustomDays(),
+                customRoutineExercises = dao.getAllCustomDayExercises(),
+                meals = dao.getAllMeals(),
+                mealItems = dao.getAllMealItems(),
+            )
+        }
+    }
+
+    /** Replaces every table with the backup; a failed insert rolls the whole restore back. */
+    suspend fun restoreBackup(data: BackupData) {
+        if (data.exercises.isEmpty()) throw BackupFormatException("Bản sao lưu không có bài tập nào")
+        db.withTransaction {
+            dao.clearMealItems()
+            dao.clearMeals()
+            dao.clearSets()
+            dao.clearSessionExercises()
+            dao.clearSessions()
+            dao.clearCustomDayExercises()
+            dao.clearCustomDays()
+            dao.clearCustomRoutines()
+            dao.clearExercises()
+            dao.insertExercises(data.exercises)
+            dao.insertSessions(data.sessions)
+            dao.insertSessionExercises(data.sessionExercises)
+            dao.insertSets(data.sets)
+            dao.insertCustomRoutines(data.customRoutines)
+            dao.insertCustomDays(data.customRoutineDays)
+            dao.insertCustomDayExercises(data.customRoutineExercises)
+            dao.insertMeals(data.meals)
+            dao.insertMealItems(data.mealItems)
+        }
+    }
 }
+
+private fun MealItemEntity.toDomain() = FoodItem(
+    name = name,
+    grams = grams,
+    kcalPer100g = kcalPer100g,
+    proteinPer100g = proteinPer100g,
+    carbsPer100g = carbsPer100g,
+    fatPer100g = fatPer100g,
+)
 
 private fun ExerciseEntity.toDomain(): Exercise {
     return Exercise(

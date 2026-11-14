@@ -73,9 +73,12 @@ import com.example.gymapp.domain.formatEstimate
 import com.example.gymapp.domain.formatLoad
 import com.example.gymapp.domain.formatSessionWhen
 import com.example.gymapp.domain.pointsForExercise
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gymapp.ui.appViewModelFactory
 import com.example.gymapp.ui.components.ProgressLineChart
 import com.example.gymapp.ui.home.HomeUiState
 import com.example.gymapp.ui.home.RecentSessionUi
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.BurntSecondaryContainer
 import com.example.gymapp.ui.theme.EmeraldTertiary
@@ -88,7 +91,6 @@ import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
 import com.example.gymapp.ui.theme.IronSurfaceLow
 import com.example.gymapp.ui.theme.IronSurfaceLowest
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
 import java.time.Instant
@@ -102,6 +104,7 @@ fun ProgressHubScreen(
     homeState: HomeUiState,
     onOpenOverloadDetail: (Long) -> Unit,
     onOpenWorkout: (Long) -> Unit,
+    coachViewModel: CoachViewModel = viewModel(factory = appViewModelFactory { app -> CoachViewModel(app) }),
 ) {
     val context = LocalContext.current
     val app = context.applicationContext as GymApp
@@ -151,7 +154,7 @@ fun ProgressHubScreen(
                         Text(
                             text = "DỮ LIỆU HYPERTROPHY",
                             style = MaterialTheme.typography.labelSmall,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
@@ -179,7 +182,7 @@ fun ProgressHubScreen(
                             Text(
                                 text = "Chu kỳ 12W",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                                 fontWeight = FontWeight.Bold,
                             )
                         }
@@ -319,7 +322,7 @@ fun ProgressHubScreen(
                                         Icon(
                                             imageVector = Icons.Filled.FitnessCenter,
                                             contentDescription = null,
-                                            tint = NeonPrimary,
+                                            tint = IronOnSurface,
                                         )
                                     }
                                     Column(Modifier.weight(1f)) {
@@ -341,7 +344,7 @@ fun ProgressHubScreen(
                                                     text = selectedExercise.muscle.label,
                                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    color = NeonPrimary,
+                                                    color = IronOnSurface,
                                                 )
                                             }
                                             Text(
@@ -414,7 +417,7 @@ fun ProgressHubScreen(
                                         Icon(
                                             imageVector = Icons.AutoMirrored.Filled.ShowChart,
                                             contentDescription = null,
-                                            tint = NeonPrimary,
+                                            tint = IronOnSurface,
                                             modifier = Modifier.size(18.dp),
                                         )
                                         Text(
@@ -448,7 +451,7 @@ fun ProgressHubScreen(
                                                     text = "${if (delta >= 0) "+" else ""}${formatEstimate(delta)} kg chu kỳ",
                                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                                                     style = MaterialTheme.typography.labelSmall,
-                                                    color = NeonPrimary,
+                                                    color = IronOnSurface,
                                                     fontWeight = FontWeight.Bold,
                                                 )
                                             }
@@ -474,13 +477,13 @@ fun ProgressHubScreen(
                                             Icon(
                                                 imageVector = Icons.Filled.Stars,
                                                 contentDescription = null,
-                                                tint = NeonPrimary,
+                                                tint = IronOnSurface,
                                                 modifier = Modifier.size(14.dp),
                                             )
                                             Text(
                                                 text = "${formatSessionWhen(latest.startedAt)}: ${est?.let { formatEstimate(it) } ?: ""} kg e1RM",
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = NeonPrimary,
+                                                color = IronOnSurface,
                                                 fontWeight = FontWeight.ExtraBold,
                                             )
                                         }
@@ -497,7 +500,7 @@ fun ProgressHubScreen(
                             if (series.isNotEmpty()) {
                                 ProgressLineChart(
                                     values = series,
-                                    color = NeonPrimaryContainer,
+                                    color = IronOnSurface,
                                 )
                             } else {
                                 Text(
@@ -524,7 +527,7 @@ fun ProgressHubScreen(
                                         Icon(
                                             imageVector = Icons.Filled.Verified,
                                             contentDescription = null,
-                                            tint = NeonPrimary,
+                                            tint = IronOnSurface,
                                             modifier = Modifier.size(18.dp),
                                         )
                                         Text(
@@ -537,7 +540,7 @@ fun ProgressHubScreen(
                                     Text(
                                         text = "${points.size} buổi ghi nhận",
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = NeonPrimary,
+                                        color = IronOnSurface,
                                         fontWeight = FontWeight.Bold,
                                     )
                                 }
@@ -557,88 +560,9 @@ fun ProgressHubScreen(
                 )
             }
 
-            // 5. AI Hypertrophy Coach Insights
+            // 5. AI weekly coach
             item {
-                val underMev = landmarks.firstOrNull { it.isUnderMev }
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = IronSurfaceHigh,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(NeonPrimary.copy(alpha = 0.15f)),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.SmartToy,
-                                    contentDescription = null,
-                                    tint = NeonPrimary,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                            Column {
-                                Text(
-                                    text = "Khuyến nghị từ AI Coach",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = IronOnSurface,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "Dựa trên RIR & Khối lượng MEV–MAV–MRV",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = NeonPrimary,
-                                )
-                            }
-                        }
-
-                        Surface(
-                            shape = RoundedCornerShape(10.dp),
-                            color = IronSurfaceContainer,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(12.dp),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalAlignment = Alignment.Top,
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Lightbulb,
-                                    contentDescription = null,
-                                    tint = BurntSecondary,
-                                    modifier = Modifier.size(20.dp),
-                                )
-                                Column {
-                                    Text(
-                                        text = if (underMev != null) "Cần bổ sung khối lượng (${underMev.title})" else "Khối lượng tuần đạt ngưỡng tối ưu",
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = BurntSecondary,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                    Text(
-                                        text = if (underMev != null) {
-                                            "Nhóm ${underMev.title} hiện có ${underMev.setsCompleted}/${underMev.mevSets} sets (Dưới MEV). Hãy thêm ${(underMev.mevSets - underMev.setsCompleted).coerceAtLeast(2)} sets vào buổi tập tới để kích thích tăng trưởng cơ."
-                                        } else {
-                                            "Tất cả nhóm cơ đều nằm trong vùng MAV 10–20 sets/tuần. Tiếp tục duy trì Double Progression!"
-                                        },
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = IronOnSurfaceVariant,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                WeeklyCoachCard(viewModel = coachViewModel, landmarks = landmarks)
             }
 
             // 6. Action CTA to open Progressive Overload Detail screen
@@ -732,7 +656,7 @@ private fun WeeklyVolumeLandmarksCard(
                         Icon(
                             imageVector = Icons.Filled.Equalizer,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(20.dp),
                         )
                         Text(
@@ -794,7 +718,7 @@ private fun WeeklyVolumeLandmarksCard(
                         Icon(
                             imageVector = Icons.Filled.CalendarToday,
                             contentDescription = null,
-                            tint = NeonPrimary,
+                            tint = IronOnSurface,
                             modifier = Modifier.size(15.dp),
                         )
                         Text(
@@ -828,7 +752,7 @@ private fun WeeklyVolumeLandmarksCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 VolumeLegendDot(IronSurfaceHighest, "<10s Duy trì (MEV)")
-                VolumeLegendDot(NeonPrimary, "10-20s Tối ưu (MAV)")
+                VolumeLegendDot(IronOnSurface, "10-20s Tối ưu (MAV)")
                 VolumeLegendDot(BurntSecondaryContainer, ">20s Quá tải (MRV)")
             }
 
@@ -869,7 +793,7 @@ private fun WeeklyVolumeLandmarksCard(
                             Text(
                                 text = "${item.setsCompleted}",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = if (item.isUnderMev || item.isOverMrv) BurntSecondary else NeonPrimary,
+                                color = if (item.isUnderMev || item.isOverMrv) BurntSecondary else IronOnSurface,
                                 fontWeight = FontWeight.ExtraBold,
                             )
                             Text(
@@ -889,7 +813,7 @@ private fun WeeklyVolumeLandmarksCard(
                                     text = item.zoneLabel,
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = if (item.isUnderMev || item.isOverMrv) BurntSecondary else NeonPrimary,
+                                    color = if (item.isUnderMev || item.isOverMrv) BurntSecondary else IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
@@ -909,7 +833,7 @@ private fun WeeklyVolumeLandmarksCard(
                                 .height(10.dp)
                                 .clip(CircleShape)
                                 .background(
-                                    if (item.isUnderMev || item.isOverMrv) BurntSecondaryContainer else NeonPrimary,
+                                    if (item.isUnderMev || item.isOverMrv) BurntSecondaryContainer else IronOnSurface,
                                 ),
                         )
                     }
@@ -970,7 +894,7 @@ private fun HistorySnapshotAndCalendar(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text("VOLUME", style = MaterialTheme.typography.labelSmall, color = IronOnSurfaceVariant)
-                        Icon(Icons.Filled.StackedBarChart, null, tint = NeonPrimary, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Filled.StackedBarChart, null, tint = IronOnSurface, modifier = Modifier.size(16.dp))
                     }
                     Spacer(Modifier.height(6.dp))
                     Text(
@@ -979,7 +903,7 @@ private fun HistorySnapshotAndCalendar(
                         color = IronOnSurface,
                         fontWeight = FontWeight.ExtraBold,
                     )
-                    Text("Tích lũy", style = MaterialTheme.typography.labelSmall, color = NeonPrimary)
+                    Text("Tích lũy", style = MaterialTheme.typography.labelSmall, color = IronOnSurface)
                 }
             }
 
@@ -1018,16 +942,16 @@ private fun HistorySnapshotAndCalendar(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text("KỶ LỤC PR", style = MaterialTheme.typography.labelSmall, color = IronOnSurfaceVariant)
-                        Icon(Icons.Filled.Stars, null, tint = NeonPrimary, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Filled.Stars, null, tint = IronOnSurface, modifier = Modifier.size(16.dp))
                     }
                     Spacer(Modifier.height(6.dp))
                     Text(
                         text = "$weeklyPrCount PRs",
                         style = MaterialTheme.typography.titleLarge,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.ExtraBold,
                     )
-                    Text("Tuần này", style = MaterialTheme.typography.labelSmall, color = NeonPrimary)
+                    Text("Tuần này", style = MaterialTheme.typography.labelSmall, color = IronOnSurface)
                 }
             }
         }
@@ -1065,7 +989,7 @@ private fun HistorySnapshotAndCalendar(
                                 text = "${trainedDays.count { YearMonth.from(it) == yearMonth }} Buổi",
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                             )
                         }
                     }
@@ -1112,7 +1036,7 @@ private fun HistorySnapshotAndCalendar(
                                             text = "$dayNum",
                                             style = MaterialTheme.typography.labelMedium,
                                             color = when {
-                                                isToday -> NeonPrimary
+                                                isToday -> IronOnSurface
                                                 trained -> IronOnSurface
                                                 else -> IronOnSurfaceVariant.copy(alpha = 0.45f)
                                             },
@@ -1170,7 +1094,7 @@ private fun HistoryFeedWorkoutCard(
                     Text(
                         text = formatSessionWhen(session.startedAt),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.Bold,
                     )
                     Text("•", color = IronOnSurfaceVariant)
@@ -1202,7 +1126,7 @@ private fun HistoryFeedWorkoutCard(
                         Text(
                             text = "${String.format(Locale.US, "%,d", session.volumeKg.toLong())} kg",
                             style = MaterialTheme.typography.titleMedium,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.ExtraBold,
                         )
                     }
@@ -1258,13 +1182,13 @@ private fun HistoryFeedWorkoutCard(
                 Text(
                     text = "Xem chi tiết ${session.setCount} hiệp tập",
                     style = MaterialTheme.typography.labelMedium,
-                    color = NeonPrimary,
+                    color = IronOnSurface,
                     fontWeight = FontWeight.Bold,
                 )
                 Icon(
                     imageVector = Icons.Filled.ChevronRight,
                     contentDescription = null,
-                    tint = NeonPrimary,
+                    tint = IronOnSurface,
                     modifier = Modifier.size(18.dp),
                 )
             }
@@ -1322,7 +1246,7 @@ private fun SocialShareStoryCard(
                         Text(
                             text = "Đạt mốc $sessionCount buổi tập hoàn thành!",
                             style = MaterialTheme.typography.labelSmall,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                         )
                     }
                 }
@@ -1360,7 +1284,7 @@ private fun SocialShareStoryCard(
                         Text(
                             text = String.format(Locale.US, "%.1fT", totalVolumeKg / 1000.0),
                             style = MaterialTheme.typography.titleLarge,
-                            color = NeonPrimary,
+                            color = IronOnSurface,
                             fontWeight = FontWeight.ExtraBold,
                         )
                     }

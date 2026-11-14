@@ -1,5 +1,7 @@
 package com.example.gymapp.ui.profile
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CloudDone
@@ -28,10 +31,11 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MonitorWeight
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.TableView
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material.icons.filled.WorkspacePremium
@@ -45,6 +49,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -58,7 +63,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymapp.service.RestTimerStore
+import com.example.gymapp.ui.appViewModelFactory
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondary
 import com.example.gymapp.ui.theme.BurntSecondaryContainer
 import com.example.gymapp.ui.theme.EmeraldTertiary
@@ -69,16 +78,43 @@ import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceHighest
 import com.example.gymapp.ui.theme.IronSurfaceLow
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 @Composable
 fun ProfileScreen(
     totalSessionsCount: Int,
+    viewModel: ProfileViewModel = viewModel(
+        factory = appViewModelFactory { app -> ProfileViewModel(app) },
+    ),
 ) {
     val context = LocalContext.current
+    val busy by viewModel.busy.collectAsStateWithLifecycle()
+    var banner by remember { mutableStateOf<String?>(null) }
+    var showRestoreConfirm by remember { mutableStateOf(false) }
+    val versionName = remember {
+        runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }
+            .getOrNull()
+            .orEmpty()
+    }
+
+    val exportCsvLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("text/csv"),
+    ) { uri -> uri?.let(viewModel::exportCsv) }
+    val exportBackupLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json"),
+    ) { uri -> uri?.let(viewModel::exportBackup) }
+    val importBackupLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri -> uri?.let(viewModel::importBackup) }
+
+    LaunchedEffect(viewModel) {
+        viewModel.messages.collect { banner = it }
+    }
+
     var athleteName by remember { mutableStateOf(RestTimerStore.readAthleteName(context)) }
     var weightKg by remember { mutableDoubleStateOf(RestTimerStore.readBodyWeightKg(context)) }
     var bodyFatPct by remember { mutableDoubleStateOf(RestTimerStore.readBodyFatPct(context)) }
@@ -87,8 +123,7 @@ fun ProfileScreen(
     var smallestInc by remember { mutableDoubleStateOf(RestTimerStore.readSmallestIncrementKg(context)) }
     var audioBell by remember { mutableStateOf(RestTimerStore.readAudioBell(context)) }
     var hapticEnabled by remember { mutableStateOf(RestTimerStore.readHapticEnabled(context)) }
-    var autoOverload by remember { mutableStateOf(true) }
-    var syncToast by remember { mutableStateOf(false) }
+    var autoOverload by remember { mutableStateOf(RestTimerStore.readAutoOverload(context)) }
     var showEditBodyDialog by remember { mutableStateOf(false) }
 
     val lbmKg = weightKg * (1.0 - (bodyFatPct / 100.0))
@@ -98,7 +133,7 @@ fun ProfileScreen(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        if (syncToast) {
+        banner?.let { message ->
             item {
                 Surface(
                     shape = RoundedCornerShape(12.dp),
@@ -111,6 +146,7 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Row(
+                            modifier = Modifier.weight(1f),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
@@ -120,7 +156,7 @@ fun ProfileScreen(
                                 tint = OnNeonPrimary,
                             )
                             Text(
-                                text = "Đã lưu và đồng bộ cài đặt thành công!",
+                                text = message,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = OnNeonPrimary,
                                 fontWeight = FontWeight.Bold,
@@ -130,7 +166,9 @@ fun ProfileScreen(
                             text = "Đóng",
                             style = MaterialTheme.typography.labelSmall,
                             color = OnNeonPrimary,
-                            modifier = Modifier.clickable { syncToast = false },
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .clickable { banner = null },
                         )
                     }
                 }
@@ -158,30 +196,6 @@ fun ProfileScreen(
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Surface(
-                        shape = RoundedCornerShape(10.dp),
-                        color = IronSurfaceHigh,
-                        modifier = Modifier.clickable { syncToast = true },
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Sync,
-                                contentDescription = null,
-                                tint = NeonPrimary,
-                                modifier = Modifier.size(18.dp),
-                            )
-                            Text(
-                                text = "Đồng bộ",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = NeonPrimary,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                    }
                     Surface(
                         shape = RoundedCornerShape(10.dp),
                         color = IronSurfaceHigh,
@@ -230,7 +244,7 @@ fun ProfileScreen(
                                 Icon(
                                     imageVector = Icons.Filled.Person,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                     modifier = Modifier.size(38.dp),
                                 )
                             }
@@ -283,7 +297,7 @@ fun ProfileScreen(
                             Text(
                                 text = "@ironlog.lift • Chu kỳ Hypertrophy",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = NeonPrimary,
+                                color = IronOnSurface,
                             )
                         }
                     }
@@ -298,7 +312,7 @@ fun ProfileScreen(
                             value = String.format(Locale.US, "%.1f", weightKg),
                             unit = "kg",
                             sub = "Lean Bulk",
-                            subColor = NeonPrimary,
+                            subColor = IronOnSurface,
                             modifier = Modifier.weight(1f),
                         )
                         BodyMetricBox(
@@ -338,13 +352,13 @@ fun ProfileScreen(
                                 Icon(
                                     imageVector = Icons.Filled.MonitorWeight,
                                     contentDescription = null,
-                                    tint = NeonPrimary,
+                                    tint = IronOnSurface,
                                     modifier = Modifier.size(18.dp),
                                 )
                                 Text(
                                     text = "Cập nhật Cân nặng & InBody",
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
@@ -369,7 +383,7 @@ fun ProfileScreen(
                     Icon(
                         imageVector = Icons.Filled.Timer,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(18.dp),
                     )
                     Text(
@@ -404,7 +418,7 @@ fun ProfileScreen(
                                 Text(
                                     text = "$restSeconds giây",
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
@@ -457,7 +471,7 @@ fun ProfileScreen(
                                 Text(
                                     text = "$smallestInc kg",
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
@@ -503,7 +517,7 @@ fun ProfileScreen(
                         // Audio & Haptic Switches
                         SettingToggleRow(
                             icon = Icons.AutoMirrored.Filled.VolumeUp,
-                            iconTint = NeonPrimary,
+                            iconTint = IronOnSurface,
                             title = "Âm thanh chuông báo",
                             subtitle = "Đếm ngược 3-2-1 chuẩn bị hiệp tiếp theo",
                             checked = audioBell,
@@ -576,7 +590,7 @@ fun ProfileScreen(
                                     text = "Epley Formula",
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
@@ -607,11 +621,14 @@ fun ProfileScreen(
 
                         SettingToggleRow(
                             icon = Icons.Filled.Bolt,
-                            iconTint = NeonPrimary,
+                            iconTint = IronOnSurface,
                             title = "Tự động gợi ý tăng tạ",
                             subtitle = "Đề xuất mức tạ tiếp theo khi đạt trần rep buổi trước",
                             checked = autoOverload,
-                            onCheckedChange = { autoOverload = it },
+                            onCheckedChange = {
+                                autoOverload = it
+                                RestTimerStore.saveAutoOverload(context, it)
+                            },
                         )
                     }
                 }
@@ -628,11 +645,11 @@ fun ProfileScreen(
                     Icon(
                         imageVector = Icons.Filled.CloudSync,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(18.dp),
                     )
                     Text(
-                        text = "DỮ LIỆU & BẢO MẬT ĐỒNG BỘ",
+                        text = "DỮ LIỆU & SAO LƯU",
                         style = MaterialTheme.typography.labelSmall,
                         color = IronOnSurfaceVariant,
                         fontWeight = FontWeight.Bold,
@@ -668,12 +685,12 @@ fun ProfileScreen(
                                     Icon(
                                         imageVector = Icons.Filled.CloudDone,
                                         contentDescription = null,
-                                        tint = NeonPrimary,
+                                        tint = IronOnSurface,
                                     )
                                 }
                                 Column {
                                     Text(
-                                        text = "Room Local Database + Auto Backup",
+                                        text = "Lưu trên thiết bị (Room)",
                                         style = MaterialTheme.typography.titleMedium,
                                         color = IronOnSurface,
                                         fontWeight = FontWeight.Bold,
@@ -687,51 +704,30 @@ fun ProfileScreen(
                             }
                         }
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(10.dp))
-                                .clickable { syncToast = true }
-                                .padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(IronSurfaceHigh),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.TableView,
-                                        contentDescription = null,
-                                        tint = IronOnSurface,
-                                    )
-                                }
-                                Column {
-                                    Text(
-                                        text = "Xuất dữ liệu buổi tập (CSV/Excel)",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = IronOnSurface,
-                                    )
-                                    Text(
-                                        text = "Tải toàn bộ buổi tập & lịch sử khối lượng",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = IronOnSurfaceVariant,
-                                    )
-                                }
-                            }
-                            Icon(
-                                imageVector = Icons.Filled.Download,
-                                contentDescription = null,
-                                tint = IronOnSurfaceVariant,
-                            )
-                        }
+                        DataActionRow(
+                            icon = Icons.Filled.TableView,
+                            trailingIcon = Icons.Filled.Download,
+                            title = "Xuất dữ liệu buổi tập (CSV/Excel)",
+                            subtitle = "Mỗi hiệp một dòng: ngày, bài, tạ, reps, e1RM",
+                            enabled = !busy,
+                            onClick = { exportCsvLauncher.launch("ironlog-${fileStamp()}.csv") },
+                        )
+                        DataActionRow(
+                            icon = Icons.Filled.Backup,
+                            trailingIcon = Icons.Filled.Download,
+                            title = "Sao lưu toàn bộ (JSON)",
+                            subtitle = "Buổi tập, giáo án và nhật ký ăn — dùng để chuyển máy",
+                            enabled = !busy,
+                            onClick = { exportBackupLauncher.launch("ironlog-backup-${fileStamp()}.json") },
+                        )
+                        DataActionRow(
+                            icon = Icons.Filled.Restore,
+                            trailingIcon = Icons.Filled.Upload,
+                            title = "Khôi phục từ bản sao lưu",
+                            subtitle = "Thay thế toàn bộ dữ liệu hiện tại",
+                            enabled = !busy,
+                            onClick = { showRestoreConfirm = true },
+                        )
                     }
                 }
             }
@@ -753,7 +749,7 @@ fun ProfileScreen(
                     Icon(
                         imageVector = Icons.Filled.Terminal,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(16.dp),
                     )
                     Text(
@@ -764,7 +760,7 @@ fun ProfileScreen(
                     )
                 }
                 Text(
-                    text = "Phiên bản v2.4.0 (Pro Edition)",
+                    text = "Phiên bản $versionName",
                     style = MaterialTheme.typography.labelSmall,
                     color = IronOutline,
                 )
@@ -786,8 +782,91 @@ fun ProfileScreen(
                 heightCm = h
                 RestTimerStore.saveBodyMetrics(context, w.toFloat(), f.toFloat(), h, newName)
                 showEditBodyDialog = false
-                syncToast = true
+                banner = "Đã lưu hồ sơ"
             },
+        )
+    }
+
+    if (showRestoreConfirm) {
+        AlertDialog(
+            onDismissRequest = { showRestoreConfirm = false },
+            title = { Text("Khôi phục dữ liệu?") },
+            text = {
+                Text("Toàn bộ buổi tập, bài tự tạo, giáo án và nhật ký ăn hiện tại sẽ bị thay bằng nội dung của file sao lưu. Nên sao lưu dữ liệu hiện tại trước.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showRestoreConfirm = false
+                        importBackupLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
+                    },
+                ) {
+                    Text("Chọn file", color = IronOnSurface, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRestoreConfirm = false }) { Text("Hủy") }
+            },
+        )
+    }
+}
+
+private fun fileStamp(): String =
+    SimpleDateFormat("yyyyMMdd-HHmm", Locale.US).format(Date())
+
+@Composable
+private fun DataActionRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    trailingIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    subtitle: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(IronSurfaceHigh),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = IronOnSurface,
+                )
+            }
+            Column {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (enabled) IronOnSurface else IronOnSurfaceVariant,
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = IronOnSurfaceVariant,
+                )
+            }
+        }
+        Icon(
+            imageVector = trailingIcon,
+            contentDescription = null,
+            tint = IronOnSurfaceVariant,
         )
     }
 }
@@ -928,7 +1007,7 @@ private fun EditBodyMetricsDialog(
                     onSave(name.ifBlank { "Minh Quân" }, w, f, h)
                 },
             ) {
-                Text("Lưu", color = NeonPrimary, fontWeight = FontWeight.Bold)
+                Text("Lưu", color = IronOnSurface, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {

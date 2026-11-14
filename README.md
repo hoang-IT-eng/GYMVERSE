@@ -38,7 +38,10 @@
 | **Workout** | Ghi set (rep × kg), chọn bài nhanh, theo dõi phiên tập đang chạy |
 | **Rest Timer** | Đếm giờ nghỉ nền + notification, banner khi đang rest |
 | **Progress** | Hub tiến bộ, biểu đồ volume / sức mạnh theo thời gian |
-| **Profile** | Thông tin cá nhân & cài đặt nhanh |
+| **Profile** | Thông tin cá nhân & cài đặt nhanh (bật/tắt tự gợi ý tăng tạ) |
+| **Dinh dưỡng** | Chụp ảnh / chọn ảnh / mô tả bữa ăn → AI (Gemini) tách món và ước lượng gram → sửa lại rồi lưu; nhập tay từ bảng ~90 món Việt hoặc số trên nhãn; sửa bữa đã lưu, ăn lại bữa cũ, lưu ảnh bữa ăn; thẻ BMR & TDEE (Katch-McArdle, đối chiếu Mifflin-St Jeor, chọn mức vận động) |
+| **AI Coach** | Tab Tiến bộ: Gemini tổng kết 7 ngày qua (hiệp theo nhóm cơ so với MEV–MRV, bài chững lại, calo & đạm) và gợi ý việc cho tuần tới |
+| **Dữ liệu** | Xuất CSV (mở bằng Excel), sao lưu / khôi phục toàn bộ dữ liệu bằng file JSON |
 
 ---
 
@@ -58,7 +61,7 @@
 ### Yêu cầu
 
 - Android Studio (khuyến nghị bản mới nhất)
-- JDK 11+
+- JDK 17–21 để chạy Gradle (Gradle 8.13 không chạy được trên JDK 26)
 - Thiết bị/emulator Android 8.1+ (API 27)
 
 ### Chạy project
@@ -79,6 +82,18 @@ Hoặc build từ terminal:
 ```
 
 APK debug: `app/build/outputs/apk/debug/app-debug.apk`
+
+### Cấu hình AI dinh dưỡng
+
+Thêm vào `local.properties` (file này không được commit):
+
+```properties
+gemini.apiKey=KHÓA_GEMINI_CỦA_BẠN
+gemini.model=gemini-3.5-flash-lite
+```
+
+> [!WARNING]
+> Khóa được đóng gói vào APK — chỉ dùng cho bản cá nhân / thử nghiệm. Bản phát hành công khai cần gọi Gemini qua server trung gian để giữ khóa.
 
 ---
 
@@ -126,7 +141,7 @@ app/src/main/java/com/example/gymapp/
 ## 🗺 Roadmap
 
 - [ ] Thêm screenshot UI vào README
-- [ ] Export / import lịch sử tập
+- [x] Export / import lịch sử tập (CSV + sao lưu JSON)
 - [ ] Widget rest timer
 - [ ] Dark / light theme toggle
 - [ ] Đa ngôn ngữ (VI / EN)

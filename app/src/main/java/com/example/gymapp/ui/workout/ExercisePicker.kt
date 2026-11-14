@@ -44,6 +44,7 @@ import com.example.gymapp.domain.IronLogCatalog
 import com.example.gymapp.domain.MuscleGroup
 import com.example.gymapp.domain.formatKg
 import com.example.gymapp.domain.muscleLine
+import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.BurntSecondaryContainer
 import com.example.gymapp.ui.theme.EmeraldTertiary
 import com.example.gymapp.ui.theme.IronOnSurface
@@ -51,7 +52,6 @@ import com.example.gymapp.ui.theme.IronOnSurfaceVariant
 import com.example.gymapp.ui.theme.IronSurface
 import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
-import com.example.gymapp.ui.theme.NeonPrimary
 import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnBurntSecondaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
@@ -98,7 +98,7 @@ fun ExercisePicker(
                     Text(
                         text = "KHO BÀI TẬP HYPERTROPHY",
                         style = MaterialTheme.typography.labelSmall,
-                        color = NeonPrimary,
+                        color = IronOnSurface,
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
@@ -128,7 +128,7 @@ fun ExercisePicker(
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(20.dp),
                     )
                     androidx.compose.foundation.text.BasicTextField(
@@ -236,7 +236,7 @@ fun ExercisePicker(
                                 Icon(
                                     imageVector = Icons.Filled.FitnessCenter,
                                     contentDescription = null,
-                                    tint = if (meta.tier == "Tier S") NeonPrimary else EmeraldTertiary,
+                                    tint = if (meta.tier == "Tier S") IronOnSurface else EmeraldTertiary,
                                 )
                             }
                             Column(Modifier.weight(1f)) {
@@ -258,7 +258,7 @@ fun ExercisePicker(
                                             text = meta.tier,
                                             modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp),
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = if (meta.tier == "Tier S") OnBurntSecondaryContainer else NeonPrimary,
+                                            color = if (meta.tier == "Tier S") OnBurntSecondaryContainer else IronOnSurface,
                                         )
                                     }
                                 }
@@ -270,7 +270,7 @@ fun ExercisePicker(
                                 Text(
                                     text = exercise.detailLine(),
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = NeonPrimary,
+                                    color = IronOnSurface,
                                 )
                             }
                             Surface(

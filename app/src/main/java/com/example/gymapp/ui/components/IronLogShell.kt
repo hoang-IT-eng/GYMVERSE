@@ -19,8 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
@@ -35,21 +35,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.gymapp.ui.theme.AlertOrange
 import com.example.gymapp.ui.theme.IronOnSurface
 import com.example.gymapp.ui.theme.IronOnSurfaceVariant
 import com.example.gymapp.ui.theme.IronSurface
-import com.example.gymapp.ui.theme.IronSurfaceContainer
 import com.example.gymapp.ui.theme.IronSurfaceHigh
 import com.example.gymapp.ui.theme.IronSurfaceLowest
 import com.example.gymapp.ui.theme.NeonPrimary
-import com.example.gymapp.ui.theme.NeonPrimaryContainer
 import com.example.gymapp.ui.theme.OnNeonPrimary
 
 @Composable
@@ -59,52 +53,45 @@ fun IronLogTopBar(
     onProfileClick: () -> Unit = {},
 ) {
     Surface(
-        color = IronSurface.copy(alpha = 0.94f),
-        shadowElevation = 4.dp,
+        color = IronSurface,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier
                 .statusBarsPadding()
-                .height(64.dp)
+                .height(68.dp)
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Box(
                     modifier = Modifier
-                        .size(38.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(IronSurfaceHigh),
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(NeonPrimary),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Bolt,
+                        imageVector = Icons.Filled.Eco,
                         contentDescription = null,
-                        tint = NeonPrimary,
+                        tint = OnNeonPrimary,
                         modifier = Modifier.size(22.dp),
                     )
                 }
                 Column {
                     Text(
-                        text = buildAnnotatedString {
-                            withStyle(SpanStyle(color = IronOnSurface, fontWeight = FontWeight.ExtraBold)) {
-                                append("IRON")
-                            }
-                            withStyle(SpanStyle(color = NeonPrimary, fontWeight = FontWeight.ExtraBold)) {
-                                append("LOG")
-                            }
-                        },
+                        text = "IronLog",
                         style = MaterialTheme.typography.titleLarge,
-                        letterSpacing = (-0.5).sp,
+                        color = IronOnSurface,
+                        fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = subtitle.uppercase(),
-                        style = MaterialTheme.typography.labelSmall,
+                        text = subtitle,
+                        style = MaterialTheme.typography.labelMedium,
                         color = IronOnSurfaceVariant,
                     )
                 }
@@ -118,38 +105,30 @@ fun IronLogTopBar(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(IronSurfaceContainer)
+                        .background(IronSurfaceHigh)
                         .clickable(onClick = onNotificationsClick),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Notifications,
                         contentDescription = "Thông báo",
-                        tint = IronOnSurfaceVariant,
+                        tint = IronOnSurface,
                         modifier = Modifier.size(20.dp),
-                    )
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .offset(x = (-9).dp, y = 9.dp)
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(AlertOrange),
                     )
                 }
                 Box(
                     modifier = Modifier
-                        .size(34.dp)
+                        .size(40.dp)
                         .clip(CircleShape)
-                        .background(NeonPrimaryContainer)
+                        .background(IronSurfaceHigh)
                         .clickable(onClick = onProfileClick),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Person,
                         contentDescription = "Cá nhân",
-                        tint = OnNeonPrimary,
-                        modifier = Modifier.size(18.dp),
+                        tint = IronOnSurface,
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
@@ -172,14 +151,14 @@ fun IronLogBottomBar(
     onGhiTapClick: () -> Unit,
 ) {
     Surface(
-        color = IronSurfaceLowest.copy(alpha = 0.96f),
-        shadowElevation = 16.dp,
+        color = IronSurfaceLowest,
+        shadowElevation = 12.dp,
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier
                 .navigationBarsPadding()
-                .height(68.dp)
+                .height(72.dp)
                 .fillMaxWidth()
                 .padding(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -197,20 +176,19 @@ fun IronLogBottomBar(
                 selected = currentRoute == MainTab.ROUTINES.route || currentRoute == "library",
                 onClick = { onSelectRoute(MainTab.ROUTINES.route) },
             )
-            // Center prominent "Ghi tập" button
             Column(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(14.dp))
+                    .clip(RoundedCornerShape(16.dp))
                     .clickable(onClick = onGhiTapClick)
-                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 Box(
                     modifier = Modifier
-                        .size(42.dp)
+                        .size(46.dp)
                         .clip(CircleShape)
-                        .background(NeonPrimaryContainer),
+                        .background(NeonPrimary),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
@@ -223,8 +201,8 @@ fun IronLogBottomBar(
                         Box(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
-                                .offset(x = (-3).dp, y = 3.dp)
-                                .size(8.dp)
+                                .offset(x = (-2).dp, y = 2.dp)
+                                .size(9.dp)
                                 .clip(CircleShape)
                                 .background(AlertOrange),
                         )
@@ -234,7 +212,7 @@ fun IronLogBottomBar(
                 Text(
                     text = if (hasActiveSession) "Đang tập" else "Ghi tập",
                     style = MaterialTheme.typography.labelSmall,
-                    color = NeonPrimary,
+                    color = IronOnSurface,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -261,11 +239,11 @@ private fun BottomNavItem(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val tint: Color = if (selected) NeonPrimary else IronOnSurfaceVariant
+    val tint: Color = if (selected) IronOnSurface else IronOnSurfaceVariant
     Column(
         modifier = Modifier
             .width(64.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(14.dp))
             .clickable(onClick = onClick)
             .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -276,6 +254,14 @@ private fun BottomNavItem(
             contentDescription = label,
             tint = tint,
             modifier = Modifier.size(22.dp),
+        )
+        Spacer(Modifier.height(3.dp))
+        Box(
+            modifier = Modifier
+                .width(16.dp)
+                .height(3.dp)
+                .clip(CircleShape)
+                .background(if (selected) NeonPrimary else Color.Transparent),
         )
         Spacer(Modifier.height(2.dp))
         Text(

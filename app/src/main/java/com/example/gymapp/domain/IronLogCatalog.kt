@@ -487,7 +487,17 @@ object IronLogCatalog {
         val sunday = monday.plusDays(6)
         val startMs = monday.atStartOfDay(zone).toInstant().toEpochMilli()
         val endMs = sunday.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
+        val weekLabel = "Tuần (${monday.dayOfMonth}/${monday.monthValue} – ${sunday.dayOfMonth}/${sunday.monthValue})"
+        return weekLabel to computeLandmarks(exercises, sessions, sets, startMs, endMs)
+    }
 
+    fun computeLandmarks(
+        exercises: List<Exercise>,
+        sessions: List<Session>,
+        sets: List<SetEntry>,
+        startMs: Long,
+        endMs: Long,
+    ): List<MuscleVolumeLandmark> {
         val weekSessionIds = sessions
             .filter { it.startedAt in startMs until endMs }
             .map { it.id }
@@ -508,8 +518,7 @@ object IronLogCatalog {
             return groups.sumOf { directCounts[it] ?: 0.0 }.roundToInt()
         }
 
-        val weekLabel = "Tuần (${monday.dayOfMonth}/${monday.monthValue} – ${sunday.dayOfMonth}/${sunday.monthValue})"
-        val landmarks = listOf(
+        return listOf(
             MuscleVolumeLandmark(MuscleGroup.CHEST, "Ngực (Chest)", setsFor(MuscleGroup.CHEST), 10, 20),
             MuscleVolumeLandmark(MuscleGroup.BACK, "Lưng xô (Back)", setsFor(MuscleGroup.BACK), 10, 20),
             MuscleVolumeLandmark(MuscleGroup.QUADS, "Đùi trước (Quads)", setsFor(MuscleGroup.QUADS), 10, 18),
@@ -518,7 +527,6 @@ object IronLogCatalog {
             MuscleVolumeLandmark(MuscleGroup.BICEPS, "Tay trước & Tay sau (Arms)", setsFor(MuscleGroup.BICEPS, MuscleGroup.TRICEPS), 8, 16),
             MuscleVolumeLandmark(MuscleGroup.CALVES, "Bắp chân & Bụng (Calves/Abs)", setsFor(MuscleGroup.CALVES, MuscleGroup.CORE), 8, 14),
         )
-        return weekLabel to landmarks
     }
 
     fun computeRecoveryStatus(

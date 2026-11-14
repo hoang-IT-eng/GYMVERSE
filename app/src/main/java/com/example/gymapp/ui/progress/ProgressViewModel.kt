@@ -24,6 +24,8 @@ data class ProgressUiState(
 class ProgressViewModel(
     private val repository: GymRepository,
     initialExerciseId: Long,
+    val autoIncrease: Boolean = true,
+    val plateStepKg: Double = 0.0,
 ) : ViewModel() {
     private val selectedId = MutableStateFlow(initialExerciseId)
     private val _state = MutableStateFlow(ProgressUiState())
@@ -63,6 +65,8 @@ class ProgressViewModel(
                         repMax = it.repMax,
                         incrementKg = it.incrementKg,
                         startKg = it.startKg,
+                        autoIncrease = autoIncrease,
+                        plateStepKg = plateStepKg,
                     )
                 }
                 ProgressUiState(

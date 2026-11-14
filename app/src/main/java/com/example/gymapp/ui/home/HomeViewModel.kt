@@ -12,6 +12,7 @@ import com.example.gymapp.domain.MuscleRecoveryItem
 import com.example.gymapp.domain.ProgressiveOverload
 import com.example.gymapp.domain.RoutineDaySpec
 import com.example.gymapp.domain.RoutinePlan
+import com.example.gymapp.domain.RoutineRotation
 import com.example.gymapp.domain.SetPerformance
 import com.example.gymapp.domain.toPlan
 import com.example.gymapp.domain.epley1Rm
@@ -74,6 +75,7 @@ data class HomeUiState(
     val heroPreviews: List<HeroExercisePreview> = emptyList(),
     val active: ActiveSessionUi? = null,
     val recent: List<RecentSessionUi> = emptyList(),
+    val totalSessions: Int = 0,
     val progress: List<ExerciseProgressUi> = emptyList(),
     val streakDays: Int = 0,
     val weekStrip: List<DayCheckItem> = emptyList(),
@@ -100,6 +102,11 @@ class HomeViewModel(private val app: GymApp) : AndroidViewModel(app) {
                 _state.value = snapshot.toHome(app)
             }
         }
+    }
+
+    /** Settings live in SharedPreferences, so re-derive when Home comes back into view. */
+    fun refresh() {
+        latest?.let { _state.value = it.toHome(app) }
     }
 
     suspend fun startOrResume(): Long {
@@ -223,8 +230,21 @@ private fun GymSnapshot.toHome(app: GymApp): HomeUiState {
         ?: customPlans.firstOrNull()
         ?: IronLogCatalog.routines.first()
     val workoutDays = routine.days.filter { !it.isRest }
-    val daySpec = workoutDays.firstOrNull() ?: routine.days.firstOrNull()
+    val trainedBySession = sets.groupBy { it.sessionId }.mapValues { (_, s) -> s.map { it.exerciseId }.toSet() }
+    val recentTrained = sessions
+        .filter { it.finishedAt != null }
+        .sortedByDescending { it.startedAt }
+        .take(20)
+        .map { trainedBySession[it.id].orEmpty() }
+    val dayIds = workoutDays.map { day ->
+        if (day.exerciseIds.isNotEmpty()) day.exerciseIds.toSet()
+        else day.exerciseNames.mapNotNull { byName[it]?.id }.toSet()
+    }
+    val daySpec = workoutDays.getOrNull(RoutineRotation.nextDayIndex(dayIds, recentTrained))
+        ?: routine.days.firstOrNull()
     val startedAtBySession = sessions.associate { it.id to it.startedAt }
+    val autoIncrease = RestTimerStore.readAutoOverload(app)
+    val plateStepKg = RestTimerStore.readSmallestIncrementKg(app)
 
     val heroSources: List<Exercise?> = if (daySpec == null) {
         emptyList()
@@ -253,6 +273,8 @@ private fun GymSnapshot.toHome(app: GymApp): HomeUiState {
                 repMax = ex.repMax,
                 incrementKg = ex.incrementKg,
                 startKg = ex.startKg,
+                autoIncrease = autoIncrease,
+                plateStepKg = plateStepKg,
             )
             HeroExercisePreview(
                 order = idx + 1,
@@ -323,6 +345,7 @@ private fun GymSnapshot.toHome(app: GymApp): HomeUiState {
         heroPreviews = heroPreviews,
         active = active,
         recent = recent,
+        totalSessions = sessions.size,
         progress = progress,
         streakDays = streak,
         weekStrip = weekStrip,

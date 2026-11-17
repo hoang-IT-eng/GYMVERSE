@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IronLog, ghi từng hiệp</title>
-  <meta name="description" content="IronLog là nhật ký tập Android: giáo án hypertrophy, ghi set, đồng hồ nghỉ và bữa ăn tiếng Việt.">
+  <title>IronLog — Mỗi buổi tập. Từng hiệp đều rõ ràng.</title>
+  <meta name="description" content="IronLog là ứng dụng Android ghi nhật ký tập: giáo án hypertrophy, ghi hiệp rep × kg, đồng hồ nghỉ, tiến bộ và bữa ăn tiếng Việt. Kèm prototype tương tác chạy ngay trên trình duyệt.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
@@ -12,221 +12,353 @@
 </head>
 <body>
   <a class="skip" href="#noi-dung">Tới nội dung</a>
-  <section class="hero" id="dau-trang">
-    <nav class="nav" aria-label="Chính">
-      <div class="container nav__row">
-        <a class="wordmark" href="#dau-trang">IronLog</a>
-        <a class="btn btn--primary" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Lấy mã nguồn</a>
-      </div>
-    </nav>
-    <div class="hero__body">
-      <div class="container hero__grid">
-        <div class="hero__copy">
-          <h1>Ghi từng hiệp</h1>
-          <p class="lead">Nhật ký tập Android: giáo án, set, nghỉ và bữa ăn.</p>
-          <div class="actions">
-            <a class="btn btn--primary" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Lấy mã nguồn</a>
-            <a class="btn btn--secondary" href="#giao-an">Xem giáo án</a>
-          </div>
+
+  <header class="nav" id="dau-trang">
+    <div class="container nav__row">
+      <a class="wordmark" href="#dau-trang">IronLog</a>
+      <nav class="nav__links" aria-label="Chính">
+        <a class="nav__proto" href="prototype.html">Try the interactive prototype ↗</a>
+        <a class="btn btn--primary btn--small" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Mã nguồn</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">IronLog / Ứng dụng Android ghi nhật ký tập</p>
+        <h1>Mỗi buổi tập. Từng hiệp đều rõ ràng.</h1>
+        <p class="lead">IronLog là nhật ký tập chạy trên Android: giáo án, kho bài tập tiếng Việt, ghi hiệp theo rep × kg và đồng hồ nghỉ. Trước khi bạn quyết định tăng tạ, màn hình đặt đủ ngữ cảnh cạnh nhau — buổi trước đã đẩy bao nhiêu rep ở bao nhiêu kg, RIR còn lại, nhóm cơ đã phục hồi tới đâu và thời gian nghỉ còn bao lâu.</p>
+        <p class="honest">Đây là một dự án cá nhân đang được phát triển công khai. Mọi con số trên trang này và trong prototype là dữ liệu mẫu, không phải kết quả tập luyện thật.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="prototype.html">Try the interactive prototype ↗</a>
+          <a class="btn btn--ghost" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Lấy mã nguồn</a>
         </div>
-        <figure class="visual">
-          <p class="visual__name">Push Day A</p>
-          <p class="visual__day">Ngực và vai trước</p>
-          <table class="sheet">
-            <thead>
-              <tr>
-                <th scope="col">Số</th>
-                <th scope="col">Bài trong giáo án</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="idx">1</td>
-                <td>
-                  <span class="lift">Bench Press</span>
-                  <span class="vn">Đẩy ngực ngang đòn tạ</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="idx">2</td>
-                <td>
-                  <span class="lift">Incline Dumbbell Press</span>
-                  <span class="vn">Đẩy ngực trên tạ đơn</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="idx">3</td>
-                <td>
-                  <span class="lift">Overhead Press</span>
-                  <span class="vn">Đẩy vai đứng tạ đòn</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="idx">4</td>
-                <td>
-                  <span class="lift">Dip</span>
-                  <span class="vn">Xà kép có tải</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="idx">5</td>
-                <td>
-                  <span class="lift">Triceps Pushdown</span>
-                  <span class="vn">Duỗi tay sau với cáp</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="facts">
-            <p><span class="time">5</span> bài</p>
-            <p><span class="time">18</span> hiệp</p>
-            <p class="mark"><span class="time">1-2</span> RIR</p>
-          </div>
-          <figcaption>Ngày 1 của PPL Hypertrophy. Ghi rep và kg khi tập.</figcaption>
-        </figure>
+        <ul class="hero__meta">
+          <li><span class="num">4</span> giáo án có sẵn</li>
+          <li><span class="num">~90</span> món Việt trong bảng dinh dưỡng</li>
+          <li><span class="num">100%</span> dữ liệu tập lưu offline</li>
+        </ul>
       </div>
+
+      <figure class="hero__visual" aria-label="Mô phỏng màn hình Home của IronLog">
+        <div class="phone phone--hero">
+          <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
+          <div class="phone__screen">
+            <p class="app__hi">Chào buổi sáng</p>
+            <p class="app__name">Hôm nay tập gì?</p>
+            <div class="app__streak">
+              <span class="app__streak-num num">12</span>
+              <span>ngày liên tiếp<br>có buổi tập được ghi</span>
+            </div>
+            <div class="app__card app__card--volt">
+              <p class="app__card-label">Buổi hôm nay · PPL</p>
+              <p class="app__card-title">Push Day A</p>
+              <p class="app__card-sub">Ngực và vai trước · 5 bài · 18 hiệp</p>
+              <p class="app__card-cta">Bắt đầu buổi tập →</p>
+            </div>
+            <p class="app__h">Phục hồi nhóm cơ</p>
+            <div class="bar-row"><span>Ngực</span><span class="bar"><span class="bar__fill" style="width:92%"></span></span><span class="num">92%</span></div>
+            <div class="bar-row"><span>Vai</span><span class="bar"><span class="bar__fill" style="width:84%"></span></span><span class="num">84%</span></div>
+            <div class="bar-row"><span>Lưng</span><span class="bar"><span class="bar__fill" style="width:67%"></span></span><span class="num">67%</span></div>
+            <div class="bar-row"><span>Chân</span><span class="bar"><span class="bar__fill bar__fill--low" style="width:38%"></span></span><span class="num">38%</span></div>
+            <p class="app__note">Chân mới tập hôm qua — hôm nay để chân nghỉ là hợp lý.</p>
+          </div>
+          <div class="phone__tabs" aria-hidden="true"><span class="is-on">Home</span><span>Giáo án</span><span>Tiến bộ</span><span>Hồ sơ</span></div>
+        </div>
+        <figcaption class="hero__caption">Màn hình Home dựng lại bằng HTML/CSS: buổi hôm nay, chuỗi ngày tập và mức phục hồi nằm trên cùng một mặt.</figcaption>
+      </figure>
     </div>
   </section>
 
   <main id="noi-dung">
-    <section class="programs" id="giao-an">
+
+    <section class="slide slide--dark" id="s01" aria-labelledby="s01-t">
       <div class="container">
-        <div class="section-head">
-          <h2>Bốn giáo án có sẵn</h2>
-          <p class="lead">Chọn một lịch. Buổi mở ra thành danh sách bài.</p>
+        <header class="slide__head">
+          <span class="slide__no num">01</span>
+          <div>
+            <h2 id="s01-t">Ý tưởng sản phẩm rõ ràng</h2>
+            <p class="lead">Người tập ở phòng gym không thiếu động lực, họ thiếu một chỗ ghi đủ nhanh và đọc lại đủ rõ. IronLog được thiết kế quanh đúng hai việc đó.</p>
+          </div>
+        </header>
+        <div class="principles">
+          <article class="principle">
+            <h3>Ghi trong vài giây</h3>
+            <p>Một hiệp chỉ gồm hai con số: rep và kg. Mở buổi tập là thấy ngay bài đang tập, mức tạ buổi trước đã điền sẵn để sửa, không phải gõ lại từ đầu.</p>
+          </article>
+          <article class="principle">
+            <h3>Ngữ cảnh trước quyết định</h3>
+            <p>Tăng tạ hay giữ nguyên không nên là cảm tính. Buổi trước, RIR, phục hồi nhóm cơ và đồng hồ nghỉ được đặt cạnh nhau ngay tại màn hình ghi hiệp.</p>
+          </article>
+          <article class="principle">
+            <h3>Số liệu nói thật</h3>
+            <p>Tuần nào chưa đủ dữ liệu thì ứng dụng nói chưa đủ, thay vì vẽ ra nhận xét cho có. Tổng kết tuần chỉ viết khi có đủ buổi tập để đọc.</p>
+          </article>
         </div>
-        <table class="sheet">
-          <thead>
-            <tr>
-              <th scope="col">Giáo án</th>
-              <th scope="col">Ngày mỗi tuần</th>
-              <th scope="col">Độ dài buổi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="live">
-              <td>PPL</td>
-              <td class="num">6 ngày</td>
-              <td class="mark">50-65 phút</td>
-            </tr>
-            <tr>
-              <td>Upper / Lower</td>
-              <td class="num">4 ngày</td>
-              <td>60-70 phút</td>
-            </tr>
-            <tr>
-              <td>Arnold</td>
-              <td class="num">6 ngày</td>
-              <td>65-75 phút</td>
-            </tr>
-            <tr>
-              <td>Full body</td>
-              <td class="num">3 ngày</td>
-              <td>65-75 phút</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </section>
 
-    <section class="meals" id="bua-an">
+    <section class="slide slide--paper" id="s02" aria-labelledby="s02-t">
       <div class="container">
-        <div class="section-head">
-          <h2>Món Việt trên 100 g</h2>
-          <p class="lead">Lấy từ bảng trong máy, hoặc chụp đĩa để Gemini ước lượng rồi sửa.</p>
+        <header class="slide__head">
+          <span class="slide__no num">02</span>
+          <div>
+            <h2 id="s02-t">Sản phẩm khi dùng thật</h2>
+            <p class="lead">Home trả lời câu hỏi “hôm nay tập gì”, giáo án trả lời “tập theo lịch nào”, và thanh phục hồi cho biết nhóm cơ nào nên để yên hôm nay.</p>
+          </div>
+        </header>
+        <div class="slide__grid">
+          <div>
+            <h3 class="block-t">Bốn giáo án có sẵn</h3>
+            <p class="block-p">Chọn một lịch, buổi mở ra thành danh sách bài. Người dùng cũng có thể tự tạo giáo án riêng và lấy bài từ kho bài tập tiếng Việt kèm lưu ý kỹ thuật.</p>
+            <table class="sheet">
+              <thead>
+                <tr><th scope="col">Giáo án</th><th scope="col">Ngày mỗi tuần</th><th scope="col">Độ dài buổi</th></tr>
+              </thead>
+              <tbody>
+                <tr class="live"><td>PPL</td><td class="num">6 ngày</td><td class="mark">50-65 phút</td></tr>
+                <tr><td>Upper / Lower</td><td class="num">4 ngày</td><td>60-70 phút</td></tr>
+                <tr><td>Arnold</td><td class="num">6 ngày</td><td>65-75 phút</td></tr>
+                <tr><td>Full body</td><td class="num">3 ngày</td><td>65-75 phút</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mini-phones">
+            <div class="phone phone--mini">
+              <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
+              <div class="phone__screen">
+                <p class="app__name">Giáo án</p>
+                <div class="app__card"><p class="app__card-title">PPL Hypertrophy</p><p class="app__card-sub">6 ngày / tuần · đang theo</p></div>
+                <div class="app__card"><p class="app__card-title">Upper / Lower</p><p class="app__card-sub">4 ngày / tuần</p></div>
+                <div class="app__card"><p class="app__card-title">Arnold Split</p><p class="app__card-sub">6 ngày / tuần</p></div>
+                <div class="app__card"><p class="app__card-title">Full body</p><p class="app__card-sub">3 ngày / tuần</p></div>
+              </div>
+            </div>
+            <div class="phone phone--mini">
+              <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
+              <div class="phone__screen">
+                <p class="app__name">Phục hồi</p>
+                <div class="bar-row"><span>Ngực</span><span class="bar"><span class="bar__fill" style="width:92%"></span></span><span class="num">92%</span></div>
+                <div class="bar-row"><span>Vai trước</span><span class="bar"><span class="bar__fill" style="width:84%"></span></span><span class="num">84%</span></div>
+                <div class="bar-row"><span>Tay sau</span><span class="bar"><span class="bar__fill" style="width:71%"></span></span><span class="num">71%</span></div>
+                <div class="bar-row"><span>Lưng</span><span class="bar"><span class="bar__fill" style="width:67%"></span></span><span class="num">67%</span></div>
+                <div class="bar-row"><span>Chân</span><span class="bar"><span class="bar__fill bar__fill--low" style="width:38%"></span></span><span class="num">38%</span></div>
+                <p class="app__note">Mức phục hồi tính từ lần gần nhất nhóm cơ đó được tập và khối lượng của buổi đó.</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <table class="sheet">
-          <thead>
-            <tr>
-              <th scope="col">Món</th>
-              <th scope="col">kcal</th>
-              <th scope="col">Đạm, g</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Cơm trắng</td>
-              <td class="num">130</td>
-              <td class="num">2.7</td>
-            </tr>
-            <tr>
-              <td>Ức gà</td>
-              <td class="num">165</td>
-              <td class="num">31</td>
-            </tr>
-            <tr>
-              <td>Phở bò</td>
-              <td class="num">85</td>
-              <td class="num">5.5</td>
-            </tr>
-            <tr>
-              <td>Cơm tấm sườn</td>
-              <td class="num">163</td>
-              <td class="num">7.5</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </section>
 
-    <section class="week" id="tuan">
+    <section class="slide slide--dark" id="s03" aria-labelledby="s03-t">
       <div class="container">
-        <div class="section-head">
-          <h2>Bảy ngày được đọc lại</h2>
-          <p class="lead">Tab Tiến bộ nhờ Gemini viết đoạn cho tuần tới.</p>
-        </div>
-        <table class="sheet">
-          <thead>
-            <tr>
-              <th scope="col">Việc</th>
-              <th scope="col">Đoạn đó nhìn vào</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Nhóm cơ</td>
-              <td>Hiệp so với MEV và MRV</td>
-            </tr>
-            <tr>
-              <td>Bài tập</td>
-              <td>Bài không tăng được tải</td>
-            </tr>
-            <tr>
-              <td>Ăn uống</td>
-              <td>Calo và đạm đã lưu</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="start" id="cai">
-      <div class="container">
-        <div class="section-head">
-          <h2>Ba bước tới buổi đầu</h2>
-          <p class="lead">Android 8.1 trở lên. JDK 17 đến 21. Gradle không chạy trên JDK 26.</p>
-        </div>
-        <pre class="clone"><code>git clone https://github.com/hoang-IT-eng/GYMVERSE.git</code></pre>
-        <ol class="stages">
-          <li>
-            <span class="stage-no">1</span>
-            <h3>Lấy mã</h3>
-            <p>Mở thư mục bằng Android Studio rồi Run.</p>
-          </li>
-          <li>
-            <span class="stage-no">2</span>
-            <h3>Chọn giáo án</h3>
-            <p>PPL, upper lower, Arnold hoặc full body.</p>
-          </li>
-          <li class="now">
-            <span class="stage-no">3</span>
-            <h3>Ghi set</h3>
-            <p>Rep và kg. Đồng hồ nghỉ chạy khi khoá màn hình.</p>
-          </li>
+        <header class="slide__head">
+          <span class="slide__no num">03</span>
+          <div>
+            <h2 id="s03-t">Một buổi tập mẫu trọn vẹn</h2>
+            <p class="lead">Từ lúc mở buổi tới lúc đọc tổng kết, dòng chảy chỉ có ba bước: ghi hiệp, xem lại, nhận kết quả. Dưới đây là buổi Push Day A được rút gọn vào bài đầu tiên.</p>
+          </div>
+        </header>
+        <ol class="flow">
+          <li><span class="flow__no num">1</span><h3>Ghi hiệp</h3><p>Bench Press, ba hiệp. Mỗi hiệp nhập kg và rep, bấm xong là đồng hồ nghỉ tự chạy.</p></li>
+          <li><span class="flow__no num">2</span><h3>Xem lại</h3><p>Màn hình kiểm tra liệt kê hiệp đã ghi, tổng volume và hiệp nặng nhất, kèm chọn RIR trước khi chốt.</p></li>
+          <li><span class="flow__no num">3</span><h3>Kết quả</h3><p>Buổi tập được lưu, xuất hiện ở đầu danh sách gần đây và cộng vào volume của tuần.</p></li>
         </ol>
-        <div class="actions">
-          <a class="btn btn--primary" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Lấy mã nguồn</a>
+        <div class="slide__grid">
+          <div>
+            <h3 class="block-t">Push Day A — danh sách bài</h3>
+            <table class="sheet sheet--dark">
+              <thead>
+                <tr><th scope="col">Số</th><th scope="col">Bài trong giáo án</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="idx">1</td><td><span class="lift">Bench Press</span><span class="vn">Đẩy ngực ngang đòn tạ</span></td></tr>
+                <tr><td class="idx">2</td><td><span class="lift">Incline Dumbbell Press</span><span class="vn">Đẩy ngực trên tạ đơn</span></td></tr>
+                <tr><td class="idx">3</td><td><span class="lift">Overhead Press</span><span class="vn">Đẩy vai đứng tạ đòn</span></td></tr>
+                <tr><td class="idx">4</td><td><span class="lift">Dip</span><span class="vn">Xà kép có tải</span></td></tr>
+                <tr><td class="idx">5</td><td><span class="lift">Triceps Pushdown</span><span class="vn">Duỗi tay sau với cáp</span></td></tr>
+              </tbody>
+            </table>
+            <div class="facts">
+              <p><span class="time num">5</span> bài</p>
+              <p><span class="time num">18</span> hiệp</p>
+              <p class="mark"><span class="time num">1-2</span> RIR mục tiêu</p>
+            </div>
+          </div>
+          <div class="phone phone--mini phone--center">
+            <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
+            <div class="phone__screen">
+              <p class="app__card-label">Đang tập · Push Day A</p>
+              <p class="app__name">Bench Press</p>
+              <p class="app__card-sub">Buổi trước: 8 × 60 · 8 × 60 · 7 × 60</p>
+              <table class="set-table">
+                <thead><tr><th scope="col">Hiệp</th><th scope="col">kg</th><th scope="col">Rep</th><th scope="col">Xong</th></tr></thead>
+                <tbody>
+                  <tr class="is-done"><td class="num">1</td><td class="num">60</td><td class="num">8</td><td>✓</td></tr>
+                  <tr class="is-done"><td class="num">2</td><td class="num">60</td><td class="num">8</td><td>✓</td></tr>
+                  <tr><td class="num">3</td><td class="num">60</td><td class="num">8</td><td>○</td></tr>
+                </tbody>
+              </table>
+              <div class="app__card app__card--volt"><p class="app__card-title num">Volume tạm tính: 960 kg</p><p class="app__card-sub">2 trên 3 hiệp đã ghi</p></div>
+            </div>
+          </div>
         </div>
+        <p class="slide__cta"><a class="btn btn--primary" href="prototype.html">Tự tay ghi một buổi trong prototype ↗</a></p>
+      </div>
+    </section>
+
+    <section class="slide slide--paper" id="s04" aria-labelledby="s04-t">
+      <div class="container">
+        <header class="slide__head">
+          <span class="slide__no num">04</span>
+          <div>
+            <h2 id="s04-t">Đồng hồ nghỉ và các trạng thái cảnh báo</h2>
+            <p class="lead">Nghỉ cũng là một phần của buổi tập. Đồng hồ chạy nền kèm thông báo, và những trạng thái dễ gây sai số được nói thẳng ngay lúc chúng xảy ra.</p>
+          </div>
+        </header>
+        <div class="state-grid">
+          <article class="state-card">
+            <p class="state-card__label">Đang nghỉ</p>
+            <p class="timer num">01:12</p>
+            <div class="bar bar--wide"><span class="bar__fill" style="width:80%"></span></div>
+            <p>Hiệp 2 xong. Đồng hồ đếm tiếp kể cả khi khoá màn hình, nhờ dịch vụ chạy nền trên Android.</p>
+          </article>
+          <article class="state-card">
+            <p class="state-card__label">Đã tạm dừng</p>
+            <p class="timer num">00:47</p>
+            <div class="bar bar--wide"><span class="bar__fill bar__fill--low" style="width:52%"></span></div>
+            <p>Chạm để dừng, cộng thêm 30 giây hoặc bỏ qua. Trạng thái tạm dừng nhìn là biết, không âm thầm đếm tiếp.</p>
+          </article>
+          <article class="state-card state-card--warn">
+            <p class="state-card__label">Cảnh báo</p>
+            <p class="state-card__big">Chưa ghi hiệp nào</p>
+            <p>Bấm “Xem lại” khi chưa có hiệp nào được ghi sẽ bị chặn kèm lý do. Mức tạ nhập cao hơn kỷ lục cá nhân cũng được hỏi lại trước khi lưu.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--dark" id="s05" aria-labelledby="s05-t">
+      <div class="container">
+        <header class="slide__head">
+          <span class="slide__no num">05</span>
+          <div>
+            <h2 id="s05-t">Hệ quyết định</h2>
+            <p class="lead">Gợi ý của IronLog không phải hộp đen. Mỗi con số đều truy được về phép tính đơn giản, và người tập luôn là người chốt cuối cùng.</p>
+          </div>
+        </header>
+        <div class="slide__grid">
+          <div>
+            <h3 class="block-t">Ví dụ tính tay: Bench Press</h3>
+            <div class="calc">
+              <p class="calc__line num">8 rep × 60 kg × 3 hiệp</p>
+              <p class="calc__line calc__line--eq num">= 1.440 kg volume</p>
+              <p>Ba hiệp đều đạt 8 rep ở RIR 1–2, tức là vẫn còn dư một đến hai rep trong khả năng. Gợi ý cho buổi tới: <strong class="volt">+2,5 kg</strong>. Nếu rep tụt hoặc RIR bằng 0, gợi ý đổi thành giữ nguyên mức tạ.</p>
+            </div>
+            <h3 class="block-t">Khối lượng theo nhóm cơ</h3>
+            <p class="block-p">Tab Tiến bộ đối chiếu số hiệp mỗi nhóm cơ trong tuần với khoảng MEV–MRV — ngưỡng tối thiểu để tiến bộ và ngưỡng tối đa còn phục hồi nổi. AI Coach đọc cùng những con số này khi viết tổng kết 7 ngày.</p>
+            <div class="bar-row bar-row--dark"><span>Ngực · 14 hiệp</span><span class="bar"><span class="bar__fill" style="width:70%"></span></span><span class="num">MEV 8 · MRV 20</span></div>
+            <div class="bar-row bar-row--dark"><span>Lưng · 12 hiệp</span><span class="bar"><span class="bar__fill" style="width:60%"></span></span><span class="num">MEV 8 · MRV 20</span></div>
+            <div class="bar-row bar-row--dark"><span>Chân · 10 hiệp</span><span class="bar"><span class="bar__fill" style="width:50%"></span></span><span class="num">MEV 6 · MRV 18</span></div>
+          </div>
+          <div>
+            <h3 class="block-t">Ăn uống dùng cùng một logic số</h3>
+            <p class="block-p">Bảng gần 90 món Việt có sẵn trong máy; món lạ có thể chụp ảnh để Gemini ước lượng khối lượng rồi người dùng sửa lại trước khi lưu. Thẻ BMR và TDEE (Katch-McArdle, đối chiếu Mifflin-St Jeor) cho ra mốc calo để đối chiếu.</p>
+            <table class="sheet sheet--dark">
+              <thead>
+                <tr><th scope="col">Món</th><th scope="col">kcal</th><th scope="col">Đạm, g</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Cơm trắng</td><td class="num">130</td><td class="num">2,7</td></tr>
+                <tr><td>Ức gà</td><td class="num">165</td><td class="num">31</td></tr>
+                <tr><td>Phở bò</td><td class="num">85</td><td class="num">5,5</td></tr>
+                <tr><td>Cơm tấm sườn</td><td class="num">163</td><td class="num">7,5</td></tr>
+              </tbody>
+            </table>
+            <p class="app__note">Số liệu tính trên 100 g, lấy từ bảng dinh dưỡng trong ứng dụng.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--paper" id="s06" aria-labelledby="s06-t">
+      <div class="container">
+        <header class="slide__head">
+          <span class="slide__no num">06</span>
+          <div>
+            <h2 id="s06-t">Hệ hình ảnh nhất quán</h2>
+            <p class="lead">Một hệ duy nhất cho cả ứng dụng lẫn trang này: chữ nén cho tiêu đề, chữ thường dễ đọc cho nội dung, và số luôn dùng font đơn cách để cột số không nhảy khi đếm.</p>
+          </div>
+        </header>
+        <div class="slide__grid">
+          <div class="type-spec">
+            <p class="type-spec__display">Saira Condensed — tiêu đề</p>
+            <p class="type-spec__body">Albert Sans — nội dung, nhãn và giải thích. Đủ mềm để đọc đoạn dài, đủ gọn để đặt cạnh bảng số.</p>
+            <p class="type-spec__mono num">JetBrains Mono — 1.440 kg · 01:30 · RIR 1–2</p>
+            <p class="block-p">Nguyên tắc “số trước, chữ sau”: mọi màn hình đều trả lời bằng con số chính trước, phần diễn giải đi kèm ngay bên dưới với cỡ chữ nhỏ hơn.</p>
+          </div>
+          <ul class="swatches">
+            <li class="swatch swatch--paper"><span>Paper</span><span class="num">oklch(98% 0.005 250)</span><span>Nền sáng, mặt màn hình app</span></li>
+            <li class="swatch swatch--ink"><span>Ink</span><span class="num">oklch(16% 0.08 260)</span><span>Nền tối, chữ chính trên nền sáng</span></li>
+            <li class="swatch swatch--volt"><span>Volt</span><span class="num">oklch(88% 0.2 120)</span><span>Điểm nhấn, hành động chính, số nổi bật</span></li>
+            <li class="swatch swatch--deep"><span>Accent deep</span><span class="num">oklch(58% 0.145 125)</span><span>Trạng thái focus, đường tiến trình</span></li>
+            <li class="swatch swatch--muted"><span>Muted</span><span class="num">oklch(50% 0.02 250)</span><span>Chữ phụ, ghi chú, số liệu thứ cấp</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--dark" id="s07" aria-labelledby="s07-t">
+      <div class="container">
+        <header class="slide__head">
+          <span class="slide__no num">07</span>
+          <div>
+            <h2 id="s07-t">Ứng dụng Android hoàn chỉnh</h2>
+            <p class="lead">Trang này là bản trình bày; sản phẩm thật là ứng dụng Android có mã nguồn mở trên GitHub, chạy offline và không cần tài khoản.</p>
+          </div>
+        </header>
+        <div class="slide__grid">
+          <table class="sheet sheet--dark">
+            <thead>
+              <tr><th scope="col">Hạng mục</th><th scope="col">Chi tiết</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Ngôn ngữ</td><td>Kotlin</td></tr>
+              <tr><td>Giao diện</td><td>Jetpack Compose · Material 3</td></tr>
+              <tr><td>Dữ liệu</td><td>Room, lưu offline trên máy; xuất CSV và sao lưu JSON</td></tr>
+              <tr><td>Đồng hồ nghỉ</td><td>Dịch vụ chạy nền kèm thông báo</td></tr>
+              <tr><td>Nền tảng</td><td>Android 8.1 trở lên (API 27+)</td></tr>
+              <tr><td>Giấy phép</td><td>MIT</td></tr>
+              <tr><td>Prototype web</td><td>Dữ liệu hư cấu, chỉ để thử tương tác</td></tr>
+              <tr><td>Mã nguồn thật</td><td><a href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">github.com/hoang-IT-eng/GYMVERSE</a></td></tr>
+            </tbody>
+          </table>
+          <div>
+            <h3 class="block-t">Ba bước tới buổi đầu</h3>
+            <p class="block-p">Cần Android Studio bản mới, JDK 17 đến 21 (Gradle không chạy trên JDK 26) và thiết bị hoặc emulator Android 8.1+.</p>
+            <pre class="clone"><code>git clone https://github.com/hoang-IT-eng/GYMVERSE.git</code></pre>
+            <ol class="stages">
+              <li><span class="stage-no num">1</span><h3>Lấy mã</h3><p>Mở thư mục bằng Android Studio rồi đợi Gradle đồng bộ xong.</p></li>
+              <li><span class="stage-no num">2</span><h3>Chạy thử</h3><p>Chọn emulator hoặc máy thật, bấm Run để cài bản debug.</p></li>
+              <li class="now"><span class="stage-no num">3</span><h3>Ghi buổi đầu</h3><p>Chọn giáo án, ghi rep và kg — đồng hồ nghỉ chạy ngay khi hiệp đầu tiên hoàn thành.</p></li>
+            </ol>
+            <div class="actions">
+              <a class="btn btn--primary" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Lấy mã nguồn</a>
+              <a class="btn btn--ghost" href="prototype.html">Try the interactive prototype ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scope" id="pham-vi" aria-labelledby="pham-vi-t">
+      <div class="container scope__inner">
+        <h2 id="pham-vi-t">Phạm vi thiết kế và prototype tương tác</h2>
+        <p>Nghiên cứu thiết kế này nối một vòng khép kín: màn hình tổng quan buổi sáng, buổi tập Push Day A với ba hiệp Bench Press có thể ghi thật, màn hình xem lại với lựa chọn RIR, và một kết quả mô phỏng được cộng vào tiến bộ của tuần. Các trạng thái ít vui hơn cũng được giữ nguyên và nói rõ: tạm dừng giữa giờ nghỉ, cảnh báo khi bấm xem lại mà chưa ghi hiệp nào, và một tuần cũ chưa đủ dữ liệu để kết luận.</p>
+        <p>Hệ hình ảnh dùng nền tối gần như đen cho phần trình bày, màu volt làm điểm nhấn có kiểm soát và khoảng trắng rộng quanh các con số. Chữ số dạng bảng, nhãn rõ ràng và các bước xem lại có thể sửa được là phần mang tương tác. Prototype trên trình duyệt chạy với tài khoản, số hiệp và mức tạ hư cấu; nó trình bày thiết kế giao diện và các trạng thái tương tác, không kết nối tập luyện thật, không đồng bộ dữ liệu và không hứa hẹn kết quả thể hình.</p>
+        <p><a class="btn btn--primary" href="prototype.html">Try the interactive prototype ↗</a></p>
       </div>
     </section>
   </main>
@@ -236,11 +368,13 @@
       <div>
         <a class="wordmark" href="#dau-trang">IronLog</a>
         <p>GYMVERSE trên GitHub. Giấy phép MIT.</p>
+        <p class="mast__fine">Prototype trên trình duyệt dùng dữ liệu hư cấu và chỉ mô phỏng tương tác — đó không phải ứng dụng Android thật. Ứng dụng thật nằm trong mã nguồn tại GitHub.</p>
       </div>
       <nav aria-label="Chân trang">
-        <a href="#giao-an">Giáo án</a>
-        <a href="#bua-an">Bữa ăn</a>
-        <a href="#tuan">Tuần</a>
+        <a href="#s02">Giáo án</a>
+        <a href="#s05">Hệ quyết định</a>
+        <a href="#pham-vi">Phạm vi</a>
+        <a href="prototype.html">Prototype</a>
         <a href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Mã nguồn</a>
       </nav>
     </div>

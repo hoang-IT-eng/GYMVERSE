@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IronLog — Prototype tương tác</title>
+  <meta name="description" content="Prototype IronLog chạy trên trình duyệt: thử ghi hiệp Bench Press, dùng đồng hồ nghỉ và xem tiến bộ. Dữ liệu hoàn toàn hư cấu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <a class="skip" href="#man-hinh">Tới prototype</a>
+  <div class="page container">
+    <p class="back"><a href="index.html">← Quay lại trang giới thiệu</a></p>
+
+    <div class="layout">
+      <aside class="note note--left" aria-label="Gợi ý thao tác">
+        <h1 class="note__title">Thử prototype IronLog</h1>
+        <p>Một buổi Push Day A rút gọn, chạy hoàn toàn trong trình duyệt:</p>
+        <ol class="note__steps">
+          <li>Ở <strong>Home</strong>, bấm bắt đầu buổi tập — hoặc mở tab <strong>Giáo án</strong> và chọn Push Day A.</li>
+          <li>Ghi ít nhất một hiệp Bench Press (kg × rep) rồi bấm đánh dấu xong. Đồng hồ nghỉ 01:30 sẽ tự chạy.</li>
+          <li>Bấm <strong>Xem lại</strong>, chọn RIR và xác nhận để buổi tập được cộng vào <strong>Tiến bộ</strong>.</li>
+          <li>Thử cả các trạng thái lỗi: bấm Xem lại khi chưa ghi hiệp nào, hoặc nhập mức tạ trên 200 kg.</li>
+          <li>Vào <strong>Hồ sơ</strong> và bấm Reset demo để quay về trạng thái ban đầu.</li>
+        </ol>
+      </aside>
+
+      <main class="stage" id="man-hinh">
+        <div class="phone" role="region" aria-label="Điện thoại demo IronLog">
+          <div class="phone__status">
+            <span class="num">9:41</span>
+            <span class="phone__demo">Demo</span>
+            <span class="num" aria-hidden="true">5G ▰▰▰</span>
+          </div>
+          <div class="phone__screen" id="screen" tabindex="-1"></div>
+          <nav class="phone__tabs" aria-label="Điều hướng ứng dụng demo" id="tabbar">
+            <a href="#home" data-tab="home">Home</a>
+            <a href="#routines" data-tab="routines">Giáo án</a>
+            <a href="#progress" data-tab="progress">Tiến bộ</a>
+            <a href="#profile" data-tab="profile">Hồ sơ</a>
+          </nav>
+        </div>
+      </main>
+
+      <aside class="note note--right" aria-label="Lưu ý dữ liệu">
+        <h2 class="note__title">Dữ liệu hư cấu</h2>
+        <p>Người dùng, chuỗi 12 ngày, mức tạ, bữa ăn và biểu đồ trong prototype đều là số mẫu dựng cho bản demo này. Không có dữ liệu nào rời khỏi trình duyệt của bạn và không có buổi tập thật nào được ghi.</p>
+        <p>Trạng thái demo giữ nguyên khi bạn di chuyển giữa các màn hình trong cùng phiên, và trở về ban đầu khi bấm <strong>Reset demo</strong> ở tab Hồ sơ.</p>
+        <p><a href="index.html">← Quay lại trang giới thiệu</a></p>
+      </aside>
+    </div>
+  </div>
+  <script src="prototype.js"></script>
+</body>
+</html>

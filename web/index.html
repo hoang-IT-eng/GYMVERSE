@@ -1,186 +1,346 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IronLog — Mỗi buổi tập. Từng hiệp đều rõ ràng.</title>
-  <meta name="description" content="IronLog là ứng dụng Android ghi nhật ký tập: giáo án hypertrophy, ghi hiệp rep × kg, đồng hồ nghỉ, tiến bộ và bữa ăn tiếng Việt. Kèm prototype tương tác chạy ngay trên trình duyệt.">
+  <title>IronLog — Offline-First Hypertrophy &amp; Strength System</title>
+  <meta name="description" content="IronLog (GYMVERSE) is an offline-first Android hypertrophy and strength log built with Kotlin, Jetpack Compose, Room SQLite WAL, and ForegroundService rest timers.">
   <meta name="author" content="Trần Huy Hoàng">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#0d1f18">
+  <meta name="theme-color" content="#0b0b0c">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="IronLog">
-  <meta property="og:title" content="IronLog — Mỗi buổi tập. Từng hiệp đều rõ ràng.">
-  <meta property="og:description" content="IronLog là ứng dụng Android ghi nhật ký tập: giáo án hypertrophy, ghi hiệp rep × kg, đồng hồ nghỉ, tiến bộ và bữa ăn tiếng Việt. Kèm prototype tương tác chạy ngay trên trình duyệt.">
+  <meta property="og:site_name" content="IronLog · GYMVERSE">
+  <meta property="og:title" content="IronLog — Offline-First Hypertrophy &amp; Strength System">
+  <meta property="og:description" content="Zero-latency Room SQLite WAL logging, ForegroundService lock-screen rest timer, Epley 1RM &amp; MEV–MRV volume telemetry for Android.">
   <meta property="og:url" content="https://hoang-ironlog.pages.dev/">
   <meta property="og:image" content="https://hoang-ironlog.pages.dev/og.png">
-  <meta property="og:image:width" content="1440">
-  <meta property="og:image:height" content="950">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="IronLog — Mỗi buổi tập. Từng hiệp đều rõ ràng.">
-  <meta name="twitter:description" content="IronLog là ứng dụng Android ghi nhật ký tập: giáo án hypertrophy, ghi hiệp rep × kg, đồng hồ nghỉ, tiến bộ và bữa ăn tiếng Việt. Kèm prototype tương tác chạy ngay trên trình duyệt.">
-  <meta name="twitter:image" content="https://hoang-ironlog.pages.dev/og.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;700;800&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Saira+Condensed:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="landing.css">
 </head>
 <body>
-  <a class="skip" href="#noi-dung" data-i18n="skip">Tới nội dung</a>
+  <a class="skip" href="#main-content" data-i18n="skip">Skip to content</a>
 
-  <header class="nav" id="dau-trang">
+  <header class="nav" id="top">
     <div class="container nav__row">
-      <a class="wordmark" href="#dau-trang">IronLog</a>
-      <nav class="nav__links" aria-label="Chính">
-        <a class="nav__proto" href="prototype.html" data-i18n="nav.proto">Thử prototype tương tác ↗</a>
+      <a class="brand" href="#top" aria-label="IronLog Home">
+        <svg class="brand__mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#16171a" stroke="#3b3f49" stroke-width="2"/>
+          <circle cx="32" cy="32" r="24.5" stroke="#c83e2b" stroke-width="3.5"/>
+          <circle cx="32" cy="32" r="18" fill="#0b0b0c" stroke="#2c2f36" stroke-width="1.2"/>
+          <path d="M32 6v7M32 51v7M6 32h7M51 32h7" stroke="#f3efe6" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="32" cy="32" r="9.5" fill="#d99b26"/>
+          <circle cx="32" cy="32" r="4.5" fill="#0b0b0c" stroke="#f3efe6" stroke-width="1.3"/>
+        </svg>
+        <span class="brand__text">
+          <span class="brand__word">IRONLOG</span>
+          <span class="brand__sub" data-i18n="brand.sub">GYMVERSE · ANDROID OFFLINE</span>
+        </span>
+      </a>
+
+      <nav class="nav__center" aria-label="Primary sections">
+        <a class="nav__link" href="#signal-drop" data-i18n="nav.signal">01 Signal Drop</a>
+        <a class="nav__link" href="#rest-service" data-i18n="nav.rest">02 Rest Service</a>
+        <a class="nav__link" href="#sandbox" data-i18n="nav.sandbox">03 Live Log</a>
+        <a class="nav__link" href="#architecture" data-i18n="nav.arch">04 Architecture</a>
+      </nav>
+
+      <div class="nav__actions">
+        <button class="btn btn--iron btn--sm" id="openDrawerNavBtn" type="button" data-i18n="nav.proto">Live App ↗</button>
         <div class="lang-switch">
-          <button class="lang-pill" id="langToggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language / Ngôn ngữ">
-            <svg class="lang-globe" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.9 5.7 3.9 9S14.5 18.4 12 21c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3Z"/></svg>
-            <span id="langCode">VI</span>
-            <svg class="lang-chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          <button class="lang-pill" id="langToggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Switch language">
+            <span id="langCode">EN</span>
+            <span aria-hidden="true">▾</span>
           </button>
-          <div class="lang-menu" id="langMenu" role="listbox" aria-label="Language / Ngôn ngữ" hidden>
-            <button class="lang-opt" type="button" role="option" data-lang="vi" aria-selected="true"><span>Tiếng Việt</span><span class="lang-check" aria-hidden="true">✓</span></button>
-            <button class="lang-opt" type="button" role="option" data-lang="en" aria-selected="false"><span>English</span><span class="lang-check" aria-hidden="true">✓</span></button>
+          <div class="lang-menu" id="langMenu" role="listbox" aria-label="Language" hidden>
+            <button class="lang-opt is-active" type="button" role="option" data-lang="en" aria-selected="true">
+              <span>English (EN)</span><span class="lang-check" aria-hidden="true">✓</span>
+            </button>
+            <button class="lang-opt" type="button" role="option" data-lang="vi" aria-selected="false">
+              <span>Tiếng Việt (VI)</span><span class="lang-check" aria-hidden="true">✓</span>
+            </button>
           </div>
         </div>
-      </nav>
+      </div>
     </div>
   </header>
 
-  <section class="hero">
-    <img class="hero__bgimg" src="img/hero-barbell.jpg" alt="" aria-hidden="true" data-hero-parallax>
-    <div class="hero__scrim" aria-hidden="true"></div>
-    <canvas id="heroCanvas" class="hero__canvas" aria-hidden="true"></canvas>
-    <div class="container hero__grid">
-      <div class="hero__copy">
-        <p class="eyebrow" data-i18n="hero.eyebrow">IronLog / Ứng dụng Android ghi nhật ký tập</p>
-        <h1 data-i18n="hero.h1">Mỗi buổi tập. Từng hiệp đều rõ ràng.</h1>
-        <p class="lead" data-i18n="hero.lead">IronLog là nhật ký tập chạy trên Android: giáo án, kho bài tập tiếng Việt, ghi hiệp theo rep × kg và đồng hồ nghỉ. Trước khi bạn quyết định tăng tạ, màn hình đặt đủ ngữ cảnh cạnh nhau — buổi trước đã đẩy bao nhiêu rep ở bao nhiêu kg, RIR còn lại, nhóm cơ đã phục hồi tới đâu và thời gian nghỉ còn bao lâu.</p>
-        <p class="honest" data-i18n="hero.honest">Đây là một dự án cá nhân đang được phát triển công khai. Mọi con số trên trang này và trong prototype là dữ liệu mẫu, không phải kết quả tập luyện thật.</p>
-        <div class="actions">
-          <a class="btn btn--primary" href="prototype.html" data-i18n="btn.proto">Thử prototype tương tác ↗</a>
-          <a class="btn btn--download" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="btn.apk">Tải APK Android ↓</a>
-          <a class="btn btn--ghost" href="#s03" data-i18n="hero.sample">Xem buổi tập mẫu</a>
-        </div>
-        <ul class="hero__meta">
-          <li><span class="num">4</span><span data-i18n="hero.meta1">giáo án có sẵn</span></li>
-          <li><span class="num">~90</span><span data-i18n="hero.meta2">món Việt trong bảng dinh dưỡng</span></li>
-          <li><span class="num">100%</span><span data-i18n="hero.meta3">dữ liệu tập lưu offline</span></li>
-        </ul>
-      </div>
+  <main id="main-content">
+    <!-- ==================== HERO + 3D OLYMPIC BARBELL ==================== -->
+    <section class="hero" id="hero">
+      <img class="hero__bg-photo" src="img/ironlog-knurled-barbell.jpg" alt="" aria-hidden="true" data-hero-parallax>
+      <div class="hero__vignette" aria-hidden="true"></div>
 
-      <figure class="hero__visual" aria-label="Mô phỏng màn hình Home của IronLog">
-        <div class="phone phone--hero">
-          <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
-          <div class="phone__screen">
-            <p class="app__hi" data-i18n="phone.hi">Chào Hoàng</p>
-            <p class="app__name" data-i18n="phone.today">Hôm nay tập gì?</p>
-            <div class="app__streak">
-              <span class="app__streak-num num">12</span>
-              <span data-i18n="phone.streak">ngày liên tiếp<br>có buổi tập được ghi</span>
-            </div>
-            <div class="app__card app__card--volt">
-              <p class="app__card-label" data-i18n="phone.cardlabel">Buổi hôm nay · PPL</p>
-              <p class="app__card-title">Push Day A</p>
-              <p class="app__card-sub" data-i18n="phone.cardsub">Ngực và vai trước · 5 bài · 18 hiệp</p>
-              <p class="app__card-cta" data-i18n="phone.start">Bắt đầu buổi tập →</p>
-            </div>
-            <p class="app__h" data-i18n="phone.recovery">Phục hồi nhóm cơ</p>
-            <div class="bar-row"><span data-i18n="muscle.chest">Ngực</span><span class="bar"><span class="bar__fill" style="width:92%"></span></span><span class="num">92%</span></div>
-            <div class="bar-row"><span data-i18n="muscle.shoulders">Vai</span><span class="bar"><span class="bar__fill" style="width:84%"></span></span><span class="num">84%</span></div>
-            <div class="bar-row"><span data-i18n="muscle.back">Lưng</span><span class="bar"><span class="bar__fill" style="width:67%"></span></span><span class="num">67%</span></div>
-            <div class="bar-row"><span data-i18n="muscle.legs">Chân</span><span class="bar"><span class="bar__fill bar__fill--low" style="width:38%"></span></span><span class="num">38%</span></div>
-            <p class="app__note" data-i18n="phone.note">Chân mới tập hôm qua — hôm nay để chân nghỉ là hợp lý.</p>
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="spec-index" data-i18n="hero.kicker">KOTLIN 2.0 · ROOM SQLITE WAL · API 27+</p>
+          <h1 class="hero__title" data-i18n="hero.h1">BUILT FOR CONCRETE BASEMENTS. <em>ZERO CLOUD LAG.</em></h1>
+          <p class="hero__lead" data-i18n="hero.lead">
+            IronLog is an offline-first hypertrophy and strength instrument for Android. Log heavy sets in reps × kg, track RIR &amp; Epley 1RM, keep a lock-screen ForegroundService rest timer running, and audit weekly MEV–MRV volume — with every byte committed locally on your device.
+          </p>
+
+          <div class="hero__ctas">
+            <a class="btn btn--brass" id="downloadApkHero" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="btn.apk">Download Android APK ↓</a>
+            <a class="btn btn--iron" id="launchLiveAppHero" href="prototype.html" data-i18n="btn.live">Launch Live Interactive App ↗</a>
+            <a class="btn btn--ghost" href="#sandbox" data-i18n="btn.tryInline">Log a Set Below</a>
           </div>
-          <div class="phone__tabs" aria-hidden="true"><span class="is-on" data-i18n="tab.today">Hôm nay</span><span data-i18n="tab.programs">Giáo án</span><span data-i18n="tab.progress">Tiến bộ</span><span data-i18n="tab.profile">Cá nhân</span></div>
-        </div>
-        <figcaption class="hero__caption" data-i18n="hero.caption">Màn hình Home dựng lại bằng HTML/CSS: buổi hôm nay, chuỗi ngày tập và mức phục hồi nằm trên cùng một mặt.</figcaption>
-      </figure>
-    </div>
-  </section>
 
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee__track">
-      <span class="marquee__chunk">Bench Press <i>✦</i> Squat <i>✦</i> Deadlift <i>✦</i> Overhead Press <i>✦</i> Pull-Up <i>✦</i> Volume <i>✦</i> RIR <i>✦</i> Progressive Overload <i>✦</i> Rest Timer <i>✦</i> e1RM <i>✦</i>&nbsp;</span>
-      <span class="marquee__chunk">Bench Press <i>✦</i> Squat <i>✦</i> Deadlift <i>✦</i> Overhead Press <i>✦</i> Pull-Up <i>✦</i> Volume <i>✦</i> RIR <i>✦</i> Progressive Overload <i>✦</i> Rest Timer <i>✦</i> e1RM <i>✦</i>&nbsp;</span>
-    </div>
-  </div>
-
-  <main id="noi-dung">
-
-    <section class="slide slide--dark" id="s01" aria-labelledby="s01-t">
-      <div class="container">
-        <header class="slide__head">
-          <span class="slide__no num">01</span>
-          <div>
-            <h2 id="s01-t" data-i18n="s01.t">Ý tưởng sản phẩm rõ ràng</h2>
-            <p class="lead" data-i18n="s01.lead">Người tập ở phòng gym không thiếu động lực, họ thiếu một chỗ ghi đủ nhanh và đọc lại đủ rõ. IronLog được thiết kế quanh đúng hai việc đó.</p>
+          <div class="hero__telemetry" role="list" aria-label="System telemetry">
+            <div class="tele-cell tele-cell--accent" role="listitem">
+              <span class="tele-val">&lt; 2.4 ms</span>
+              <span class="tele-lbl" data-i18n="hero.t1">Room SQLite WAL local commit</span>
+            </div>
+            <div class="tele-cell tele-cell--red" role="listitem">
+              <span class="tele-val">165.0 kg</span>
+              <span class="tele-lbl" data-i18n="hero.t2">Calibrated IPF collar stack</span>
+            </div>
+            <div class="tele-cell" role="listitem">
+              <span class="tele-val">~90</span>
+              <span class="tele-lbl" data-i18n="hero.t3">Vietnamese dishes macro table</span>
+            </div>
+            <div class="tele-cell" role="listitem">
+              <span class="tele-val">100%</span>
+              <span class="tele-lbl" data-i18n="hero.t4">Offline · zero account required</span>
+            </div>
           </div>
-        </header>
-        <div class="principles">
-          <article class="principle" data-reveal>
-            <h3 data-i18n="s01.p1t">Ghi trong vài giây</h3>
-            <p data-i18n="s01.p1">Một hiệp chỉ gồm hai con số: rep và kg. Mở buổi tập là thấy ngay bài đang tập, mức tạ buổi trước đã điền sẵn để sửa, không phải gõ lại từ đầu.</p>
-          </article>
-          <article class="principle" data-reveal>
-            <h3 data-i18n="s01.p2t">Ngữ cảnh trước quyết định</h3>
-            <p data-i18n="s01.p2">Tăng tạ hay giữ nguyên không nên là cảm tính. Buổi trước, RIR, phục hồi nhóm cơ và đồng hồ nghỉ được đặt cạnh nhau ngay tại màn hình ghi hiệp.</p>
-          </article>
-          <article class="principle" data-reveal>
-            <h3 data-i18n="s01.p3t">Số liệu nói thật</h3>
-            <p data-i18n="s01.p3">Tuần nào chưa đủ dữ liệu thì ứng dụng nói chưa đủ, thay vì vẽ ra nhận xét cho có. Tổng kết tuần chỉ viết khi có đủ buổi tập để đọc.</p>
-          </article>
+        </div>
+
+        <div class="barbell-stage" aria-label="Interactive 3D Olympic barbell and calibrated competition plate stack">
+          <div class="barbell-stage__top">
+            <span data-i18n="stage.spec">29MM KNURLED SHAFT · CALIBRATED STACK</span>
+            <span class="num" id="barbellLoadReadout">LOAD: 165.0 KG · ASSEMBLED</span>
+          </div>
+
+          <div class="barbell-canvas-wrap">
+            <canvas id="barbellCanvas" aria-label="3D Olympic barbell assembly"></canvas>
+            <!-- Resilient SVG Blueprint Fallback for non-WebGL / prefers-reduced-motion -->
+            <div class="barbell-fallback" id="barbellFallback" hidden>
+              <svg viewBox="0 0 680 260" width="100%" height="100%" fill="none" role="img" aria-label="Exploded technical diagram of Olympic barbell with 25kg, 20kg, 15kg, 10kg calibrated plates and brass collar">
+                <line x1="30" y1="130" x2="650" y2="130" stroke="#8c919c" stroke-width="12"/>
+                <rect x="200" y="123" width="280" height="14" fill="#2c2f36" stroke="#8c919c" stroke-width="1"/>
+                <!-- Left Stack -->
+                <rect x="158" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#f3efe6" stroke-opacity="0.35"/>
+                <rect x="130" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#d99b26" stroke-width="1.5"/>
+                <rect x="104" y="64" width="16" height="132" rx="3" fill="#d99b26" stroke="#0b0b0c"/>
+                <rect x="82" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
+                <rect x="58" y="106" width="16" height="48" rx="2" fill="#d99b26"/>
+                <!-- Right Stack -->
+                <rect x="502" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#f3efe6" stroke-opacity="0.35"/>
+                <rect x="532" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#d99b26" stroke-width="1.5"/>
+                <rect x="560" y="64" width="16" height="132" rx="3" fill="#d99b26" stroke="#0b0b0c"/>
+                <rect x="584" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
+                <rect x="606" y="106" width="16" height="48" rx="2" fill="#d99b26"/>
+                <text x="340" y="238" fill="#d99b26" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">20KG SHAFT + 2×(25 · 20 · 15 · 10 · 2.5KG COLLAR) = 165.0 KG</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="barbell-stage__bottom">
+            <div class="plate-legend" aria-hidden="true">
+              <span class="plate-tag"><i class="plate-dot" style="background:#c83e2b"></i>25KG</span>
+              <span class="plate-tag"><i class="plate-dot" style="background:#5a6270"></i>20KG</span>
+              <span class="plate-tag"><i class="plate-dot" style="background:#d99b26"></i>15KG</span>
+              <span class="plate-tag"><i class="plate-dot" style="background:#2c2f36"></i>10KG</span>
+              <span class="plate-tag"><i class="plate-dot" style="background:#ebb03c"></i>2.5KG COLLAR</span>
+            </div>
+            <label class="explode-ctrl" for="explodeSlider">
+              <span data-i18n="stage.explode">EXPLODE AXIS</span>
+              <input id="explodeSlider" type="range" min="0" max="100" value="18">
+            </label>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="slide slide--paper" id="s02" aria-labelledby="s02-t">
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span class="ticker__item">ROOM SQLITE WAL <b>//</b> FOREGROUND SERVICE TIMER <b>//</b> EPLEY 1RM <b>//</b> MEV–MRV VOLUME <b>//</b> RIR AUTOREGULATION <b>//</b> CSV &amp; JSON BACKUP <b>//</b> KATCH-MCARDLE TDEE <b>//</b>&nbsp;</span>
+        <span class="ticker__item">ROOM SQLITE WAL <b>//</b> FOREGROUND SERVICE TIMER <b>//</b> EPLEY 1RM <b>//</b> MEV–MRV VOLUME <b>//</b> RIR AUTOREGULATION <b>//</b> CSV &amp; JSON BACKUP <b>//</b> KATCH-MCARDLE TDEE <b>//</b>&nbsp;</span>
+      </div>
+    </div>
+
+    <!-- ==================== PINNED NARRATIVE 01: BASEMENT SIGNAL DROP ==================== -->
+    <section class="sec signal-pin-wrap" id="signal-drop" aria-labelledby="signal-heading">
       <div class="container">
-        <header class="slide__head">
-          <span class="slide__no num">02</span>
+        <header class="sec__head">
+          <span class="sec__index num">01</span>
           <div>
-            <h2 id="s02-t" data-i18n="s02.t">Sản phẩm khi dùng thật</h2>
-            <p class="lead" data-i18n="s02.lead">Home trả lời câu hỏi “hôm nay tập gì”, giáo án trả lời “tập theo lịch nào”, và thanh phục hồi cho biết nhóm cơ nào nên để yên hôm nay.</p>
+            <p class="sec__kicker" data-i18n="s1.kicker">PINNED NARRATIVE · OFFLINE-FIRST PERSISTENCE</p>
+            <h2 id="signal-heading" data-i18n="s1.h2">THE BASEMENT SIGNAL DROP</h2>
+            <p class="sec__lead" data-i18n="s1.lead">
+              Heavy squat racks live behind reinforced concrete where cellular reception dies. Scroll or step through the signal drop below to watch how IronLog commits a top set atomically to local Room SQLite (WAL) while cloud workout trackers hang and lose sets.
+            </p>
           </div>
         </header>
-        <div class="slide__grid">
-          <div data-reveal>
-            <h3 class="block-t" data-i18n="s02.bt">Bốn giáo án có sẵn</h3>
-            <p class="block-p" data-i18n="s02.bp">Chọn một lịch, buổi mở ra thành danh sách bài. Người dùng cũng có thể tự tạo giáo án riêng và lấy bài từ kho bài tập tiếng Việt kèm lưu ý kỹ thuật.</p>
-            <table class="sheet">
-              <thead>
-                <tr><th scope="col" data-i18n="s02.th1">Giáo án</th><th scope="col" data-i18n="s02.th2">Ngày mỗi tuần</th><th scope="col" data-i18n="s02.th3">Độ dài buổi</th></tr>
-              </thead>
-              <tbody>
-                <tr class="live"><td>PPL</td><td class="num" data-i18n="d6">6 ngày</td><td class="mark" data-i18n="m5065">50-65 phút</td></tr>
-                <tr><td>Upper / Lower</td><td class="num" data-i18n="d4">4 ngày</td><td data-i18n="m6070">60-70 phút</td></tr>
-                <tr><td>Arnold</td><td class="num" data-i18n="d6">6 ngày</td><td data-i18n="m6575">65-75 phút</td></tr>
-                <tr><td>Full body</td><td class="num" data-i18n="d3">3 ngày</td><td data-i18n="m6575">65-75 phút</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="mini-phones">
-            <div class="phone phone--mini" data-reveal>
-              <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
-              <div class="phone__screen">
-                <p class="app__name" data-i18n="tab.programs">Giáo án</p>
-                <div class="app__card"><p class="app__card-title">PPL Hypertrophy</p><p class="app__card-sub" data-i18n="s02.c1">6 ngày / tuần · đang theo</p></div>
-                <div class="app__card"><p class="app__card-title">Upper / Lower</p><p class="app__card-sub" data-i18n="s02.c2">4 ngày / tuần</p></div>
-                <div class="app__card"><p class="app__card-title">Arnold Split</p><p class="app__card-sub" data-i18n="s02.c3">6 ngày / tuần</p></div>
-                <div class="app__card"><p class="app__card-title">Full body</p><p class="app__card-sub" data-i18n="s02.c4">3 ngày / tuần</p></div>
+
+        <div class="signal-stage" id="signalPinTarget">
+          <div class="signal-hud">
+            <div>
+              <div class="signal-meter">
+                <div style="display:flex;align-items:center;gap:0.85rem;">
+                  <div class="signal-bars" id="signalBars" data-level="4" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                  </div>
+                  <div>
+                    <div class="mono" id="signalCarrier" style="font-size:0.88rem;font-weight:700;">4G LTE · -78 dBm</div>
+                    <div class="mono" id="signalLocation" style="font-size:0.72rem;color:var(--chalk-muted);" data-i18n="s1.loc0">Ground Lobby · Entering Gym</div>
+                  </div>
+                </div>
+                <span class="signal-badge" id="signalBadge">ONLINE</span>
+              </div>
+
+              <h3 id="signalStageTitle" style="font-size:clamp(1.6rem,2.6vw,2.2rem);margin-top:1.35rem;" data-i18n="s1.st0Title">
+                Approaching Top Set: Barbell Back Squat
+              </h3>
+              <p id="signalStageDesc" style="margin-top:0.65rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s1.st0Desc">
+                Warm-ups complete. Pre-filled from last week’s local history: 137.5 kg × 5 @ RPE 8.5. Today’s target load on the bar: 140.0 kg × 5.
+              </p>
+            </div>
+
+            <div>
+              <p class="mono" style="font-size:0.7rem;color:var(--chalk-muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.1em;" data-i18n="s1.scrubHint">
+                Scroll to scrub reception · or inspect stage directly:
+              </p>
+              <div class="signal-steps" role="tablist" aria-label="Signal stages">
+                <button class="step-btn is-active" type="button" data-signal-step="0">4G LTE (-78dBm)</button>
+                <button class="step-btn" type="button" data-signal-step="1">1 BAR (-114dBm)</button>
+                <button class="step-btn" type="button" data-signal-step="2">0 BARS · AIRPLANE</button>
               </div>
             </div>
-            <div class="phone phone--mini" data-reveal>
-              <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
-              <div class="phone__screen">
-                <p class="app__name" data-i18n="phone.recovery">Phục hồi</p>
-                <div class="bar-row"><span data-i18n="muscle.chest">Ngực</span><span class="bar"><span class="bar__fill" style="width:92%"></span></span><span class="num">92%</span></div>
-                <div class="bar-row"><span data-i18n="muscle.frontdelts">Vai trước</span><span class="bar"><span class="bar__fill" style="width:84%"></span></span><span class="num">84%</span></div>
-                <div class="bar-row"><span data-i18n="muscle.triceps">Tay sau</span><span class="bar"><span class="bar__fill" style="width:71%"></span></span><span class="num">71%</span></div>
-                <div class="bar-row"><span data-i18n="muscle.back">Lưng</span><span class="bar"><span class="bar__fill" style="width:67%"></span></span><span class="num">67%</span></div>
-                <div class="bar-row"><span data-i18n="muscle.legs">Chân</span><span class="bar"><span class="bar__fill bar__fill--low" style="width:38%"></span></span><span class="num">38%</span></div>
-                <p class="app__note" data-i18n="s02.note">Mức phục hồi tính từ lần gần nhất nhóm cơ đó được tập và khối lượng của buổi đó.</p>
+          </div>
+
+          <div class="signal-compare">
+            <!-- IronLog Local Room WAL Card -->
+            <article class="compare-card compare-card--iron">
+              <div>
+                <div class="compare-head">
+                  <span style="color:var(--brass);font-weight:700;">IRONLOG · ROOM SQLITE (WAL)</span>
+                  <span class="num" id="ironLatencyBadge" style="color:var(--ok);">1.8 ms COMMIT</span>
+                </div>
+                <h4 style="font-size:1.35rem;margin-top:0.85rem;">140.0 KG × 5 @ RPE 8.5</h4>
+                <p style="font-size:0.84rem;color:var(--chalk-muted);margin-top:0.25rem;" data-i18n="s1.ironSub">
+                  Zero network socket touched. Direct Kotlin Coroutine DAO transaction on local flash storage.
+                </p>
+              </div>
+
+              <div class="wal-terminal" id="ironWalLog">
+                <div>&gt; BEGIN IMMEDIATE TRANSACTION <span class="amber">#TX-0842</span></div>
+                <div>&gt; INSERT INTO workout_sets(lift,kg,reps,rpe)</div>
+                <div>&nbsp;&nbsp;VALUES('Squat', 140.0, 5, 8.5);</div>
+                <div>&gt; WAL_CHECKPOINT(PASSIVE) · <span class="ok">COMMITTED 1.8ms</span></div>
+                <div>&gt; e1RM: <span class="amber">163.3 kg</span> (+2.5 kg PR)</div>
+              </div>
+            </article>
+
+            <!-- Typical Cloud Fitness App Failure Card -->
+            <article class="compare-card compare-card--cloud">
+              <div>
+                <div class="compare-head">
+                  <span style="color:#ff7a66;font-weight:700;" data-i18n="s1.cloudLabel">CLOUD-ONLY TRACKER</span>
+                  <span class="num" id="cloudLatencyBadge" style="color:#ff7a66;">12,400 ms…</span>
+                </div>
+                <h4 style="font-size:1.35rem;margin-top:0.85rem;" id="cloudStateHeading" data-i18n="s1.cloudTitle">Syncing to remote API…</h4>
+                <p style="font-size:0.84rem;color:var(--chalk-muted);margin-top:0.25rem;" id="cloudStateSub" data-i18n="s1.cloudSub">
+                  Auth token refresh stalls behind basement concrete; optimistic UI rolls back your set when screen locks.
+                </p>
+              </div>
+
+              <div class="wal-terminal" id="cloudErrLog">
+                <div>&gt; POST https://api.cloudgym.app/v2/sets</div>
+                <div>&gt; <span class="cloud-spinner"></span><span id="cloudNetLine">TLS handshake retry (3/3)...</span></div>
+                <div class="err" id="cloudErrLine">&gt; ERR_INTERNET_DISCONNECTED (504)</div>
+                <div class="err">&gt; WARN: Unsaved set state discarded</div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <figure class="photo-band">
+      <img src="img/ironlog-basement-rack.jpg" alt="Underground concrete powerlifting gym with squat rack and chalked floor" data-band-parallax loading="lazy">
+      <figcaption class="photo-band__caption">
+        <div class="container">
+          <p class="photo-band__quote" data-i18n="band1.quote">IRON DOES NOT WAIT FOR A RETRY SPINNER.</p>
+          <p class="photo-band__sub" data-i18n="band1.sub">LOCAL-FIRST ANDROID ARCHITECTURE · ZERO ACCOUNT WALL</p>
+        </div>
+      </figcaption>
+    </figure>
+
+    <!-- ==================== PINNED NARRATIVE 02: FOREGROUND SERVICE REST TIMER ==================== -->
+    <section class="sec sec--surface" id="rest-service" aria-labelledby="rest-heading">
+      <div class="container">
+        <header class="sec__head">
+          <span class="sec__index num">02</span>
+          <div>
+            <p class="sec__kicker" data-i18n="s2.kicker">PINNED NARRATIVE · ANDROID FOREGROUND SERVICE</p>
+            <h2 id="rest-heading" data-i18n="s2.h2">SURVIVES SCREEN-OFF &amp; APP BACKGROUNDING</h2>
+            <p class="sec__lead" data-i18n="s2.lead">
+              Ordinary web wrappers and naive timers get killed by Android Doze the moment you lock your phone and chalk your hands. IronLog promotes an ongoing ForegroundService notification that counts down accurately on your lock screen.
+            </p>
+          </div>
+        </header>
+
+        <div class="rest-grid" id="restPinTarget">
+          <div class="lockscreen-device" id="lockDevice">
+            <div class="lockscreen-glass">
+              <div class="ls-clock">
+                <div class="ls-clock__lock" id="lsStateBadge" data-i18n="s2.locked">ANDROID LOCK SCREEN · SCREEN OFF</div>
+                <div class="ls-clock__time num" id="lsWallClock">18:42</div>
+              </div>
+
+              <div class="notif-banner" role="region" aria-label="Simulated Android ForegroundService Rest Notification">
+                <div class="notif-banner__meta">
+                  <span>IRONLOG · FOREGROUND SERVICE</span>
+                  <span id="lsServiceStatus">ACTIVE · SET 3/4</span>
+                </div>
+                <div class="notif-banner__main">
+                  <div>
+                    <div style="font-weight:700;font-size:0.95rem;color:var(--chalk);" data-i18n="s2.notifLift">Next: Barbell Squat · 140 kg × 5</div>
+                    <div style="font-size:0.76rem;color:var(--chalk-muted);margin-top:2px;" data-i18n="s2.notifSub">Target RIR 1–2 · Chime + Haptic at 00:00</div>
+                  </div>
+                  <div class="notif-countdown" id="lsTimerReadout">02:30</div>
+                </div>
+                <div class="notif-progress" aria-hidden="true">
+                  <div class="notif-progress__bar" id="lsProgressBar"></div>
+                </div>
+                <div class="notif-actions">
+                  <button class="notif-chip" type="button" id="lsPauseBtn" data-i18n="s2.pause">Pause</button>
+                  <button class="notif-chip" type="button" id="lsAdd30Btn">+0:30</button>
+                  <button class="notif-chip" type="button" id="lsSkipBtn" data-i18n="s2.skip">Skip →</button>
+                  <button class="notif-chip" type="button" id="lsToggleAodBtn">AOD</button>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;font-family:var(--font-outlier);font-size:0.68rem;color:var(--chalk-muted);">
+                <span>START_STICKY</span>
+                <span>CHANNEL: REST_CHRONOMETER</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-size:clamp(1.75rem,3vw,2.5rem);" data-i18n="s2.rightTitle">
+              HONEST CHRONOMETRY BETWEEN HEAVY SETS
+            </h3>
+            <p style="margin-top:0.85rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s2.rightLead">
+              Hypertrophy and strength progression depend on reproducible inter-set recovery. Whether you switch to your music player, answer a message, or pocket a locked phone for two and a half minutes, the countdown stays anchored to monotonic system uptime.
+            </p>
+
+            <div class="service-specs">
+              <div class="service-spec">
+                <h3 data-i18n="s2.sp1t">SystemClock.elapsedRealtime()</h3>
+                <p data-i18n="s2.sp1d">Immune to CPU throttling and deep sleep drift — remaining rest is computed against hardware boot timestamps rather than fragile UI intervals.</p>
+              </div>
+              <div class="service-spec">
+                <h3 data-i18n="s2.sp2t">Direct Notification Actions</h3>
+                <p data-i18n="s2.sp2d">Add +30 seconds after a grinder set, pause visibly, or skip straight to your next set right from the Android lock-screen shade.</p>
+              </div>
+              <div class="service-spec">
+                <h3 data-i18n="s2.sp3t">Explicit Guardrails</h3>
+                <p data-i18n="s2.sp3d">Finishing a workout with 0 logged sets or accidentally typing 600 kg instead of 60 kg triggers immediate confirmation guards before touching history.</p>
               </div>
             </div>
           </div>
@@ -188,257 +348,267 @@
       </div>
     </section>
 
-    <figure class="band">
-      <img src="img/gym-interior.jpg" alt="Không gian phòng gym công nghiệp tối với dãy tạ đơn và khung squat" data-i18n-alt="band1.alt" data-band-parallax loading="lazy">
-      <figcaption class="band__cap"><span class="container band__text" data-i18n="band1.cap">Sức mạnh bắt đầu từ sự rõ ràng</span></figcaption>
+    <!-- ==================== INTERACTIVE EMBEDDED WORKOUT LOG SANDBOX ==================== -->
+    <section class="sec" id="sandbox" aria-labelledby="sandbox-heading">
+      <div class="container">
+        <header class="sec__head">
+          <span class="sec__index num">03</span>
+          <div>
+            <p class="sec__kicker" data-i18n="s3.kicker">LIVE INTERACTIVE WORKBENCH · TRY ON PAGE</p>
+            <h2 id="sandbox-heading" data-i18n="s3.h2">LOG A REAL SET. WATCH E1RM &amp; VOLUME REACT.</h2>
+            <p class="sec__lead" data-i18n="s3.lead">
+              Adjust load, reps, and RPE below and commit a set. IronLog computes your Epley 1RM, checks progressive overload criteria, triggers the live rest timer, and updates weekly muscle-group sets against MEV–MRV landmarks immediately.
+            </p>
+          </div>
+        </header>
+
+        <div class="sandbox">
+          <!-- Left: Set Logger Console -->
+          <div class="console-card">
+            <div class="console-card__bar">
+              <span class="mono" style="font-size:0.76rem;color:var(--brass);" data-i18n="s3.sessionTag">ACTIVE SESSION · UPPER / LOWER HYPERTROPHY</span>
+              <span class="mono" id="sbWalCommitBadge" style="font-size:0.72rem;color:var(--ok);">WAL READY · 0.0 ms</span>
+            </div>
+
+            <div class="lift-tabs" role="tablist" aria-label="Select exercise">
+              <button class="lift-tab is-active" type="button" data-lift="squat">Barbell Squat</button>
+              <button class="lift-tab" type="button" data-lift="bench">Bench Press</button>
+              <button class="lift-tab" type="button" data-lift="deadlift">Deadlift</button>
+              <button class="lift-tab" type="button" data-lift="ohp">Overhead Press</button>
+            </div>
+
+            <div class="input-trio">
+              <div class="dial-box">
+                <label for="sbWeightInput" data-i18n="s3.weight">LOAD (KG)</label>
+                <div class="dial-row">
+                  <button class="dial-step" type="button" data-step-target="weight" data-step="-2.5" aria-label="Decrease weight">−</button>
+                  <input class="dial-val" id="sbWeightInput" type="number" step="2.5" min="20" max="400" value="140">
+                  <button class="dial-step" type="button" data-step-target="weight" data-step="2.5" aria-label="Increase weight">+</button>
+                </div>
+              </div>
+
+              <div class="dial-box">
+                <label for="sbRepsInput" data-i18n="s3.reps">REPS</label>
+                <div class="dial-row">
+                  <button class="dial-step" type="button" data-step-target="reps" data-step="-1" aria-label="Decrease reps">−</button>
+                  <input class="dial-val" id="sbRepsInput" type="number" step="1" min="1" max="30" value="5">
+                  <button class="dial-step" type="button" data-step-target="reps" data-step="1" aria-label="Increase reps">+</button>
+                </div>
+              </div>
+
+              <div class="dial-box">
+                <label for="sbRpeInput">RPE (RIR)</label>
+                <div class="dial-row">
+                  <button class="dial-step" type="button" data-step-target="rpe" data-step="-0.5" aria-label="Decrease RPE">−</button>
+                  <input class="dial-val" id="sbRpeInput" type="number" step="0.5" min="6" max="10" value="8.5">
+                  <button class="dial-step" type="button" data-step-target="rpe" data-step="0.5" aria-label="Increase RPE">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="sandbox-actions">
+              <button class="btn btn--brass" type="button" id="sbLogSetBtn" data-i18n="s3.commitBtn">Commit Set to Local Log +</button>
+              <button class="btn btn--iron" type="button" id="openDrawerSandboxBtn" data-i18n="s3.openDrawer">Open Full Android Prototype Drawer ↗</button>
+              <button class="btn btn--ghost btn--sm" type="button" id="sbResetBtn" data-i18n="s3.reset">Reset</button>
+            </div>
+
+            <div class="sandbox-rest-strip" id="sbRestStrip">
+              <span id="sbRestLabel" data-i18n="s3.restIdle">REST TIMER IDLE · AUTO-STARTS ON SET COMMIT</span>
+              <span class="num" id="sbRestClock" style="font-weight:700;color:var(--brass);">02:30</span>
+            </div>
+
+            <table class="set-log-table" aria-label="Logged sets">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th data-i18n="s3.thLift">Exercise</th>
+                  <th>KG × REPS</th>
+                  <th>RPE</th>
+                  <th>e1RM</th>
+                </tr>
+              </thead>
+              <tbody id="sbSetTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Right: Live Epley 1RM & Weekly MEV-MRV Volume Telemetry -->
+          <div class="console-card">
+            <div class="console-card__bar">
+              <span class="mono" style="font-size:0.76rem;color:var(--chalk);" data-i18n="s3.teleTitle">EPLEY 1RM &amp; WEEKLY MEV–MRV TELEMETRY</span>
+              <span class="mono" id="sbTotalVolBadge" style="font-size:0.76rem;color:var(--brass);">SESSION VOL: 2,060 KG</span>
+            </div>
+
+            <div class="e1rm-grid">
+              <div class="metric-tile">
+                <div class="metric-tile__lbl" data-i18n="s3.e1rmLabel">ESTIMATED 1RM (EPLEY)</div>
+                <div class="metric-tile__val" id="sbE1rmVal">163.3 kg</div>
+                <div class="mono" id="sbFormulaReadout" style="font-size:0.7rem;color:var(--chalk-muted);margin-top:0.25rem;">140 × (1 + 5/30)</div>
+              </div>
+              <div class="metric-tile">
+                <div class="metric-tile__lbl" data-i18n="s3.overloadLabel">NEXT SESSION DECISION</div>
+                <div class="metric-tile__val" id="sbDecisionVal" style="color:var(--ok);">+2.5 kg</div>
+                <div class="mono" id="sbDecisionReason" style="font-size:0.7rem;color:var(--chalk-muted);margin-top:0.25rem;" data-i18n="s3.reasonPlus">RIR ≥ 1.5 · Headroom confirmed</div>
+              </div>
+            </div>
+
+            <h3 style="font-size:1.15rem;margin-bottom:0.85rem;" data-i18n="s3.volHeading">WEEKLY SETS VS MEV–MRV LANDMARKS</h3>
+            <div class="vol-bars" id="sbVolumeBars">
+              <div class="vol-row" data-muscle="quads">
+                <div class="vol-row__head">
+                  <span data-i18n="m.quads">Quads &amp; Glutes</span>
+                  <span class="num"><strong id="volQuadsVal">11</strong> / 18 sets (MEV 6 · MRV 18)</span>
+                </div>
+                <div class="vol-track"><div class="vol-fill" id="volQuadsBar" style="width:61%"></div></div>
+              </div>
+
+              <div class="vol-row" data-muscle="chest">
+                <div class="vol-row__head">
+                  <span data-i18n="m.chest">Chest</span>
+                  <span class="num"><strong id="volChestVal">14</strong> / 20 sets (MEV 8 · MRV 20)</span>
+                </div>
+                <div class="vol-track"><div class="vol-fill" id="volChestBar" style="width:70%"></div></div>
+              </div>
+
+              <div class="vol-row" data-muscle="back">
+                <div class="vol-row__head">
+                  <span data-i18n="m.back">Back &amp; Posterior</span>
+                  <span class="num"><strong id="volBackVal">12</strong> / 20 sets (MEV 8 · MRV 20)</span>
+                </div>
+                <div class="vol-track"><div class="vol-fill vol-fill--red" id="volBackBar" style="width:60%"></div></div>
+              </div>
+
+              <div class="vol-row" data-muscle="shoulders">
+                <div class="vol-row__head">
+                  <span data-i18n="m.shoulders">Deltoids</span>
+                  <span class="num"><strong id="volShouldersVal">10</strong> / 18 sets (MEV 6 · MRV 18)</span>
+                </div>
+                <div class="vol-track"><div class="vol-fill" id="volShouldersBar" style="width:55%"></div></div>
+              </div>
+            </div>
+
+            <p style="margin-top:1.25rem;font-size:0.83rem;color:var(--chalk-muted);line-height:1.5;" data-i18n="s3.nutritionNote">
+              Includes built-in Katch-McArdle / Mifflin-St Jeor TDEE calculator and an offline Vietnamese macro table (~90 dishes: Cơm tấm, Phở bò, Ức gà) plus optional Gemini meal photo parsing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <figure class="photo-band">
+      <img src="img/ironlog-chalk-hands.jpg" alt="Chalked hands gripping knurled steel Olympic barbell in dramatic lighting" data-band-parallax loading="lazy">
+      <figcaption class="photo-band__caption">
+        <div class="container">
+          <p class="photo-band__quote" data-i18n="band2.quote">CHALK ON STEEL. NUMBERS IN STONE.</p>
+          <p class="photo-band__sub" data-i18n="band2.sub">CSV SPREADSHEET EXPORT · FULL JSON BACKUP &amp; RESTORE</p>
+        </div>
+      </figcaption>
     </figure>
 
-    <section class="slide slide--dark" id="s03" aria-labelledby="s03-t">
+    <!-- ==================== ARCHITECTURE & CRAFT STRIP ==================== -->
+    <section class="sec sec--surface" id="architecture" aria-labelledby="arch-heading">
       <div class="container">
-        <header class="slide__head">
-          <span class="slide__no num">03</span>
+        <header class="sec__head">
+          <span class="sec__index num">04</span>
           <div>
-            <h2 id="s03-t" data-i18n="s03.t">Một buổi tập mẫu trọn vẹn</h2>
-            <p class="lead" data-i18n="s03.lead">Từ lúc mở buổi tới lúc đọc tổng kết, dòng chảy chỉ có ba bước: ghi hiệp, xem lại, nhận kết quả. Dưới đây là buổi Push Day A được rút gọn vào bài đầu tiên.</p>
+            <p class="sec__kicker" data-i18n="s4.kicker">SYSTEM ARCHITECTURE · KOTLIN &amp; JETPACK COMPOSE</p>
+            <h2 id="arch-heading" data-i18n="s4.h2">ENGINEERED WITHOUT BLOAT</h2>
+            <p class="sec__lead" data-i18n="s4.lead">
+              Designed and written by Trần Huy Hoàng from real training logs: unidirectional Compose state, deterministic hypertrophy math, local SQLite durability, and zero third-party analytics trackers.
+            </p>
           </div>
         </header>
-        <ol class="flow">
-          <li data-reveal><span class="flow__no num">1</span><h3 data-i18n="s03.f1t">Ghi hiệp</h3><p data-i18n="s03.f1">Bench Press, ba hiệp. Mỗi hiệp nhập kg và rep, bấm xong là đồng hồ nghỉ tự chạy.</p></li>
-          <li data-reveal><span class="flow__no num">2</span><h3 data-i18n="s03.f2t">Xem lại</h3><p data-i18n="s03.f2">Màn hình kiểm tra liệt kê hiệp đã ghi, tổng volume và hiệp nặng nhất, kèm chọn RIR trước khi chốt.</p></li>
-          <li data-reveal><span class="flow__no num">3</span><h3 data-i18n="s03.f3t">Kết quả</h3><p data-i18n="s03.f3">Buổi tập được lưu, xuất hiện ở đầu danh sách gần đây và cộng vào volume của tuần.</p></li>
-        </ol>
-        <div class="slide__grid">
-          <div data-reveal>
-            <h3 class="block-t" data-i18n="s03.bt">Push Day A — danh sách bài</h3>
-            <table class="sheet sheet--dark">
-              <thead>
-                <tr><th scope="col" data-i18n="s03.th1">Số</th><th scope="col" data-i18n="s03.th2">Bài trong giáo án</th></tr>
-              </thead>
-              <tbody>
-                <tr><td class="idx">1</td><td><span class="lift">Bench Press</span><span class="vn" data-i18n="s03.e1">Đẩy ngực ngang đòn tạ</span></td></tr>
-                <tr><td class="idx">2</td><td><span class="lift">Incline Dumbbell Press</span><span class="vn" data-i18n="s03.e2">Đẩy ngực trên tạ đơn</span></td></tr>
-                <tr><td class="idx">3</td><td><span class="lift">Overhead Press</span><span class="vn" data-i18n="s03.e3">Đẩy vai đứng tạ đòn</span></td></tr>
-                <tr><td class="idx">4</td><td><span class="lift">Dip</span><span class="vn" data-i18n="s03.e4">Xà kép có tải</span></td></tr>
-                <tr><td class="idx">5</td><td><span class="lift">Triceps Pushdown</span><span class="vn" data-i18n="s03.e5">Duỗi tay sau với cáp</span></td></tr>
-              </tbody>
-            </table>
-            <div class="facts">
-              <p><span class="time num">5</span> <span data-i18n="s03.exercises">bài</span></p>
-              <p><span class="time num">18</span> <span data-i18n="s03.sets">hiệp</span></p>
-              <p class="mark"><span class="time num">1-2</span> <span data-i18n="s03.rir">RIR mục tiêu</span></p>
-            </div>
-          </div>
-          <div class="phone phone--mini phone--center" data-reveal>
-            <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
-            <div class="phone__screen">
-              <p class="app__card-label" data-i18n="s03.insession">Đang tập · Push Day A</p>
-              <p class="app__name">Bench Press</p>
-              <p class="app__card-sub" data-i18n="s03.lasttime">Buổi trước: 8 × 60 · 8 × 60 · 7 × 60</p>
-              <table class="set-table">
-                <thead><tr><th scope="col" data-i18n="s03.set">Hiệp</th><th scope="col">kg</th><th scope="col">Rep</th><th scope="col" data-i18n="s03.done">Xong</th></tr></thead>
-                <tbody>
-                  <tr class="is-done"><td class="num">1</td><td class="num">60</td><td class="num">8</td><td>✓</td></tr>
-                  <tr class="is-done"><td class="num">2</td><td class="num">60</td><td class="num">8</td><td>✓</td></tr>
-                  <tr><td class="num">3</td><td class="num">60</td><td class="num">8</td><td>○</td></tr>
-                </tbody>
-              </table>
-              <div class="app__card app__card--volt"><p class="app__card-title num" data-i18n="s03.volume">Volume tạm tính: 960 kg</p><p class="app__card-sub" data-i18n="s03.logged">2 trên 3 hiệp đã ghi</p></div>
-            </div>
-          </div>
-        </div>
-        <p class="slide__cta"><a class="btn btn--primary" href="prototype.html" data-i18n="s03.cta">Tự tay ghi một buổi trong prototype ↗</a></p>
-      </div>
-    </section>
 
-    <section class="slide slide--paper" id="s04" aria-labelledby="s04-t">
-      <div class="container">
-        <header class="slide__head">
-          <span class="slide__no num">04</span>
-          <div>
-            <h2 id="s04-t" data-i18n="s04.t">Đồng hồ nghỉ và các trạng thái cảnh báo</h2>
-            <p class="lead" data-i18n="s04.lead">Nghỉ cũng là một phần của buổi tập. Đồng hồ chạy nền kèm thông báo, và những trạng thái dễ gây sai số được nói thẳng ngay lúc chúng xảy ra.</p>
-          </div>
-        </header>
-        <div class="state-grid">
-          <article class="state-card" data-reveal>
-            <p class="state-card__label" data-i18n="s04.c1l">Đang nghỉ</p>
-            <p class="timer num">01:12</p>
-            <div class="bar bar--wide"><span class="bar__fill" style="width:80%"></span></div>
-            <p data-i18n="s04.c1">Hiệp 2 xong. Đồng hồ đếm tiếp kể cả khi khoá màn hình, nhờ dịch vụ chạy nền trên Android.</p>
+        <div class="arch-diagram">
+          <article class="arch-node" data-reveal>
+            <p class="arch-node__layer">LAYER 01 · UI</p>
+            <h3>JETPACK COMPOSE</h3>
+            <p data-i18n="s4.n1">Material 3 adaptive screens bound via lifecycle-aware StateFlow. Sub-frame recomposition for set tables and rest banners.</p>
+            <code>collectAsStateWithLifecycle()</code>
           </article>
-          <article class="state-card" data-reveal>
-            <p class="state-card__label" data-i18n="s04.c2l">Đã tạm dừng</p>
-            <p class="timer num">00:47</p>
-            <div class="bar bar--wide"><span class="bar__fill bar__fill--low" style="width:52%"></span></div>
-            <p data-i18n="s04.c2">Chạm để dừng, cộng thêm 30 giây hoặc bỏ qua. Trạng thái tạm dừng nhìn là biết, không âm thầm đếm tiếp.</p>
+
+          <article class="arch-node arch-node--red" data-reveal>
+            <p class="arch-node__layer">LAYER 02 · DOMAIN</p>
+            <h3>OVERLOAD ENGINE</h3>
+            <p data-i18n="s4.n2">Pure Kotlin calculators for Epley e1RM, RIR progression gates, muscle recovery decay, and weekly MEV–MRV landmarks.</p>
+            <code>domain/HypertrophyMath.kt</code>
           </article>
-          <article class="state-card state-card--warn" data-reveal>
-            <p class="state-card__label" data-i18n="s04.c3l">Cảnh báo</p>
-            <p class="state-card__big" data-i18n="s04.c3b">Chưa ghi hiệp nào</p>
-            <p data-i18n="s04.c3">Bấm “Xem lại” khi chưa có hiệp nào được ghi sẽ bị chặn kèm lý do. Mức tạ nhập cao hơn kỷ lục cá nhân cũng được hỏi lại trước khi lưu.</p>
+
+          <article class="arch-node" data-reveal>
+            <p class="arch-node__layer">LAYER 03 · PERSISTENCE</p>
+            <h3>ROOM SQLITE (WAL)</h3>
+            <p data-i18n="s4.n3">Write-Ahead Logging local database with Coroutine DAOs, 4 built-in splits (PPL, Upper/Lower, Arnold, Full Body), CSV &amp; JSON export.</p>
+            <code>data/GymDatabase.kt</code>
+          </article>
+
+          <article class="arch-node arch-node--red" data-reveal>
+            <p class="arch-node__layer">LAYER 04 · OS SERVICE</p>
+            <h3>FOREGROUND TIMER</h3>
+            <p data-i18n="s4.n4">Dedicated Android Service + Notification chronometer surviving lock screen, app switching, and aggressive battery savers.</p>
+            <code>service/RestTimerService.kt</code>
           </article>
         </div>
-      </div>
-    </section>
 
-    <figure class="band">
-      <img src="img/chalk-grip.jpg" alt="Hai bàn tay phủ phấn nắm chặt thanh đòn tạ trong bóng tối" data-i18n-alt="band2.alt" data-band-parallax loading="lazy">
-      <figcaption class="band__cap"><span class="container band__text" data-i18n="band2.cap">Nắm chặt. Ghi rõ. Tiến bộ.</span></figcaption>
-    </figure>
+        <div class="craft-gallery">
+          <figure class="craft-shot" data-reveal>
+            <img src="img/ironlog-knurled-barbell.jpg" alt="Calibrated red competition plate, brass collar, and diamond-knurled barbell sleeve" loading="lazy">
+            <figcaption data-i18n="s4.cap1">CALIBRATED HARDWARE INSPIRATION — Raw steel knurling, competition red 25 kg plates, and machined brass collars.</figcaption>
+          </figure>
 
-    <section class="slide slide--dark" id="s05" aria-labelledby="s05-t">
-      <div class="container">
-        <header class="slide__head">
-          <span class="slide__no num">05</span>
-          <div>
-            <h2 id="s05-t" data-i18n="s05.t">Hệ quyết định</h2>
-            <p class="lead" data-i18n="s05.lead">Gợi ý của IronLog không phải hộp đen. Mỗi con số đều truy được về phép tính đơn giản, và người tập luôn là người chốt cuối cùng.</p>
-          </div>
-        </header>
-        <div class="slide__grid">
-          <div data-reveal>
-            <h3 class="block-t" data-i18n="s05.bt1">Ví dụ tính tay: Bench Press</h3>
-            <div class="calc">
-              <p class="calc__line num" data-i18n="s05.calc1">8 rep × 60 kg × 3 hiệp</p>
-              <p class="calc__line calc__line--eq num" data-i18n="s05.calc2">= 1.440 kg volume</p>
-              <p data-i18n="s05.calcp">Ba hiệp đều đạt 8 rep ở RIR 1–2, tức là vẫn còn dư một đến hai rep trong khả năng. Gợi ý cho buổi tới: <strong class="volt">+2,5 kg</strong>. Nếu rep tụt hoặc RIR bằng 0, gợi ý đổi thành giữ nguyên mức tạ.</p>
+          <div class="console-card" style="display:flex;flex-direction:column;justify-content:space-between;" data-reveal>
+            <div>
+              <p class="spec-index" data-i18n="s4.makerKicker">SOLO ENGINEERED · OPEN SOURCE MIT</p>
+              <h3 style="font-size:2rem;" data-i18n="s4.makerTitle">FROM THE GYM FLOOR TO EVERY LINE OF KOTLIN.</h3>
+              <p style="margin-top:0.85rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s4.makerBody">
+                Built by Trần Huy Hoàng. Every screen in IronLog earned its place during real hypertrophy blocks — answering what load you moved last week, how recovered each muscle group is today, and when you are ready to pull the next set.
+              </p>
             </div>
-            <h3 class="block-t" data-i18n="s05.bt2">Khối lượng theo nhóm cơ</h3>
-            <p class="block-p" data-i18n="s05.bp">Tab Tiến bộ đối chiếu số hiệp mỗi nhóm cơ trong tuần với khoảng MEV–MRV — ngưỡng tối thiểu để tiến bộ và ngưỡng tối đa còn phục hồi nổi. AI Coach đọc cùng những con số này khi viết tổng kết 7 ngày.</p>
-            <div class="bar-row bar-row--dark"><span data-i18n="s05.vol1">Ngực · 14 hiệp</span><span class="bar"><span class="bar__fill" style="width:70%"></span></span><span class="num">MEV 8 · MRV 20</span></div>
-            <div class="bar-row bar-row--dark"><span data-i18n="s05.vol2">Lưng · 12 hiệp</span><span class="bar"><span class="bar__fill" style="width:60%"></span></span><span class="num">MEV 8 · MRV 20</span></div>
-            <div class="bar-row bar-row--dark"><span data-i18n="s05.vol3">Chân · 10 hiệp</span><span class="bar"><span class="bar__fill" style="width:50%"></span></span><span class="num">MEV 6 · MRV 18</span></div>
-          </div>
-          <div data-reveal>
-            <h3 class="block-t" data-i18n="s05.bt3">Ăn uống dùng cùng một logic số</h3>
-            <p class="block-p" data-i18n="s05.bp3">Bảng gần 90 món Việt có sẵn trong máy; món lạ có thể chụp ảnh để Gemini ước lượng khối lượng rồi người dùng sửa lại trước khi lưu. Thẻ BMR và TDEE (Katch-McArdle, đối chiếu Mifflin-St Jeor) cho ra mốc calo để đối chiếu.</p>
-            <table class="sheet sheet--dark">
-              <thead>
-                <tr><th scope="col" data-i18n="s05.th1">Món</th><th scope="col">kcal</th><th scope="col" data-i18n="s05.th3">Đạm, g</th></tr>
-              </thead>
-              <tbody>
-                <tr><td data-i18n="s05.d1">Cơm trắng</td><td class="num">130</td><td class="num" data-i18n="n27">2,7</td></tr>
-                <tr><td data-i18n="s05.d2">Ức gà</td><td class="num">165</td><td class="num">31</td></tr>
-                <tr><td data-i18n="s05.d3">Phở bò</td><td class="num">85</td><td class="num" data-i18n="n55">5,5</td></tr>
-                <tr><td data-i18n="s05.d4">Cơm tấm sườn</td><td class="num">163</td><td class="num" data-i18n="n75">7,5</td></tr>
-              </tbody>
-            </table>
-            <p class="app__note" data-i18n="s05.note">Số liệu tính trên 100 g, lấy từ bảng dinh dưỡng trong ứng dụng.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="slide slide--paper" id="s06" aria-labelledby="s06-t">
-      <div class="container">
-        <header class="slide__head">
-          <span class="slide__no num">06</span>
-          <div>
-            <h2 id="s06-t" data-i18n="s06.t">Hệ hình ảnh nhất quán</h2>
-            <p class="lead" data-i18n="s06.lead">Một hệ duy nhất cho cả ứng dụng lẫn trang này: chữ nén cho tiêu đề, chữ thường dễ đọc cho nội dung, và số luôn dùng font đơn cách để cột số không nhảy khi đếm.</p>
-          </div>
-        </header>
-        <div class="slide__grid">
-          <div class="type-spec" data-reveal>
-            <p class="type-spec__display" data-i18n="s06.disp">Saira Condensed — tiêu đề</p>
-            <p class="type-spec__body" data-i18n="s06.body">Albert Sans — nội dung, nhãn và giải thích. Đủ mềm để đọc đoạn dài, đủ gọn để đặt cạnh bảng số.</p>
-            <p class="type-spec__mono num" data-i18n="s06.mono">JetBrains Mono — 1.440 kg · 01:30 · RIR 1–2</p>
-            <p class="block-p" data-i18n="s06.bp">Nguyên tắc “số trước, chữ sau”: mọi màn hình đều trả lời bằng con số chính trước, phần diễn giải đi kèm ngay bên dưới với cỡ chữ nhỏ hơn.</p>
-          </div>
-          <ul class="swatches" data-reveal>
-            <li class="swatch swatch--paper"><span>Paper</span><span class="num">oklch(98% 0.005 250)</span><span data-i18n="s06.sw1">Nền sáng, mặt màn hình app</span></li>
-            <li class="swatch swatch--ink"><span>Ink</span><span class="num">oklch(16% 0.08 260)</span><span data-i18n="s06.sw2">Nền tối, chữ chính trên nền sáng</span></li>
-            <li class="swatch swatch--volt"><span>Volt</span><span class="num">oklch(88% 0.2 120)</span><span data-i18n="s06.sw3">Điểm nhấn, hành động chính, số nổi bật</span></li>
-            <li class="swatch swatch--deep"><span>Accent deep</span><span class="num">oklch(58% 0.145 125)</span><span data-i18n="s06.sw4">Trạng thái focus, đường tiến trình</span></li>
-            <li class="swatch swatch--muted"><span>Muted</span><span class="num">oklch(50% 0.02 250)</span><span data-i18n="s06.sw5">Chữ phụ, ghi chú, số liệu thứ cấp</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide slide--dark" id="s07" aria-labelledby="s07-t">
-      <div class="container">
-        <header class="slide__head">
-          <span class="slide__no num">07</span>
-          <div>
-            <h2 id="s07-t" data-i18n="s07.t">Ứng dụng Android hoàn chỉnh</h2>
-            <p class="lead" data-i18n="s07.lead">Trang này là bản trình bày; sản phẩm thật là ứng dụng Android chạy offline ngay trên điện thoại của bạn và không cần tài khoản — dữ liệu tập nằm trên máy của bạn, không nằm trên máy chủ của ai khác.</p>
-          </div>
-        </header>
-        <div class="slide__grid">
-          <table class="sheet sheet--dark" data-reveal>
-            <thead>
-              <tr><th scope="col" data-i18n="s07.th1">Hạng mục</th><th scope="col" data-i18n="s07.th2">Chi tiết</th></tr>
-            </thead>
-            <tbody>
-              <tr><td data-i18n="s07.r1a">Ngôn ngữ</td><td>Kotlin</td></tr>
-              <tr><td data-i18n="s07.r2a">Giao diện</td><td>Jetpack Compose · Material 3</td></tr>
-              <tr><td data-i18n="s07.r3a">Dữ liệu</td><td data-i18n="s07.r3b">Room, lưu offline trên máy; xuất CSV và sao lưu JSON</td></tr>
-              <tr><td data-i18n="s07.r4a">Đồng hồ nghỉ</td><td data-i18n="s07.r4b">Dịch vụ chạy nền kèm thông báo</td></tr>
-              <tr><td data-i18n="s07.r5a">Nền tảng</td><td data-i18n="s07.r5b">Android 8.1 trở lên (API 27+)</td></tr>
-              <tr><td data-i18n="s07.r6a">Giấy phép</td><td>MIT</td></tr>
-              <tr><td>Prototype web</td><td data-i18n="s07.r7b">Dữ liệu hư cấu, chỉ để thử tương tác</td></tr>
-            </tbody>
-          </table>
-          <div data-reveal>
-            <h3 class="block-t" data-i18n="s07.bt">Ba bước tới buổi đầu</h3>
-            <p class="block-p" data-i18n="s07.bp">Không cần cài đặt gì cầu kỳ và không cần tài khoản: mở ứng dụng, chọn một lịch có sẵn và ghi buổi đầu tiên của bạn.</p>
-            <ol class="stages">
-              <li><span class="stage-no num">1</span><h3 data-i18n="s07.st1t">Chọn giáo án</h3><p data-i18n="s07.st1">PPL, Upper/Lower, Arnold hoặc Full body — chọn lịch khớp với số ngày bạn tới phòng tập mỗi tuần.</p></li>
-              <li><span class="stage-no num">2</span><h3 data-i18n="s07.st2t">Ghi buổi đầu</h3><p data-i18n="s07.st2">Ghi rep × kg cho từng hiệp; đồng hồ nghỉ tự chạy sau mỗi hiệp để bạn chỉ việc tập tiếp.</p></li>
-              <li class="now"><span class="stage-no num">3</span><h3 data-i18n="s07.st3t">Xem tiến bộ</h3><p data-i18n="s07.st3">Đường cong e1RM, số hiệp theo nhóm cơ và tổng kết tuần cho bạn biết nên tăng tạ ở đâu.</p></li>
-            </ol>
-            <div class="actions">
-              <a class="btn btn--download" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="btn.apk">Tải APK Android ↓</a>
-              <a class="btn btn--primary" href="prototype.html" data-i18n="btn.proto">Thử prototype tương tác ↗</a>
+            <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:0.75rem;">
+              <a class="btn btn--brass" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="btn.apk">Download Android APK ↓</a>
+              <a class="btn btn--iron" href="prototype.html" data-i18n="btn.fullProto">Full Screen Prototype ↗</a>
+              <a class="btn btn--ghost" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noopener">GitHub Repo ↗</a>
             </div>
-            <p class="app__note" data-i18n="s07.note">File gymverse.apk (bản debug dùng thử) — tải về và cài trực tiếp trên Android 8.1 trở lên, không cần tài khoản.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="dev" id="nha-phat-trien" aria-labelledby="dev-t">
-      <div class="container dev__inner">
-        <p class="dev__eyebrow" data-i18n="dev.eyebrow">Nhà phát triển</p>
-        <h2 id="dev-t" data-i18n="dev.t">Một người làm — từ phòng tập tới từng dòng code.</h2>
-        <p class="dev__p" data-i18n="dev.p1">IronLog do Trần Huy Hoàng thiết kế và phát triển. Anh là lập trình viên tại Việt Nam, đồng thời là người tập luyện theo đúng phương pháp mà ứng dụng ghi lại — nên mọi màn hình đều bắt đầu từ một câu hỏi rất thật: buổi tập hôm nay cần nhìn thấy gì, để buổi tập ngày mai tốt hơn?</p>
-        <p class="dev__p" data-i18n="dev.p2">Không có đội ngũ lớn đứng sau và cũng không có tính năng nào được thêm vào cho có. Mỗi phần của IronLog — giáo án, đồng hồ nghỉ, đường cong sức mạnh, bảng món ăn Việt — đều xuất phát từ những buổi tập thật của chính người viết ra nó, rồi được giữ lại chỉ khi nó giúp buổi tập sau rõ ràng hơn buổi tập trước.</p>
-        <p class="dev__name">Trần Huy Hoàng</p>
-        <p class="dev__role" data-i18n="dev.role">Thiết kế &amp; phát triển IronLog</p>
-      </div>
-    </section>
-
-    <section class="scope" id="pham-vi" aria-labelledby="pham-vi-t">
-      <div class="container scope__inner">
-        <h2 id="pham-vi-t" data-i18n="scope.t">Phạm vi thiết kế và prototype tương tác</h2>
-        <p data-i18n="scope.p1">Nghiên cứu thiết kế này nối một vòng khép kín: màn hình tổng quan buổi sáng, buổi tập Push Day A với ba hiệp Bench Press có thể ghi thật, màn hình xem lại với lựa chọn RIR, và một kết quả mô phỏng được cộng vào tiến bộ của tuần. Các trạng thái ít vui hơn cũng được giữ nguyên và nói rõ: tạm dừng giữa giờ nghỉ, cảnh báo khi bấm xem lại mà chưa ghi hiệp nào, và một tuần cũ chưa đủ dữ liệu để kết luận.</p>
-        <p data-i18n="scope.p2">Hệ hình ảnh dùng nền tối gần như đen cho phần trình bày, màu volt làm điểm nhấn có kiểm soát và khoảng trắng rộng quanh các con số. Chữ số dạng bảng, nhãn rõ ràng và các bước xem lại có thể sửa được là phần mang tương tác. Prototype trên trình duyệt chạy với tài khoản, số hiệp và mức tạ hư cấu; nó trình bày thiết kế giao diện và các trạng thái tương tác, không kết nối tập luyện thật, không đồng bộ dữ liệu và không hứa hẹn kết quả thể hình.</p>
-        <p><a class="btn btn--primary" href="prototype.html" data-i18n="btn.proto">Thử prototype tương tác ↗</a></p>
       </div>
     </section>
   </main>
 
-  <footer class="mast">
-    <div class="container mast__row">
-      <div>
-        <a class="wordmark" href="#dau-trang">IronLog</a>
-        <p data-i18n="foot.credit">IronLog — Thiết kế và phát triển bởi Trần Huy Hoàng.</p>
-        <p class="mast__fine" data-i18n="foot.fine">Prototype trên trình duyệt dùng dữ liệu hư cấu và chỉ mô phỏng tương tác — đó không phải ứng dụng Android thật.</p>
+  <!-- Slide-Over Interactive Prototype Drawer -->
+  <div class="proto-drawer" id="protoDrawer" role="dialog" aria-modal="true" aria-label="IronLog Interactive App Prototype" hidden>
+    <div class="proto-drawer__panel">
+      <div class="proto-drawer__head">
+        <span class="mono" style="font-size:0.78rem;color:var(--brass);">IRONLOG LIVE INTERACTIVE PROTOTYPE</span>
+        <div style="display:flex;gap:0.5rem;">
+          <a class="btn btn--iron btn--sm" href="prototype.html" data-i18n="drawer.expand">Full Page ↗</a>
+          <button class="btn btn--ghost btn--sm" type="button" id="closeDrawerBtn" data-i18n="drawer.close">Close ✕</button>
+        </div>
       </div>
-      <nav aria-label="Chân trang">
-        <a href="#s02" data-i18n="foot.n1">Giáo án</a>
-        <a href="#s05" data-i18n="foot.n2">Hệ quyết định</a>
-        <a href="#nha-phat-trien" data-i18n="foot.n3">Nhà phát triển</a>
-        <a href="#pham-vi" data-i18n="foot.n4">Phạm vi</a>
+      <iframe class="proto-drawer__frame" id="protoIframe" title="IronLog Interactive Prototype" data-src="prototype.html"></iframe>
+    </div>
+  </div>
+
+  <footer class="mast">
+    <div class="container mast__grid">
+      <div>
+        <span class="brand__word">IRONLOG · GYMVERSE</span>
+        <p style="margin-top:0.5rem;color:var(--chalk-muted);font-size:0.88rem;max-width:48ch;" data-i18n="foot.copy">
+          Designed &amp; engineered by Trần Huy Hoàng. Android 8.1+ (API 27+) · Kotlin · Jetpack Compose · Room SQLite. Sample telemetry shown for interactive demonstration.
+        </p>
+      </div>
+      <nav class="mast__links" aria-label="Footer links">
+        <a href="#signal-drop" data-i18n="nav.signal">01 Signal Drop</a>
+        <a href="#rest-service" data-i18n="nav.rest">02 Rest Service</a>
+        <a href="#sandbox" data-i18n="nav.sandbox">03 Live Log</a>
         <a href="prototype.html">Prototype</a>
+        <a href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="vendor/three.min.js"></script>
   <script src="landing.js"></script>
 </body>
 </html>

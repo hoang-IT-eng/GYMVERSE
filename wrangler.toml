@@ -1,0 +1,7 @@
+# Cloudflare Pages configuration for the IronLog landing site.
+# The static site lives in web/ (there is no index.html at the repo root),
+# so Pages must publish that directory. This matches the project
+# "hoang-ironlog" (hoang-ironlog.pages.dev), production branch: main.
+name = "hoang-ironlog"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "web"

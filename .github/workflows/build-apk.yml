@@ -1,0 +1,74 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - 'gradle/**'
+      - 'gradlew'
+      - 'gradlew.bat'
+      - '.github/workflows/build-apk.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: assembleDebug and publish release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK platform 36 and build-tools 36.0.0
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Stage APK under a stable name
+        run: |
+          mkdir -p release
+          cp app/build/outputs/apk/debug/app-debug.apk release/gymverse.apk
+          ls -la release
+
+      - name: Upload APK as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gymverse-debug-apk
+          path: release/gymverse.apk
+          if-no-files-found: error
+
+      - name: Publish APK to the fixed "apk-latest" release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-latest
+          name: IronLog — APK mới nhất
+          body: |
+            Bản debug mới nhất của IronLog (GYMVERSE), được GitHub Actions build tự động từ nhánh main.
+
+            Tải file **gymverse.apk** bên dưới và cài trực tiếp trên điện thoại Android 8.1 (API 27) trở lên.
+            Đây là bản debug phục vụ việc dùng thử — dữ liệu tập lưu offline ngay trên máy của bạn.
+          files: release/gymverse.apk
+          make_latest: 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

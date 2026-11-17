@@ -276,6 +276,7 @@ h1, h2, h3 { text-transform: uppercase; line-height: 1.02; }
   .phone--center { justify-self: stretch; }
 }
 @media (max-width: 40rem) {
+  .nav__proto { display: none; }
   .mini-phones { grid-template-columns: minmax(0,1fr); }
   .stages { grid-template-columns: minmax(0,1fr); }
   .sheet { table-layout: auto; }
@@ -320,3 +321,127 @@ h1, h2, h3 { text-transform: uppercase; line-height: 1.02; }
 .phone__screen .bar__fill { background: #1F7A4D; }
 .phone__screen .bar__fill--low { background: #E25B1A; }
 .set-table th, .set-table td { border-top-color: #D9DECE; }
+
+/* ---------- language switcher (pill + dropdown card) ---------- */
+.lang-switch { position: relative; }
+.lang-pill {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.5rem 0.85rem; border-radius: 999px;
+  background: color-mix(in oklab, var(--dark-bg-2) 88%, white 4%);
+  border: 1px solid var(--dark-line);
+  color: var(--dark-text);
+  font-family: var(--font-body); font-weight: 700; font-size: var(--text-sm);
+  letter-spacing: 0.04em; cursor: pointer;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.28);
+  transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+}
+.lang-pill:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.lang-pill:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.lang-pill .lang-chev { transition: transform var(--dur-short) var(--ease-out); }
+.lang-pill[aria-expanded="true"] .lang-chev { transform: rotate(180deg); }
+.lang-menu {
+  position: absolute; top: calc(100% + 0.55rem); right: 0; z-index: var(--z-dropdown);
+  min-width: 11.5rem; padding: 0.4rem;
+  background: oklch(21% 0.045 160);
+  border: 1px solid var(--dark-line); border-radius: 16px;
+  box-shadow: 0 18px 44px rgb(0 0 0 / 0.5);
+}
+.lang-menu[hidden] { display: none; }
+.lang-opt {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-md);
+  width: 100%; padding: 0.65rem 0.8rem; border: 0; border-radius: 11px;
+  background: transparent; color: var(--dark-text);
+  font-family: var(--font-body); font-size: var(--text-md); font-weight: 500;
+  text-align: left; cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out);
+}
+.lang-opt:hover { background: color-mix(in oklab, var(--color-accent) 14%, transparent); }
+.lang-opt .lang-check { color: var(--color-accent); font-weight: 800; opacity: 0; }
+.lang-opt.is-active { background: color-mix(in oklab, var(--color-accent) 22%, transparent); font-weight: 700; }
+.lang-opt.is-active .lang-check { opacity: 1; }
+
+/* ---------- hero layers: photo, scrim, 3D canvas ---------- */
+.hero { position: relative; overflow: hidden; }
+.hero__bgimg {
+  position: absolute; inset: -14% 0; width: 100%; height: 128%;
+  object-fit: cover; object-position: center 62%;
+  opacity: 0.34; z-index: 0; pointer-events: none;
+}
+.hero__scrim {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, color-mix(in oklab, var(--dark-bg) 88%, transparent) 22%, color-mix(in oklab, var(--dark-bg) 30%, transparent) 62%, color-mix(in oklab, var(--dark-bg) 55%, transparent)),
+    linear-gradient(180deg, color-mix(in oklab, var(--dark-bg) 42%, transparent), transparent 34%, transparent 62%, var(--dark-bg-2) 104%);
+}
+.hero__canvas {
+  position: absolute; top: 0; right: 0; bottom: 0; z-index: 0;
+  width: min(47rem, 58%); height: 100%;
+  pointer-events: none; opacity: 0.9;
+}
+.hero__grid { position: relative; z-index: 1; }
+@media (max-width: 64rem) {
+  .hero__canvas { display: none; }
+  .hero__bgimg { opacity: 0.22; }
+}
+
+/* ---------- marquee strip ---------- */
+.marquee {
+  overflow: hidden; white-space: nowrap;
+  background: var(--color-accent); color: var(--color-accent-ink);
+  border-block: var(--rule-bar) solid var(--dark-bg);
+  padding-block: 0.55rem;
+}
+.marquee__track { display: inline-flex; will-change: transform; animation: marquee-scroll 30s linear infinite; }
+.marquee__chunk {
+  font-family: var(--font-display); font-weight: var(--display-weight);
+  font-size: var(--text-lg); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.marquee__chunk i { font-style: normal; opacity: 0.55; padding-inline: 0.9rem; }
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+
+/* ---------- full-bleed photo bands ---------- */
+.band {
+  position: relative; margin: 0; overflow: hidden;
+  height: clamp(19rem, 54vh, 30rem);
+  background: var(--dark-bg);
+}
+.band img {
+  position: absolute; inset: -9% 0; width: 100%; height: 118%;
+  object-fit: cover; display: block;
+}
+.band::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 0.28), transparent 38%, transparent 55%, rgb(0 0 0 / 0.62));
+}
+.band__cap {
+  position: absolute; inset-inline: 0; bottom: var(--space-xl); z-index: 1;
+  display: flex; justify-content: center;
+}
+.band__text {
+  font-family: var(--font-display); font-weight: var(--display-weight);
+  font-size: clamp(1.9rem, 4.6vw, 3.9rem); line-height: 1; letter-spacing: var(--tracking-display);
+  text-transform: uppercase; color: var(--dark-text);
+  text-shadow: 0 4px 30px rgb(0 0 0 / 0.65);
+}
+.band__text::after {
+  content: ""; display: block; width: 4.5rem; height: 4px; margin-top: var(--space-sm);
+  background: var(--color-accent);
+}
+
+/* ---------- extra polish ---------- */
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); }
+.principle, .state-card, .flow li { transition: transform var(--dur-short) var(--ease-out); }
+.principle:hover, .state-card:hover { transform: translateY(-3px); }
+.sheet tbody tr { transition: background-color var(--dur-short) var(--ease-out); }
+.phone { transition: box-shadow var(--dur-long) var(--ease-out); }
+.phone:hover { box-shadow: 0 2.6rem 5rem rgb(0 0 0 / 0.55); }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+  html { scroll-behavior: auto; }
+}

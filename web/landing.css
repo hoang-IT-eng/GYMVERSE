@@ -281,3 +281,40 @@ h1, h2, h3 { text-transform: uppercase; line-height: 1.02; }
   .nav__links { gap: var(--space-md); }
   .hero { padding-block: var(--space-2xl); }
 }
+
+/* ---------- developer section ---------- */
+.dev { background: var(--color-paper); color: var(--color-ink); padding-block: var(--section-gap-s); }
+.dev__inner { max-width: 52rem; }
+.dev__eyebrow {
+  font-family: var(--font-outlier); font-size: var(--text-sm); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--color-accent-deep); margin-bottom: var(--space-lg);
+}
+.dev h2 { max-width: 24ch; }
+.dev__p { margin-top: var(--space-lg); font-size: var(--text-lg); line-height: 1.6; max-width: 60ch; color: var(--color-ink-2); }
+.dev__name {
+  margin-top: var(--space-2xl);
+  font-family: var(--font-display); font-weight: var(--display-weight);
+  font-size: var(--text-3xl); line-height: 1; letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+.dev__role { margin-top: var(--space-xs); color: var(--color-muted); font-size: var(--text-md); }
+.scope { border-top: var(--rule-hair) solid var(--color-rule); }
+
+/* ---------- phone mocks: harmonised with the real app ---------- */
+.phone__screen { background: #F3F4EF; border-radius: 1.8rem; }
+.app__name, .app__card-title, .app__h {
+  font-family: var(--font-body); font-weight: 800; letter-spacing: -0.01em; text-transform: none;
+}
+.app__name { font-size: 1.45rem; }
+.app__card { border-radius: 22px; border-color: #D9DECE; color: #1A1C16; }
+.app__card--volt { background: #D6F53C; border-color: transparent; color: #1A1C16; }
+.app__card--volt .app__card-label, .app__card--volt .app__card-sub { color: #1A1C16; }
+.app__card-label { color: #6A7164; }
+.app__card-sub { color: #6A7164; }
+.app__hi { color: #6A7164; }
+.app__note { color: #6A7164; }
+.app__streak-num { color: #1F7A4D; }
+.phone__screen .bar { background: #E3E7DA; }
+.phone__screen .bar__fill { background: #1F7A4D; }
+.phone__screen .bar__fill--low { background: #E25B1A; }
+.set-table th, .set-table td { border-top-color: #D9DECE; }

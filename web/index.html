@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IronLog — Mỗi buổi tập. Từng hiệp đều rõ ràng.</title>
   <meta name="description" content="IronLog là ứng dụng Android ghi nhật ký tập: giáo án hypertrophy, ghi hiệp rep × kg, đồng hồ nghỉ, tiến bộ và bữa ăn tiếng Việt. Kèm prototype tương tác chạy ngay trên trình duyệt.">
+  <meta name="author" content="Trần Huy Hoàng">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;700;800&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="landing.css">
 </head>
 <body>
@@ -18,7 +19,6 @@
       <a class="wordmark" href="#dau-trang">IronLog</a>
       <nav class="nav__links" aria-label="Chính">
         <a class="nav__proto" href="prototype.html">Try the interactive prototype ↗</a>
-        <a class="btn btn--primary btn--small" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Mã nguồn</a>
       </nav>
     </div>
   </header>
@@ -32,7 +32,7 @@
         <p class="honest">Đây là một dự án cá nhân đang được phát triển công khai. Mọi con số trên trang này và trong prototype là dữ liệu mẫu, không phải kết quả tập luyện thật.</p>
         <div class="actions">
           <a class="btn btn--primary" href="prototype.html">Try the interactive prototype ↗</a>
-          <a class="btn btn--ghost" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Lấy mã nguồn</a>
+          <a class="btn btn--ghost" href="#s03">Xem buổi tập mẫu</a>
         </div>
         <ul class="hero__meta">
           <li><span class="num">4</span> giáo án có sẵn</li>
@@ -45,7 +45,7 @@
         <div class="phone phone--hero">
           <div class="phone__status"><span class="num">9:41</span><span class="phone__demo">Demo</span></div>
           <div class="phone__screen">
-            <p class="app__hi">Chào buổi sáng</p>
+            <p class="app__hi">Chào Hoàng</p>
             <p class="app__name">Hôm nay tập gì?</p>
             <div class="app__streak">
               <span class="app__streak-num num">12</span>
@@ -64,7 +64,7 @@
             <div class="bar-row"><span>Chân</span><span class="bar"><span class="bar__fill bar__fill--low" style="width:38%"></span></span><span class="num">38%</span></div>
             <p class="app__note">Chân mới tập hôm qua — hôm nay để chân nghỉ là hợp lý.</p>
           </div>
-          <div class="phone__tabs" aria-hidden="true"><span class="is-on">Home</span><span>Giáo án</span><span>Tiến bộ</span><span>Hồ sơ</span></div>
+          <div class="phone__tabs" aria-hidden="true"><span class="is-on">Hôm nay</span><span>Giáo án</span><span>Tiến bộ</span><span>Cá nhân</span></div>
         </div>
         <figcaption class="hero__caption">Màn hình Home dựng lại bằng HTML/CSS: buổi hôm nay, chuỗi ngày tập và mức phục hồi nằm trên cùng một mặt.</figcaption>
       </figure>
@@ -316,7 +316,7 @@
           <span class="slide__no num">07</span>
           <div>
             <h2 id="s07-t">Ứng dụng Android hoàn chỉnh</h2>
-            <p class="lead">Trang này là bản trình bày; sản phẩm thật là ứng dụng Android có mã nguồn mở trên GitHub, chạy offline và không cần tài khoản.</p>
+            <p class="lead">Trang này là bản trình bày; sản phẩm thật là ứng dụng Android chạy offline ngay trên điện thoại của bạn và không cần tài khoản — dữ liệu tập nằm trên máy của bạn, không nằm trên máy chủ của ai khác.</p>
           </div>
         </header>
         <div class="slide__grid">
@@ -332,24 +332,32 @@
               <tr><td>Nền tảng</td><td>Android 8.1 trở lên (API 27+)</td></tr>
               <tr><td>Giấy phép</td><td>MIT</td></tr>
               <tr><td>Prototype web</td><td>Dữ liệu hư cấu, chỉ để thử tương tác</td></tr>
-              <tr><td>Mã nguồn thật</td><td><a href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">github.com/hoang-IT-eng/GYMVERSE</a></td></tr>
             </tbody>
           </table>
           <div>
             <h3 class="block-t">Ba bước tới buổi đầu</h3>
-            <p class="block-p">Cần Android Studio bản mới, JDK 17 đến 21 (Gradle không chạy trên JDK 26) và thiết bị hoặc emulator Android 8.1+.</p>
-            <pre class="clone"><code>git clone https://github.com/hoang-IT-eng/GYMVERSE.git</code></pre>
+            <p class="block-p">Không cần cài đặt gì cầu kỳ và không cần tài khoản: mở ứng dụng, chọn một lịch có sẵn và ghi buổi đầu tiên của bạn.</p>
             <ol class="stages">
-              <li><span class="stage-no num">1</span><h3>Lấy mã</h3><p>Mở thư mục bằng Android Studio rồi đợi Gradle đồng bộ xong.</p></li>
-              <li><span class="stage-no num">2</span><h3>Chạy thử</h3><p>Chọn emulator hoặc máy thật, bấm Run để cài bản debug.</p></li>
-              <li class="now"><span class="stage-no num">3</span><h3>Ghi buổi đầu</h3><p>Chọn giáo án, ghi rep và kg — đồng hồ nghỉ chạy ngay khi hiệp đầu tiên hoàn thành.</p></li>
+              <li><span class="stage-no num">1</span><h3>Chọn giáo án</h3><p>PPL, Upper/Lower, Arnold hoặc Full body — chọn lịch khớp với số ngày bạn tới phòng tập mỗi tuần.</p></li>
+              <li><span class="stage-no num">2</span><h3>Ghi buổi đầu</h3><p>Ghi rep × kg cho từng hiệp; đồng hồ nghỉ tự chạy sau mỗi hiệp để bạn chỉ việc tập tiếp.</p></li>
+              <li class="now"><span class="stage-no num">3</span><h3>Xem tiến bộ</h3><p>Đường cong e1RM, số hiệp theo nhóm cơ và tổng kết tuần cho bạn biết nên tăng tạ ở đâu.</p></li>
             </ol>
             <div class="actions">
-              <a class="btn btn--primary" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Lấy mã nguồn</a>
-              <a class="btn btn--ghost" href="prototype.html">Try the interactive prototype ↗</a>
+              <a class="btn btn--primary" href="prototype.html">Try the interactive prototype ↗</a>
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="dev" id="nha-phat-trien" aria-labelledby="dev-t">
+      <div class="container dev__inner">
+        <p class="dev__eyebrow">Nhà phát triển</p>
+        <h2 id="dev-t">Một người làm — từ phòng tập tới từng dòng code.</h2>
+        <p class="dev__p">IronLog do Trần Huy Hoàng thiết kế và phát triển. Anh là lập trình viên tại Việt Nam, đồng thời là người tập luyện theo đúng phương pháp mà ứng dụng ghi lại — nên mọi màn hình đều bắt đầu từ một câu hỏi rất thật: buổi tập hôm nay cần nhìn thấy gì, để buổi tập ngày mai tốt hơn?</p>
+        <p class="dev__p">Không có đội ngũ lớn đứng sau và cũng không có tính năng nào được thêm vào cho có. Mỗi phần của IronLog — giáo án, đồng hồ nghỉ, đường cong sức mạnh, bảng món ăn Việt — đều xuất phát từ những buổi tập thật của chính người viết ra nó, rồi được giữ lại chỉ khi nó giúp buổi tập sau rõ ràng hơn buổi tập trước.</p>
+        <p class="dev__name">Trần Huy Hoàng</p>
+        <p class="dev__role">Thiết kế &amp; phát triển IronLog</p>
       </div>
     </section>
 
@@ -367,15 +375,15 @@
     <div class="container mast__row">
       <div>
         <a class="wordmark" href="#dau-trang">IronLog</a>
-        <p>GYMVERSE trên GitHub. Giấy phép MIT.</p>
-        <p class="mast__fine">Prototype trên trình duyệt dùng dữ liệu hư cấu và chỉ mô phỏng tương tác — đó không phải ứng dụng Android thật. Ứng dụng thật nằm trong mã nguồn tại GitHub.</p>
+        <p>IronLog — Thiết kế và phát triển bởi Trần Huy Hoàng.</p>
+        <p class="mast__fine">Prototype trên trình duyệt dùng dữ liệu hư cấu và chỉ mô phỏng tương tác — đó không phải ứng dụng Android thật.</p>
       </div>
       <nav aria-label="Chân trang">
         <a href="#s02">Giáo án</a>
         <a href="#s05">Hệ quyết định</a>
+        <a href="#nha-phat-trien">Nhà phát triển</a>
         <a href="#pham-vi">Phạm vi</a>
         <a href="prototype.html">Prototype</a>
-        <a href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noreferrer">Mã nguồn</a>
       </nav>
     </div>
   </footer>

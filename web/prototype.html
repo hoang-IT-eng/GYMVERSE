@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IronLog — Prototype tương tác</title>
-  <meta name="description" content="Prototype IronLog chạy trên trình duyệt: thử ghi hiệp Bench Press, dùng đồng hồ nghỉ và xem tiến bộ. Dữ liệu hoàn toàn hư cấu.">
+  <meta name="description" content="Prototype IronLog chạy trên trình duyệt, dựng sát ứng dụng Android thật: thử ghi hiệp Bench Press, dùng đồng hồ nghỉ và xem tiến bộ. Dữ liệu hoàn toàn hư cấu.">
+  <meta name="author" content="Trần Huy Hoàng">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Roboto:wght@400;500;700;900&family=Saira+Condensed:wght@800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="prototype.css">
 </head>
 <body>
@@ -18,37 +19,84 @@
     <div class="layout">
       <aside class="note note--left" aria-label="Gợi ý thao tác">
         <h1 class="note__title">Thử prototype IronLog</h1>
-        <p>Một buổi Push Day A rút gọn, chạy hoàn toàn trong trình duyệt:</p>
+        <p>Một buổi Push Day A rút gọn, dựng sát ứng dụng Android thật và chạy hoàn toàn trong trình duyệt:</p>
         <ol class="note__steps">
-          <li>Ở <strong>Home</strong>, bấm bắt đầu buổi tập — hoặc mở tab <strong>Giáo án</strong> và chọn Push Day A.</li>
-          <li>Ghi ít nhất một hiệp Bench Press (kg × rep) rồi bấm đánh dấu xong. Đồng hồ nghỉ 01:30 sẽ tự chạy.</li>
-          <li>Bấm <strong>Xem lại</strong>, chọn RIR và xác nhận để buổi tập được cộng vào <strong>Tiến bộ</strong>.</li>
-          <li>Thử cả các trạng thái lỗi: bấm Xem lại khi chưa ghi hiệp nào, hoặc nhập mức tạ trên 200 kg.</li>
-          <li>Vào <strong>Hồ sơ</strong> và bấm Reset demo để quay về trạng thái ban đầu.</li>
+          <li>Ở <strong>Hôm nay</strong>, bấm <strong>Bắt đầu buổi tập</strong> — hoặc chạm nút tạ ở giữa thanh dưới để vào thẳng màn hình ghi hiệp.</li>
+          <li>Trong ô ghi hiệp: chỉnh kg và rep bằng các nút chỉnh nhanh, <strong>chọn RIR thực tế</strong>, rồi bấm <strong>Ghi hiệp</strong>. Thanh nghỉ giữa hiệp sẽ tự chạy.</li>
+          <li>Ghi đủ 3 hiệp Bench Press rồi bấm <strong>Kết thúc buổi tập</strong>, đọc hộp xác nhận và bấm <strong>Hoàn tất</strong> — buổi tập được cộng vào <strong>Tiến bộ</strong> và mục tiêu tuần.</li>
+          <li>Thử cả các trạng thái lỗi: bấm Kết thúc khi chưa ghi hiệp nào, hoặc nhập mức tạ trên 200 kg.</li>
+          <li>Vào <strong>Cá nhân</strong> để đổi thời gian nghỉ mặc định, và bấm Reset demo khi muốn quay về trạng thái ban đầu.</li>
         </ol>
       </aside>
 
       <main class="stage" id="man-hinh">
         <div class="phone" role="region" aria-label="Điện thoại demo IronLog">
-          <div class="phone__status">
-            <span class="num">9:41</span>
-            <span class="phone__demo">Demo</span>
-            <span class="num" aria-hidden="true">5G ▰▰▰</span>
+          <div class="phone__body">
+            <div class="statusbar" aria-hidden="true">
+              <span class="statusbar__time" id="sb-time">9:41</span>
+              <span class="statusbar__icons">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="2" y="14" width="3" height="6" rx="1"/><rect x="7.5" y="11" width="3" height="9" rx="1"/><rect x="13" y="8" width="3" height="12" rx="1"/><rect x="18.5" y="5" width="3" height="15" rx="1" opacity="0.35"/></svg>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 18.5a1.75 1.75 0 1 1 0 3.5 1.75 1.75 0 0 1 0-3.5zM12 13c1.9 0 3.6.73 4.9 1.93l-1.93 1.93A4.4 4.4 0 0 0 12 15.8c-1.13 0-2.16.4-2.97 1.06L7.1 14.93A6.9 6.9 0 0 1 12 13zm0-5c3.2 0 6.13 1.3 8.24 3.4l-1.93 1.94A9.4 9.4 0 0 0 12 10.8c-2.6 0-4.97 1.03-6.31 2.54L3.76 11.4A11.6 11.6 0 0 1 12 8zm0-5c4.5 0 8.6 1.8 11.6 4.74l-1.94 1.93A14.3 14.3 0 0 0 12 5.8c-3.9 0-7.44 1.54-10.34 3.87L-.28 7.74A16.6 16.6 0 0 1 12 3z" transform="translate(1.5 0) scale(0.92)"/></svg>
+                <svg viewBox="0 0 28 24" width="20" height="14" fill="none" aria-hidden="true"><rect x="1" y="7" width="22" height="10" rx="3" stroke="currentColor" stroke-width="1.6" opacity="0.5"/><rect x="3" y="9" width="13" height="6" rx="1.6" fill="currentColor"/><path d="M26 10.5v3a2.2 2.2 0 0 0 0-3z" fill="currentColor" opacity="0.5"/></svg>
+              </span>
+            </div>
+
+            <header class="appbar">
+              <a class="appbar__back" id="appbar-back" href="#home" hidden aria-label="Quay lại Hôm nay">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+              </a>
+              <span class="appbar__logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 21v-8.2C12 8.6 9.4 5.9 4.6 5.4c.4 5 2.9 7.6 7.4 7.8 4.5-.2 7-2.8 7.4-7.8C14.6 5.9 12 8.6 12 12.8V21z"/><path d="M11 21c-.6-3.8-2.6-6.4-6-8 3.9.4 6.2 2.6 7 6.4-.3.5-.6 1-1 1.6z" opacity="0.55"/></svg>
+              </span>
+              <span class="appbar__titles">
+                <strong>IronLog</strong>
+                <small id="appbar-title">Hôm Nay</small>
+              </span>
+              <span class="appbar__spacer"></span>
+              <span class="appbar__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 0 0 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+              </span>
+              <a class="appbar__icon" href="#profile" aria-label="Mở màn hình Cá Nhân">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              </a>
+            </header>
+
+            <div class="phone__screen" id="screen" tabindex="-1"></div>
+
+            <div id="restbar"></div>
+
+            <nav class="phone__tabs" aria-label="Điều hướng ứng dụng demo" id="tabbar">
+              <a href="#home" data-tab="home">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3l9-8z"/></svg>
+                <span class="tab__bar" aria-hidden="true"></span><span>Hôm nay</span>
+              </a>
+              <a href="#routines" data-tab="routines">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2.5v2h-5V2H7zm12 18H5V9h14v11z"/></svg>
+                <span class="tab__bar" aria-hidden="true"></span><span>Giáo án</span>
+              </a>
+              <a href="#workout" data-tab="workout" class="tab--center" aria-label="Ghi tập — mở màn hình ghi hiệp">
+                <span class="tab__fab" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor"><rect x="0.8" y="9" width="3" height="6" rx="1.2"/><rect x="4.3" y="6" width="3.2" height="12" rx="1.2"/><rect x="16.5" y="6" width="3.2" height="12" rx="1.2"/><rect x="20.2" y="9" width="3" height="6" rx="1.2"/><rect x="7" y="10.4" width="10" height="3.2" rx="1.2"/></svg>
+                </span>
+                <span>Ghi tập</span>
+              </a>
+              <a href="#progress" data-tab="progress">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>
+                <span class="tab__bar" aria-hidden="true"></span><span>Tiến bộ</span>
+              </a>
+              <a href="#profile" data-tab="profile">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span class="tab__bar" aria-hidden="true"></span><span>Cá nhân</span>
+              </a>
+            </nav>
           </div>
-          <div class="phone__screen" id="screen" tabindex="-1"></div>
-          <nav class="phone__tabs" aria-label="Điều hướng ứng dụng demo" id="tabbar">
-            <a href="#home" data-tab="home">Home</a>
-            <a href="#routines" data-tab="routines">Giáo án</a>
-            <a href="#progress" data-tab="progress">Tiến bộ</a>
-            <a href="#profile" data-tab="profile">Hồ sơ</a>
-          </nav>
         </div>
       </main>
 
       <aside class="note note--right" aria-label="Lưu ý dữ liệu">
         <h2 class="note__title">Dữ liệu hư cấu</h2>
-        <p>Người dùng, chuỗi 12 ngày, mức tạ, bữa ăn và biểu đồ trong prototype đều là số mẫu dựng cho bản demo này. Không có dữ liệu nào rời khỏi trình duyệt của bạn và không có buổi tập thật nào được ghi.</p>
-        <p>Trạng thái demo giữ nguyên khi bạn di chuyển giữa các màn hình trong cùng phiên, và trở về ban đầu khi bấm <strong>Reset demo</strong> ở tab Hồ sơ.</p>
+        <p>Người tập, mức tạ, bữa ăn và biểu đồ trong prototype đều là số mẫu dựng cho bản demo này, mô phỏng đúng giao diện và cách vận hành của ứng dụng Android. Không có dữ liệu nào rời khỏi trình duyệt của bạn và không có buổi tập thật nào được ghi.</p>
+        <p>Trạng thái demo giữ nguyên khi bạn di chuyển giữa các màn hình trong cùng phiên, và trở về ban đầu khi bấm <strong>Reset demo</strong> ở tab Cá nhân.</p>
         <p><a href="index.html">← Quay lại trang giới thiệu</a></p>
       </aside>
     </div>

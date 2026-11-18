@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
   --text-xs: 0.78rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.2rem; --text-xl: 1.5rem; --text-2xl: 1.95rem; --text-3xl: 2.45rem;
   --text-display-s: clamp(2.25rem, 4vw + 0.5rem, 3.85rem);
@@ -12,36 +12,28 @@
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 440ms;
 
-  /* Brutalist Cast-Iron, Knurled Steel & Lifting Chalk Palette */
-  --iron-void: #0b0b0c;
-  --iron-gunmetal: #16171a;
-  --iron-elevated: #1e2025;
-  --iron-steel: #2c2f36;
-  --iron-knurl: #8c919c;
-  --chalk-dust: #f3efe6;
-  --chalk-muted: #b6b1a6;
-  --chalk-dim: #7c786f;
-  --brass-raw: #d99b26;
-  --brass-bright: #eab344;
-  --brass-deep: #9d6d14;
-  --plate-red: #c83e2b;
-  --plate-red-soft: rgba(200, 62, 43, 0.16);
-  --wal-ok: #38b27b;
+  /* Velto system — forest green, rationed volt, soft warm-neutral papers.
+     One typeface (Manrope) for headlines, body and tabular numbers. */
+  --forest: #16451f;
+  --forest-deep: #0d2f15;
+  --forest-soft: #1c4d27;
+  --volt: #d6f53c;
+  --volt-deep: #55700e;
 
   /* Compatibility tokens preserved for prototype.css */
-  --color-error: #c83e2b;
-  --color-success: #2f9e68;
+  --color-error: #ba1a1a;
+  --color-success: #1f7a4d;
   --container: 1400px; --gutter: 56px; --gap-columns: 32px; --section-gap-s: 112px; --section-gap: 140px; --section-gap-l: 168px;
   --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
-  --color-paper: #f3efe6; --color-paper-2: #eae4d7; --color-paper-3: #ded7c7;
-  --color-ink: #0b0b0c; --color-ink-2: #16171a; --color-muted: #6e6a61;
-  --color-rule: #cfc8b8; --color-rule-2: #2c2f36;
-  --color-accent: #d99b26; --color-accent-ink: #0b0b0c; --color-accent-deep: #b57d16;
-  --color-focus: #d99b26; --color-slot: #2c2f36;
-  --font-display: "Saira Condensed", sans-serif;
-  --font-body: "Albert Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-outlier: "JetBrains Mono", ui-monospace, monospace;
-  --radius-card: 4px; --radius-pill: 4px; --rule-hair: 1px; --rule-bar: 2px;
-  --shadow-card: none;
+  --color-paper: #f6f5ef; --color-paper-2: #efeee5; --color-paper-3: #e3e2d5;
+  --color-ink: #1d2521; --color-ink-2: #232b26; --color-muted: #707a70;
+  --color-rule: #dddace; --color-rule-2: #0d2f15;
+  --color-accent: #d6f53c; --color-accent-ink: #1a1c16; --color-accent-deep: #55700e;
+  --color-focus: #16451f; --color-slot: #e7e6da;
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-outlier: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 24px; --radius-board: 28px; --radius-pill: 999px; --rule-hair: 1px; --rule-bar: 2px;
+  --shadow-card: 0 20px 45px rgba(20, 50, 26, 0.1);
   --tracking-display: -0.02em; --display-weight: 800;
 }

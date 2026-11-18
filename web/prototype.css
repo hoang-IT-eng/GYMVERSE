@@ -25,7 +25,7 @@
   --app-error-ink: #410002;
 }
 
-body { background: oklch(93% 0.006 250); }
+body { background: var(--color-paper); }
 
 .skip {
   position: absolute; inset-inline-start: var(--space-md); top: var(--space-md); z-index: var(--z-modal);

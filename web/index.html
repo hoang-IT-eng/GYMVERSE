@@ -7,7 +7,7 @@
   <meta name="description" content="IronLog (GYMVERSE) is an offline-first Android hypertrophy and strength log built with Kotlin, Jetpack Compose, Room SQLite WAL, and ForegroundService rest timers.">
   <meta name="author" content="Trần Huy Hoàng">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#0b0b0c">
+  <meta name="theme-color" content="#f6f5ef">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="IronLog · GYMVERSE">
   <meta property="og:title" content="IronLog — Offline-First Hypertrophy &amp; Strength System">
@@ -17,7 +17,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Saira+Condensed:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="landing.css">
 </head>
 <body>
@@ -27,12 +27,12 @@
     <div class="container nav__row">
       <a class="brand" href="#top" aria-label="IronLog Home">
         <svg class="brand__mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-          <circle cx="32" cy="32" r="30" fill="#16171a" stroke="#3b3f49" stroke-width="2"/>
-          <circle cx="32" cy="32" r="24.5" stroke="#c83e2b" stroke-width="3.5"/>
-          <circle cx="32" cy="32" r="18" fill="#0b0b0c" stroke="#2c2f36" stroke-width="1.2"/>
-          <path d="M32 6v7M32 51v7M6 32h7M51 32h7" stroke="#f3efe6" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="32" cy="32" r="9.5" fill="#d99b26"/>
-          <circle cx="32" cy="32" r="4.5" fill="#0b0b0c" stroke="#f3efe6" stroke-width="1.3"/>
+          <circle cx="32" cy="32" r="30" fill="#16451f" stroke="#0d2f15" stroke-width="2"/>
+          <circle cx="32" cy="32" r="24.5" stroke="#d6f53c" stroke-width="3.5"/>
+          <circle cx="32" cy="32" r="18" fill="#0d2f15" stroke="#3f5a45" stroke-width="1.2"/>
+          <path d="M32 6v7M32 51v7M6 32h7M51 32h7" stroke="#f6f5ef" stroke-opacity="0.55" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="32" cy="32" r="9.5" fill="#d6f53c"/>
+          <circle cx="32" cy="32" r="4.5" fill="#16451f" stroke="#f6f5ef" stroke-width="1.3"/>
         </svg>
         <span class="brand__text">
           <span class="brand__word">IRONLOG</span>
@@ -68,15 +68,12 @@
   </header>
 
   <main id="main-content">
-    <!-- ==================== HERO + 3D OLYMPIC BARBELL ==================== -->
+    <!-- ==================== HERO ==================== -->
     <section class="hero" id="hero">
-      <img class="hero__bg-photo" src="img/ironlog-knurled-barbell.jpg" alt="" aria-hidden="true" data-hero-parallax>
-      <div class="hero__vignette" aria-hidden="true"></div>
-
       <div class="container hero__grid">
         <div class="hero__copy">
           <p class="spec-index" data-i18n="hero.kicker">KOTLIN 2.0 · ROOM SQLITE WAL · API 27+</p>
-          <h1 class="hero__title" data-i18n="hero.h1">BUILT FOR CONCRETE BASEMENTS. <em>ZERO CLOUD LAG.</em></h1>
+          <h1 class="hero__title" data-i18n="hero.h1">Built for concrete basements. <em>Zero cloud lag.</em></h1>
           <p class="hero__lead" data-i18n="hero.lead">
             IronLog is an offline-first hypertrophy and strength instrument for Android. Log heavy sets in reps × kg, track RIR &amp; Epley 1RM, keep a lock-screen ForegroundService rest timer running, and audit weekly MEV–MRV volume — with every byte committed locally on your device.
           </p>
@@ -107,75 +104,60 @@
           </div>
         </div>
 
-        <div class="barbell-stage" aria-label="Interactive 3D Olympic barbell and calibrated competition plate stack">
-          <div class="barbell-stage__top">
+        <figure class="hero-board" aria-label="Technical board of the Olympic barbell and calibrated competition plate stack">
+          <div class="hero-board__top">
             <span data-i18n="stage.spec">29MM KNURLED SHAFT · CALIBRATED STACK</span>
-            <span class="num" id="barbellLoadReadout">LOAD: 165.0 KG · ASSEMBLED</span>
+            <span class="num">165.0 KG</span>
           </div>
 
-          <div class="barbell-canvas-wrap">
-            <canvas id="barbellCanvas" aria-label="3D Olympic barbell assembly"></canvas>
-            <!-- Resilient SVG Blueprint Fallback for non-WebGL / prefers-reduced-motion -->
-            <div class="barbell-fallback" id="barbellFallback" hidden>
-              <svg viewBox="0 0 680 260" width="100%" height="100%" fill="none" role="img" aria-label="Exploded technical diagram of Olympic barbell with 25kg, 20kg, 15kg, 10kg calibrated plates and brass collar">
-                <line x1="30" y1="130" x2="650" y2="130" stroke="#8c919c" stroke-width="12"/>
-                <rect x="200" y="123" width="280" height="14" fill="#2c2f36" stroke="#8c919c" stroke-width="1"/>
-                <!-- Left Stack -->
-                <rect x="158" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#f3efe6" stroke-opacity="0.35"/>
-                <rect x="130" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#d99b26" stroke-width="1.5"/>
-                <rect x="104" y="64" width="16" height="132" rx="3" fill="#d99b26" stroke="#0b0b0c"/>
-                <rect x="82" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
-                <rect x="58" y="106" width="16" height="48" rx="2" fill="#d99b26"/>
-                <!-- Right Stack -->
-                <rect x="502" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#f3efe6" stroke-opacity="0.35"/>
-                <rect x="532" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#d99b26" stroke-width="1.5"/>
-                <rect x="560" y="64" width="16" height="132" rx="3" fill="#d99b26" stroke="#0b0b0c"/>
-                <rect x="584" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
-                <rect x="606" y="106" width="16" height="48" rx="2" fill="#d99b26"/>
-                <text x="340" y="238" fill="#d99b26" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">20KG SHAFT + 2×(25 · 20 · 15 · 10 · 2.5KG COLLAR) = 165.0 KG</text>
-              </svg>
-            </div>
+          <div class="hero-board__figure">
+            <svg viewBox="0 0 680 260" width="100%" height="100%" fill="none" role="img" aria-label="Exploded technical diagram of Olympic barbell with 25kg, 20kg, 15kg, 10kg calibrated plates and collar">
+              <line x1="30" y1="130" x2="650" y2="130" stroke="#8c919c" stroke-width="12"/>
+              <rect x="200" y="123" width="280" height="14" fill="#2c2f36" stroke="#8c919c" stroke-width="1"/>
+              <!-- Left Stack -->
+              <rect x="158" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#16451f" stroke-opacity="0.35"/>
+              <rect x="130" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#16451f" stroke-width="1.5"/>
+              <rect x="104" y="64" width="16" height="132" rx="3" fill="#d6f53c" stroke="#16451f"/>
+              <rect x="82" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
+              <rect x="58" y="106" width="16" height="48" rx="2" fill="#16451f"/>
+              <!-- Right Stack -->
+              <rect x="502" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#16451f" stroke-opacity="0.35"/>
+              <rect x="532" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#16451f" stroke-width="1.5"/>
+              <rect x="560" y="64" width="16" height="132" rx="3" fill="#d6f53c" stroke="#16451f"/>
+              <rect x="584" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
+              <rect x="606" y="106" width="16" height="48" rx="2" fill="#16451f"/>
+              <text x="340" y="238" fill="#16451f" font-family="Manrope, sans-serif" font-weight="600" font-size="11" text-anchor="middle">20KG SHAFT + 2×(25 · 20 · 15 · 10 · 2.5KG COLLAR) = 165.0 KG</text>
+            </svg>
           </div>
 
-          <div class="barbell-stage__bottom">
+          <figcaption class="hero-board__bottom">
             <div class="plate-legend" aria-hidden="true">
               <span class="plate-tag"><i class="plate-dot" style="background:#c83e2b"></i>25KG</span>
               <span class="plate-tag"><i class="plate-dot" style="background:#5a6270"></i>20KG</span>
-              <span class="plate-tag"><i class="plate-dot" style="background:#d99b26"></i>15KG</span>
+              <span class="plate-tag"><i class="plate-dot" style="background:#d6f53c"></i>15KG</span>
               <span class="plate-tag"><i class="plate-dot" style="background:#2c2f36"></i>10KG</span>
-              <span class="plate-tag"><i class="plate-dot" style="background:#ebb03c"></i>2.5KG COLLAR</span>
+              <span class="plate-tag"><i class="plate-dot" style="background:#16451f"></i>2.5KG COLLAR</span>
             </div>
-            <label class="explode-ctrl" for="explodeSlider">
-              <span data-i18n="stage.explode">EXPLODE AXIS</span>
-              <input id="explodeSlider" type="range" min="0" max="100" value="18">
-            </label>
-          </div>
-        </div>
+          </figcaption>
+        </figure>
       </div>
     </section>
 
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker__track">
-        <span class="ticker__item">ROOM SQLITE WAL <b>//</b> FOREGROUND SERVICE TIMER <b>//</b> EPLEY 1RM <b>//</b> MEV–MRV VOLUME <b>//</b> RIR AUTOREGULATION <b>//</b> CSV &amp; JSON BACKUP <b>//</b> KATCH-MCARDLE TDEE <b>//</b>&nbsp;</span>
-        <span class="ticker__item">ROOM SQLITE WAL <b>//</b> FOREGROUND SERVICE TIMER <b>//</b> EPLEY 1RM <b>//</b> MEV–MRV VOLUME <b>//</b> RIR AUTOREGULATION <b>//</b> CSV &amp; JSON BACKUP <b>//</b> KATCH-MCARDLE TDEE <b>//</b>&nbsp;</span>
-      </div>
-    </div>
-
-    <!-- ==================== PINNED NARRATIVE 01: BASEMENT SIGNAL DROP ==================== -->
-    <section class="sec signal-pin-wrap" id="signal-drop" aria-labelledby="signal-heading">
+    <!-- ==================== CASE 01: BASEMENT SIGNAL DROP ==================== -->
+    <section class="sec" id="signal-drop" aria-labelledby="signal-heading">
       <div class="container">
         <header class="sec__head">
           <span class="sec__index num">01</span>
           <div>
-            <p class="sec__kicker" data-i18n="s1.kicker">PINNED NARRATIVE · OFFLINE-FIRST PERSISTENCE</p>
-            <h2 id="signal-heading" data-i18n="s1.h2">THE BASEMENT SIGNAL DROP</h2>
+            <p class="sec__kicker" data-i18n="s1.kicker">OFFLINE-FIRST PERSISTENCE</p>
+            <h2 id="signal-heading" data-i18n="s1.h2">The basement signal drop</h2>
             <p class="sec__lead" data-i18n="s1.lead">
-              Heavy squat racks live behind reinforced concrete where cellular reception dies. Scroll or step through the signal drop below to watch how IronLog commits a top set atomically to local Room SQLite (WAL) while cloud workout trackers hang and lose sets.
+              Heavy squat racks live behind reinforced concrete where cellular reception dies. Step through the signal drop below to watch how IronLog commits a top set atomically to local Room SQLite (WAL) while cloud workout trackers hang and lose sets.
             </p>
           </div>
         </header>
 
-        <div class="signal-stage" id="signalPinTarget">
+        <div class="signal-stage">
           <div class="signal-hud">
             <div>
               <div class="signal-meter">
@@ -201,7 +183,7 @@
 
             <div>
               <p class="mono" style="font-size:0.7rem;color:var(--chalk-muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.1em;" data-i18n="s1.scrubHint">
-                Scroll to scrub reception · or inspect stage directly:
+                Inspect each stage directly:
               </p>
               <div class="signal-steps" role="tablist" aria-label="Signal stages">
                 <button class="step-btn is-active" type="button" data-signal-step="0">4G LTE (-78dBm)</button>
@@ -259,31 +241,31 @@
       </div>
     </section>
 
-    <figure class="photo-band">
-      <img src="img/ironlog-basement-rack.jpg" alt="Underground concrete powerlifting gym with squat rack and chalked floor" data-band-parallax loading="lazy">
-      <figcaption class="photo-band__caption">
-        <div class="container">
-          <p class="photo-band__quote" data-i18n="band1.quote">IRON DOES NOT WAIT FOR A RETRY SPINNER.</p>
-          <p class="photo-band__sub" data-i18n="band1.sub">LOCAL-FIRST ANDROID ARCHITECTURE · ZERO ACCOUNT WALL</p>
-        </div>
-      </figcaption>
-    </figure>
+    <div class="container">
+      <figure class="photo-board">
+        <img src="img/ironlog-basement-rack.jpg" alt="Underground concrete powerlifting gym with squat rack and chalked floor" loading="lazy">
+        <figcaption class="photo-board__caption">
+          <p class="photo-board__quote" data-i18n="band1.quote">Iron does not wait for a retry spinner.</p>
+          <p class="photo-board__sub" data-i18n="band1.sub">LOCAL-FIRST ANDROID ARCHITECTURE · ZERO ACCOUNT WALL</p>
+        </figcaption>
+      </figure>
+    </div>
 
-    <!-- ==================== PINNED NARRATIVE 02: FOREGROUND SERVICE REST TIMER ==================== -->
-    <section class="sec sec--surface" id="rest-service" aria-labelledby="rest-heading">
+    <!-- ==================== CASE 02: FOREGROUND SERVICE REST TIMER ==================== -->
+    <section class="sec sec--forest" id="rest-service" aria-labelledby="rest-heading">
       <div class="container">
         <header class="sec__head">
           <span class="sec__index num">02</span>
           <div>
-            <p class="sec__kicker" data-i18n="s2.kicker">PINNED NARRATIVE · ANDROID FOREGROUND SERVICE</p>
-            <h2 id="rest-heading" data-i18n="s2.h2">SURVIVES SCREEN-OFF &amp; APP BACKGROUNDING</h2>
+            <p class="sec__kicker" data-i18n="s2.kicker">ANDROID FOREGROUND SERVICE</p>
+            <h2 id="rest-heading" data-i18n="s2.h2">Survives screen-off &amp; app backgrounding</h2>
             <p class="sec__lead" data-i18n="s2.lead">
               Ordinary web wrappers and naive timers get killed by Android Doze the moment you lock your phone and chalk your hands. IronLog promotes an ongoing ForegroundService notification that counts down accurately on your lock screen.
             </p>
           </div>
         </header>
 
-        <div class="rest-grid" id="restPinTarget">
+        <div class="rest-grid">
           <div class="lockscreen-device" id="lockDevice">
             <div class="lockscreen-glass">
               <div class="ls-clock">
@@ -323,7 +305,7 @@
 
           <div>
             <h3 style="font-size:clamp(1.75rem,3vw,2.5rem);" data-i18n="s2.rightTitle">
-              HONEST CHRONOMETRY BETWEEN HEAVY SETS
+              Honest chronometry between heavy sets
             </h3>
             <p style="margin-top:0.85rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s2.rightLead">
               Hypertrophy and strength progression depend on reproducible inter-set recovery. Whether you switch to your music player, answer a message, or pocket a locked phone for two and a half minutes, the countdown stays anchored to monotonic system uptime.
@@ -355,7 +337,7 @@
           <span class="sec__index num">03</span>
           <div>
             <p class="sec__kicker" data-i18n="s3.kicker">LIVE INTERACTIVE WORKBENCH · TRY ON PAGE</p>
-            <h2 id="sandbox-heading" data-i18n="s3.h2">LOG A REAL SET. WATCH E1RM &amp; VOLUME REACT.</h2>
+            <h2 id="sandbox-heading" data-i18n="s3.h2">Log a real set. Watch E1RM &amp; volume react.</h2>
             <p class="sec__lead" data-i18n="s3.lead">
               Adjust load, reps, and RPE below and commit a set. IronLog computes your Epley 1RM, checks progressive overload criteria, triggers the live rest timer, and updates weekly muscle-group sets against MEV–MRV landmarks immediately.
             </p>
@@ -494,24 +476,14 @@
       </div>
     </section>
 
-    <figure class="photo-band">
-      <img src="img/ironlog-chalk-hands.jpg" alt="Chalked hands gripping knurled steel Olympic barbell in dramatic lighting" data-band-parallax loading="lazy">
-      <figcaption class="photo-band__caption">
-        <div class="container">
-          <p class="photo-band__quote" data-i18n="band2.quote">CHALK ON STEEL. NUMBERS IN STONE.</p>
-          <p class="photo-band__sub" data-i18n="band2.sub">CSV SPREADSHEET EXPORT · FULL JSON BACKUP &amp; RESTORE</p>
-        </div>
-      </figcaption>
-    </figure>
-
-    <!-- ==================== ARCHITECTURE & CRAFT STRIP ==================== -->
+    <!-- ==================== ARCHITECTURE & MAKER ==================== -->
     <section class="sec sec--surface" id="architecture" aria-labelledby="arch-heading">
       <div class="container">
         <header class="sec__head">
           <span class="sec__index num">04</span>
           <div>
             <p class="sec__kicker" data-i18n="s4.kicker">SYSTEM ARCHITECTURE · KOTLIN &amp; JETPACK COMPOSE</p>
-            <h2 id="arch-heading" data-i18n="s4.h2">ENGINEERED WITHOUT BLOAT</h2>
+            <h2 id="arch-heading" data-i18n="s4.h2">Engineered without bloat</h2>
             <p class="sec__lead" data-i18n="s4.lead">
               Designed and written by Trần Huy Hoàng from real training logs: unidirectional Compose state, deterministic hypertrophy math, local SQLite durability, and zero third-party analytics trackers.
             </p>
@@ -549,15 +521,10 @@
         </div>
 
         <div class="craft-gallery">
-          <figure class="craft-shot" data-reveal>
-            <img src="img/ironlog-knurled-barbell.jpg" alt="Calibrated red competition plate, brass collar, and diamond-knurled barbell sleeve" loading="lazy">
-            <figcaption data-i18n="s4.cap1">CALIBRATED HARDWARE INSPIRATION — Raw steel knurling, competition red 25 kg plates, and machined brass collars.</figcaption>
-          </figure>
-
           <div class="console-card" style="display:flex;flex-direction:column;justify-content:space-between;" data-reveal>
             <div>
               <p class="spec-index" data-i18n="s4.makerKicker">SOLO ENGINEERED · OPEN SOURCE MIT</p>
-              <h3 style="font-size:2rem;" data-i18n="s4.makerTitle">FROM THE GYM FLOOR TO EVERY LINE OF KOTLIN.</h3>
+              <h3 style="font-size:2rem;" data-i18n="s4.makerTitle">From the gym floor to every line of Kotlin.</h3>
               <p style="margin-top:0.85rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s4.makerBody">
                 Built by Trần Huy Hoàng. Every screen in IronLog earned its place during real hypertrophy blocks — answering what load you moved last week, how recovered each muscle group is today, and when you are ready to pull the next set.
               </p>
@@ -566,7 +533,6 @@
             <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:0.75rem;">
               <a class="btn btn--brass" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="btn.apk">Download Android APK ↓</a>
               <a class="btn btn--iron" href="prototype.html" data-i18n="btn.fullProto">Full Screen Prototype ↗</a>
-              <a class="btn btn--ghost" href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noopener">GitHub Repo ↗</a>
             </div>
           </div>
         </div>
@@ -601,14 +567,10 @@
         <a href="#rest-service" data-i18n="nav.rest">02 Rest Service</a>
         <a href="#sandbox" data-i18n="nav.sandbox">03 Live Log</a>
         <a href="prototype.html">Prototype</a>
-        <a href="https://github.com/hoang-IT-eng/GYMVERSE" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
   </footer>
 
-  <script src="vendor/gsap.min.js"></script>
-  <script src="vendor/ScrollTrigger.min.js"></script>
-  <script src="vendor/three.min.js"></script>
   <script src="landing.js"></script>
 </body>
 </html>

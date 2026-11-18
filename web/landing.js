@@ -1,5 +1,5 @@
 /* ==========================================================================
-   IronLog (GYMVERSE) — Interactive 3D Barbell, GSAP ScrollTrigger & Sandbox
+   IronLog (GYMVERSE) — Sandbox, lock-screen timer & prototype drawer
    Resilient offline-first progressive enhancement with EN / VI localization
    ========================================================================== */
 (function () {
@@ -18,7 +18,7 @@
       "nav.arch": "04 Architecture",
       "nav.proto": "Live App ↗",
       "hero.kicker": "KOTLIN 2.0 · ROOM SQLITE WAL · API 27+",
-      "hero.h1": "BUILT FOR CONCRETE BASEMENTS. <em>ZERO CLOUD LAG.</em>",
+      "hero.h1": "Built for concrete basements. <em>Zero cloud lag.</em>",
       "hero.lead": "IronLog is an offline-first hypertrophy and strength instrument for Android. Log heavy sets in reps × kg, track RIR &amp; Epley 1RM, keep a lock-screen ForegroundService rest timer running, and audit weekly MEV–MRV volume — with every byte committed locally on your device.",
       "btn.apk": "Download Android APK ↓",
       "btn.live": "Launch Live Interactive App ↗",
@@ -30,16 +30,16 @@
       "hero.t4": "Offline · zero account required",
       "stage.spec": "29MM KNURLED SHAFT · CALIBRATED STACK",
       "stage.explode": "EXPLODE AXIS",
-      "s1.kicker": "PINNED NARRATIVE · OFFLINE-FIRST PERSISTENCE",
-      "s1.h2": "THE BASEMENT SIGNAL DROP",
-      "s1.lead": "Heavy squat racks live behind reinforced concrete where cellular reception dies. Scroll or step through the signal drop below to watch how IronLog commits a top set atomically to local Room SQLite (WAL) while cloud workout trackers hang and lose sets.",
-      "s1.scrubHint": "Scroll to scrub reception · or inspect stage directly:",
+      "s1.kicker": "OFFLINE-FIRST PERSISTENCE",
+      "s1.h2": "The basement signal drop",
+      "s1.lead": "Heavy squat racks live behind reinforced concrete where cellular reception dies. Step through the signal drop below to watch how IronLog commits a top set atomically to local Room SQLite (WAL) while cloud workout trackers hang and lose sets.",
+      "s1.scrubHint": "Inspect each stage directly:",
       "s1.ironSub": "Zero network socket touched. Direct Kotlin Coroutine DAO transaction on local flash storage.",
       "s1.cloudLabel": "CLOUD-ONLY TRACKER",
-      "band1.quote": "IRON DOES NOT WAIT FOR A RETRY SPINNER.",
+      "band1.quote": "Iron does not wait for a retry spinner.",
       "band1.sub": "LOCAL-FIRST ANDROID ARCHITECTURE · ZERO ACCOUNT WALL",
-      "s2.kicker": "PINNED NARRATIVE · ANDROID FOREGROUND SERVICE",
-      "s2.h2": "SURVIVES SCREEN-OFF &amp; APP BACKGROUNDING",
+      "s2.kicker": "ANDROID FOREGROUND SERVICE",
+      "s2.h2": "Survives screen-off &amp; app backgrounding",
       "s2.lead": "Ordinary web wrappers and naive timers get killed by Android Doze the moment you lock your phone and chalk your hands. IronLog promotes an ongoing ForegroundService notification that counts down accurately on your lock screen.",
       "s2.locked": "ANDROID LOCK SCREEN · SCREEN OFF",
       "s2.notifLift": "Next: Barbell Squat · 140 kg × 5",
@@ -47,7 +47,7 @@
       "s2.pause": "Pause",
       "s2.resume": "Resume",
       "s2.skip": "Skip →",
-      "s2.rightTitle": "HONEST CHRONOMETRY BETWEEN HEAVY SETS",
+      "s2.rightTitle": "Honest chronometry between heavy sets",
       "s2.rightLead": "Hypertrophy and strength progression depend on reproducible inter-set recovery. Whether you switch to your music player, answer a message, or pocket a locked phone for two and a half minutes, the countdown stays anchored to monotonic system uptime.",
       "s2.sp1t": "SystemClock.elapsedRealtime()",
       "s2.sp1d": "Immune to CPU throttling and deep sleep drift — remaining rest is computed against hardware boot timestamps rather than fragile UI intervals.",
@@ -56,7 +56,7 @@
       "s2.sp3t": "Explicit Guardrails",
       "s2.sp3d": "Finishing a workout with 0 logged sets or accidentally typing 600 kg instead of 60 kg triggers immediate confirmation guards before touching history.",
       "s3.kicker": "LIVE INTERACTIVE WORKBENCH · TRY ON PAGE",
-      "s3.h2": "LOG A REAL SET. WATCH E1RM &amp; VOLUME REACT.",
+      "s3.h2": "Log a real set. Watch E1RM &amp; volume react.",
       "s3.lead": "Adjust load, reps, and RPE below and commit a set. IronLog computes your Epley 1RM, checks progressive overload criteria, triggers the live rest timer, and updates weekly muscle-group sets against MEV–MRV landmarks immediately.",
       "s3.sessionTag": "ACTIVE SESSION · UPPER / LOWER HYPERTROPHY",
       "s3.weight": "LOAD (KG)",
@@ -81,7 +81,7 @@
       "band2.quote": "CHALK ON STEEL. NUMBERS IN STONE.",
       "band2.sub": "CSV SPREADSHEET EXPORT · FULL JSON BACKUP &amp; RESTORE",
       "s4.kicker": "SYSTEM ARCHITECTURE · KOTLIN &amp; JETPACK COMPOSE",
-      "s4.h2": "ENGINEERED WITHOUT BLOAT",
+      "s4.h2": "Engineered without bloat",
       "s4.lead": "Designed and written by Trần Huy Hoàng from real training logs: unidirectional Compose state, deterministic hypertrophy math, local SQLite durability, and zero third-party analytics trackers.",
       "s4.n1": "Material 3 adaptive screens bound via lifecycle-aware StateFlow. Sub-frame recomposition for set tables and rest banners.",
       "s4.n2": "Pure Kotlin calculators for Epley e1RM, RIR progression gates, muscle recovery decay, and weekly MEV–MRV landmarks.",
@@ -89,7 +89,7 @@
       "s4.n4": "Dedicated Android Service + Notification chronometer surviving lock screen, app switching, and aggressive battery savers.",
       "s4.cap1": "CALIBRATED HARDWARE INSPIRATION — Raw steel knurling, competition red 25 kg plates, and machined brass collars.",
       "s4.makerKicker": "SOLO ENGINEERED · OPEN SOURCE MIT",
-      "s4.makerTitle": "FROM THE GYM FLOOR TO EVERY LINE OF KOTLIN.",
+      "s4.makerTitle": "From the gym floor to every line of Kotlin.",
       "s4.makerBody": "Built by Trần Huy Hoàng. Every screen in IronLog earned its place during real hypertrophy blocks — answering what load you moved last week, how recovered each muscle group is today, and when you are ready to pull the next set.",
       "drawer.expand": "Full Page ↗",
       "drawer.close": "Close ✕",
@@ -106,7 +106,7 @@
       "nav.arch": "04 Kiến Trúc",
       "nav.proto": "Mở App ↗",
       "hero.kicker": "KOTLIN 2.0 · ROOM SQLITE WAL · API 27+",
-      "hero.h1": "ĐÚC CHO PHÒNG TẬP TẦNG HẦM. <em>KHÔNG ĐỘ TRỄ MÂY.</em>",
+      "hero.h1": "Đúc cho phòng tập tầng hầm. <em>Không độ trễ mây.</em>",
       "hero.lead": "IronLog là thiết bị ghi nhật ký hypertrophy &amp; sức mạnh offline-first trên Android. Ghi nhanh hiệp nặng theo rep × kg, tính RIR &amp; Epley 1RM, giữ đồng hồ nghỉ ForegroundService ngay trên màn hình khoá và đối chiếu volume tuần MEV–MRV — lưu 100% trực tiếp trên máy.",
       "btn.apk": "Tải APK Android ↓",
       "btn.live": "Mở App Tương Tác Trực Tiếp ↗",
@@ -118,16 +118,16 @@
       "hero.t4": "Lưu offline · không cần tài khoản",
       "stage.spec": "ĐÒN THÉP NHÁM 29MM · BÁNH TẠ CHUẨN IPF",
       "stage.explode": "TÁCH TRỤC TẠ",
-      "s1.kicker": "KỊCH BẢN CUỘN GHIM · LƯU TRỮ OFFLINE-FIRST",
-      "s1.h2": "KHI TẦNG HẦM MẤT SẠCH SÓNG",
-      "s1.lead": "Khung squat nặng thường nằm sâu dưới tầng hầm bê tông nơi sóng 4G tắt hẳn. Cuộn hoặc bấm qua từng nấc bên dưới để thấy IronLog ghi tức thì hiệp 140 kg × 5 vào Room SQLite (WAL) trong < 2.4ms, trong khi app phụ thuộc đám mây treo cứng.",
-      "s1.scrubHint": "Cuộn để mô phỏng rớt sóng · hoặc chọn từng mức:",
+      "s1.kicker": "LƯU TRỮ OFFLINE-FIRST",
+      "s1.h2": "Khi tầng hầm mất sạch sóng",
+      "s1.lead": "Khung squat nặng thường nằm sâu dưới tầng hầm bê tông nơi sóng 4G tắt hẳn. Bấm qua từng nấc bên dưới để thấy IronLog ghi tức thì hiệp 140 kg × 5 vào Room SQLite (WAL) trong < 2.4ms, trong khi app phụ thuộc đám mây treo cứng.",
+      "s1.scrubHint": "Chọn từng mức để xem trực tiếp:",
       "s1.ironSub": "Không mở kết nối mạng. Giao dịch DAO Kotlin Coroutine ghi thẳng vào bộ nhớ flash trên máy.",
       "s1.cloudLabel": "APP GHI TẬP ĐÁM MÂY",
-      "band1.quote": "TẠ NẶNG KHÔNG ĐỢI VÒNG XOAY MẤT MẠNG.",
+      "band1.quote": "Tạ nặng không đợi vòng xoay mất mạng.",
       "band1.sub": "KIẾN TRÚC ANDROID LOCAL-FIRST · KHÔNG TƯỜNG ĐĂNG NHẬP",
-      "s2.kicker": "KỊCH BẢN CUỘN GHIM · ANDROID FOREGROUND SERVICE",
-      "s2.h2": "ĐẾM CHUẨN NGAY CẢ KHI TẮT MÀN HÌNH",
+      "s2.kicker": "ANDROID FOREGROUND SERVICE",
+      "s2.h2": "Đếm chuẩn ngay cả khi tắt màn hình",
       "s2.lead": "Các web-app bọc tạm sẽ bị Android Doze đóng băng ngay khi bạn khoá máy và xoa phấn. IronLog ghim thông báo ForegroundService chạy nền giúp đồng hồ nghỉ đếm chính xác trên màn hình khoá.",
       "s2.locked": "MÀN HÌNH KHOÁ ANDROID · ĐÃ TẮT SÁNG",
       "s2.notifLift": "Tiếp theo: Barbell Squat · 140 kg × 5",
@@ -135,7 +135,7 @@
       "s2.pause": "Tạm dừng",
       "s2.resume": "Tiếp tục",
       "s2.skip": "Bỏ qua →",
-      "s2.rightTitle": "ĐỒNG HỒ NGHỈ TRUNG THỰC GIỮA CÁC HIỆP NẶNG",
+      "s2.rightTitle": "Đồng hồ nghỉ trung thực giữa các hiệp nặng",
       "s2.rightLead": "Tiến bộ sức mạnh đòi hỏi thời gian nghỉ nhất quán. Dù bạn chuyển sang đổi nhạc, trả lời tin nhắn hay bỏ điện thoại đã khoá vào túi suốt hai phút rưỡi, bộ đếm vẫn bám chặt mốc thời gian phần cứng.",
       "s2.sp1t": "SystemClock.elapsedRealtime()",
       "s2.sp1d": "Không lệch nhịp khi CPU hạ xung — thời gian còn lại đối chiếu trực tiếp với mốc uptime phần cứng thay vì vòng lặp UI mỏng manh.",
@@ -144,7 +144,7 @@
       "s2.sp3t": "Chốt Chặn Chống Nhập Nhầm",
       "s2.sp3d": "Bấm kết thúc khi chưa ghi hiệp nào hoặc gõ nhầm 600 kg thay vì 60 kg đều được chặn hỏi lại rõ ràng trước khi lưu.",
       "s3.kicker": "BÀN GHI TẬP TƯƠNG TÁC · THỬ TRỰC TIẾP",
-      "s3.h2": "GHI THỬ MỘT HIỆP. XEM E1RM &amp; VOLUME CẬP NHẬT.",
+      "s3.h2": "Ghi thử một hiệp. Xem E1RM &amp; volume cập nhật.",
       "s3.lead": "Chỉnh mức tạ, số rep và RPE bên dưới rồi bấm ghi hiệp. IronLog tính ngay Epley 1RM, đưa gợi ý tăng tạ buổi tới, kích hoạt đồng hồ nghỉ và cộng số hiệp vào thang MEV–MRV trong tuần.",
       "s3.sessionTag": "PHIÊN ĐANG CHẠY · UPPER / LOWER HYPERTROPHY",
       "s3.weight": "MỨC TẠ (KG)",
@@ -169,7 +169,7 @@
       "band2.quote": "PHẤN TRẮNG TRÊN THÉP. SỐ LIỆU RÕ RÀNG.",
       "band2.sub": "XUẤT BẢNG TÍNH CSV · SAO LƯU &amp; KHÔI PHỤC JSON TOÀN DIỆN",
       "s4.kicker": "KIẾN TRÚC HỆ THỐNG · KOTLIN &amp; JETPACK COMPOSE",
-      "s4.h2": "THIẾT KẾ GỌN CHẮC, KHÔNG DƯ THỪA",
+      "s4.h2": "Thiết kế gọn chắc, không dư thừa",
       "s4.lead": "Do Trần Huy Hoàng trực tiếp thiết kế và lập trình từ nhật ký tập thực tế: luồng trạng thái Compose một chiều, công thức hypertrophy minh bạch, SQLite bền bỉ trên máy và không gắn bất kỳ trình theo dõi quảng cáo nào.",
       "s4.n1": "Giao diện Material 3 kết nối StateFlow theo vòng đời. Cập nhật bảng hiệp và thanh nghỉ mượt tức thì.",
       "s4.n2": "Bộ tính Kotlin thuần cho Epley e1RM, ngưỡng RIR tăng tạ, độ phục hồi nhóm cơ và khoảng MEV–MRV.",
@@ -177,7 +177,7 @@
       "s4.n4": "ForegroundService độc lập giữ thông báo đếm ngược sống sót qua khoá màn hình, chuyển ứng dụng và chế độ tiết kiệm pin.",
       "s4.cap1": "CẢM HỨNG VẬT LIỆU CƠ KHÍ — Thép đòn nhám kim cương, bánh tạ đỏ 25 kg chuẩn IPF và khoá đồng thau tiện CNC.",
       "s4.makerKicker": "PHÁT TRIỂN ĐỘC LẬP · MÃ NGUỒN MỞ MIT",
-      "s4.makerTitle": "TỪ SÀN TẬP TỚI TỪNG DÒNG CODE KOTLIN.",
+      "s4.makerTitle": "Từ sàn tập tới từng dòng code Kotlin.",
       "s4.makerBody": "Phát triển bởi Trần Huy Hoàng. Từng màn hình trong IronLog đều ra đời từ nhu cầu thật giữa các hiệp tập nặng — trả lời nhanh tuần trước đẩy bao nhiêu kg, nhóm cơ nào đã hồi phục và bao lâu nữa vào hiệp kế tiếp.",
       "drawer.expand": "Mở Trang Riêng ↗",
       "drawer.close": "Đóng ✕",
@@ -390,374 +390,10 @@
     });
   });
 
-  /* ---------------- 2. THREE.JS 3D OLYMPIC BARBELL & CALIBRATED PLATES ---------------- */
+  /* ---------------- 2. MOTION PREFERENCE ----------------
+     The hero board is a static SVG diagram — no WebGL, no canvas,
+     no scroll-scrubbed motion. The page stays a still document. */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var explodeState = { value: 0.18 };
-  var explodeSlider = document.getElementById("explodeSlider");
-  var barbellReadout = document.getElementById("barbellLoadReadout");
-
-  function updateBarbellHud(val) {
-    var pct = Math.round(val * 100);
-    if (explodeSlider && document.activeElement !== explodeSlider) {
-      explodeSlider.value = String(pct);
-    }
-    if (barbellReadout) {
-      if (pct <= 6) {
-        barbellReadout.textContent = currentLang === "vi"
-          ? "TẢI: 165.0 KG · ĐÃ KHÓA CỔ TẠ"
-          : "LOAD: 165.0 KG · LOCKED & ASSEMBLED";
-      } else {
-        barbellReadout.textContent = (currentLang === "vi" ? "TÁCH TRỤC +" : "EXPLODED +") + pct + "% · 165.0 KG";
-      }
-    }
-  }
-
-  (function initOlympicBarbell3D() {
-    var canvas = document.getElementById("barbellCanvas");
-    var fallback = document.getElementById("barbellFallback");
-    if (!canvas) return;
-
-    function activateFallback() {
-      canvas.style.display = "none";
-      if (fallback) fallback.hidden = false;
-    }
-
-    if (!window.THREE || reduceMotion) {
-      activateFallback();
-      return;
-    }
-
-    var renderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        alpha: true,
-        antialias: true,
-        powerPreference: "high-performance"
-      });
-    } catch (err) {
-      activateFallback();
-      return;
-    }
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    if (renderer.toneMapping !== undefined && THREE.ACESFilmicToneMapping !== undefined) {
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.18;
-    }
-
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-    camera.position.set(0, 0.55, 8.6);
-
-    /* Procedural diamond-knurl bump & roughness texture */
-    var knurlTex = null;
-    try {
-      var kc = document.createElement("canvas");
-      kc.width = 128;
-      kc.height = 128;
-      var kctx = kc.getContext("2d");
-      kctx.fillStyle = "#808080";
-      kctx.fillRect(0, 0, 128, 128);
-      kctx.strokeStyle = "#d8d8d8";
-      kctx.lineWidth = 2;
-      for (var i = -128; i < 256; i += 8) {
-        kctx.beginPath();
-        kctx.moveTo(i, 0);
-        kctx.lineTo(i + 128, 128);
-        kctx.stroke();
-        kctx.beginPath();
-        kctx.moveTo(i + 128, 0);
-        kctx.lineTo(i, 128);
-        kctx.stroke();
-      }
-      knurlTex = new THREE.CanvasTexture(kc);
-      knurlTex.wrapS = THREE.RepeatWrapping;
-      knurlTex.wrapT = THREE.RepeatWrapping;
-      knurlTex.repeat.set(18, 4);
-    } catch (e) { /* optional procedural map */ }
-
-    /* PBR Materials matching Cast-Iron, Knurled Steel, Brass & Calibrated Plates */
-    var shaftSteelMat = new THREE.MeshStandardMaterial({
-      color: 0xaab0ba,
-      metalness: 0.9,
-      roughness: 0.34,
-      bumpMap: knurlTex,
-      bumpScale: 0.025
-    });
-    var chromeSleeveMat = new THREE.MeshStandardMaterial({
-      color: 0xc9ced6,
-      metalness: 0.94,
-      roughness: 0.2
-    });
-    var brassMat = new THREE.MeshStandardMaterial({
-      color: 0xd99b26,
-      metalness: 0.86,
-      roughness: 0.28
-    });
-    var red25Mat = new THREE.MeshStandardMaterial({
-      color: 0xc83e2b,
-      metalness: 0.35,
-      roughness: 0.44
-    });
-    var gunmetal20Mat = new THREE.MeshStandardMaterial({
-      color: 0x262930,
-      metalness: 0.72,
-      roughness: 0.38
-    });
-    var amber15Mat = new THREE.MeshStandardMaterial({
-      color: 0xd99b26,
-      metalness: 0.45,
-      roughness: 0.4
-    });
-    var iron10Mat = new THREE.MeshStandardMaterial({
-      color: 0x16181c,
-      metalness: 0.58,
-      roughness: 0.55
-    });
-
-    var assembly = new THREE.Group();
-    scene.add(assembly);
-
-    /* 29mm Olympic Bar Shaft */
-    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.068, 0.068, 6.5, 36), shaftSteelMat);
-    shaft.rotation.z = Math.PI / 2;
-    assembly.add(shaft);
-
-    /* IPF 81cm Grip Rings */
-    [-0.95, 0.95].forEach(function (rx) {
-      var gripRing = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.008, 12, 36), brassMat);
-      gripRing.rotation.y = Math.PI / 2;
-      gripRing.position.x = rx;
-      assembly.add(gripRing);
-    });
-
-    /* Rotating Outer Sleeves + Brass Bushings */
-    [-1, 1].forEach(function (side) {
-      var flange = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.09, 36), brassMat);
-      flange.rotation.z = Math.PI / 2;
-      flange.position.x = side * 1.46;
-      assembly.add(flange);
-
-      var sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 1.78, 36), chromeSleeveMat);
-      sleeve.rotation.z = Math.PI / 2;
-      sleeve.position.x = side * 2.38;
-      assembly.add(sleeve);
-
-      var endCap = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.105, 0.04, 32), brassMat);
-      endCap.rotation.z = Math.PI / 2;
-      endCap.position.x = side * 3.28;
-      assembly.add(endCap);
-    });
-
-    /* Calibrated Competition Plate Stack (Mirrored Left/Right) */
-    var plateDefs = [
-      { kg: 25, r: 1.24, w: 0.16, baseX: 1.60, spread: 0.22, mat: red25Mat, rimMat: chromeSleeveMat },
-      { kg: 20, r: 1.24, w: 0.14, baseX: 1.77, spread: 0.56, mat: gunmetal20Mat, rimMat: brassMat },
-      { kg: 15, r: 1.08, w: 0.125, baseX: 1.92, spread: 0.92, mat: amber15Mat, rimMat: iron10Mat },
-      { kg: 10, r: 0.90, w: 0.11, baseX: 2.06, spread: 1.26, mat: iron10Mat, rimMat: chromeSleeveMat }
-    ];
-
-    var animatedParts = [];
-
-    [-1, 1].forEach(function (side) {
-      plateDefs.forEach(function (spec, idx) {
-        var pGroup = new THREE.Group();
-
-        var disc = new THREE.Mesh(new THREE.CylinderGeometry(spec.r, spec.r, spec.w, 56), spec.mat);
-        disc.rotation.z = Math.PI / 2;
-        pGroup.add(disc);
-
-        /* Raised Competition Perimeter Lip */
-        var lip = new THREE.Mesh(new THREE.TorusGeometry(spec.r - 0.03, 0.028, 14, 64), spec.mat);
-        lip.rotation.y = Math.PI / 2;
-        lip.position.x = side * (spec.w * 0.45);
-        pGroup.add(lip);
-
-        /* Calibrated Center Hub Ring */
-        var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, spec.w + 0.014, 32), spec.rimMat);
-        hub.rotation.z = Math.PI / 2;
-        pGroup.add(hub);
-
-        pGroup.position.x = side * spec.baseX;
-        assembly.add(pGroup);
-        animatedParts.push({
-          mesh: pGroup,
-          side: side,
-          baseX: spec.baseX,
-          spread: spec.spread,
-          spinFactor: (idx + 1) * 0.12
-        });
-      });
-
-      /* 2.5 kg Competition Lock Collar + Spin Lever */
-      var collarGroup = new THREE.Group();
-      var collarBody = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.18, 32), brassMat);
-      collarBody.rotation.z = Math.PI / 2;
-      collarGroup.add(collarBody);
-
-      var collarGrip = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.018, 12, 36), iron10Mat);
-      collarGrip.rotation.y = Math.PI / 2;
-      collarGroup.add(collarGrip);
-
-      var lever = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.26, 0.045), chromeSleeveMat);
-      lever.position.set(0, 0.24, 0);
-      lever.rotation.z = side * -0.25;
-      collarGroup.add(lever);
-
-      collarGroup.position.x = side * 2.24;
-      assembly.add(collarGroup);
-      animatedParts.push({
-        mesh: collarGroup,
-        side: side,
-        baseX: 2.24,
-        spread: 1.62,
-        spinFactor: 0.85,
-        isCollar: true
-      });
-    });
-
-    /* Soft Radial Lifting Chalk Dust Particles */
-    var spriteTex = null;
-    try {
-      var sc = document.createElement("canvas");
-      sc.width = 32;
-      sc.height = 32;
-      var sctx = sc.getContext("2d");
-      var grad = sctx.createRadialGradient(16, 16, 1, 16, 16, 15);
-      grad.addColorStop(0, "rgba(243,239,230,0.95)");
-      grad.addColorStop(0.5, "rgba(243,239,230,0.35)");
-      grad.addColorStop(1, "rgba(243,239,230,0)");
-      sctx.fillStyle = grad;
-      sctx.fillRect(0, 0, 32, 32);
-      spriteTex = new THREE.CanvasTexture(sc);
-    } catch (e) { /* ignore */ }
-
-    var dustCount = 150;
-    var dustGeo = new THREE.BufferGeometry();
-    var dustPos = new Float32Array(dustCount * 3);
-    for (var d = 0; d < dustCount; d++) {
-      dustPos[d * 3] = (Math.random() - 0.5) * 9.5;
-      dustPos[d * 3 + 1] = (Math.random() - 0.5) * 4.5;
-      dustPos[d * 3 + 2] = (Math.random() - 0.5) * 3.5;
-    }
-    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
-    var dustMat = new THREE.PointsMaterial({
-      color: 0xf3efe6,
-      size: 0.09,
-      map: spriteTex,
-      transparent: true,
-      opacity: 0.55,
-      depthWrite: false
-    });
-    var chalkDust = new THREE.Points(dustGeo, dustMat);
-    scene.add(chalkDust);
-
-    /* Studio 3-Point PBR Lighting */
-    scene.add(new THREE.AmbientLight(0xf3efe6, 0.55));
-
-    var keyLight = new THREE.DirectionalLight(0xfff4e0, 2.4);
-    keyLight.position.set(4.5, 6.2, 6.5);
-    scene.add(keyLight);
-
-    var brassRim = new THREE.PointLight(0xd99b26, 16, 22);
-    brassRim.position.set(-5.2, 2.4, -3.2);
-    scene.add(brassRim);
-
-    var redFill = new THREE.PointLight(0xc83e2b, 10, 18);
-    redFill.position.set(4.8, -2.6, 3.0);
-    scene.add(redFill);
-
-    assembly.rotation.set(0.24, -0.46, 0.08);
-
-    /* Pointer Inertia & Drag Rotation */
-    var ptrX = 0;
-    var ptrY = 0;
-    var dragging = false;
-    var dragYaw = -0.46;
-    var lastX = 0;
-
-    window.addEventListener("pointermove", function (ev) {
-      ptrX = (ev.clientX / Math.max(1, window.innerWidth) - 0.5) * 0.42;
-      ptrY = (ev.clientY / Math.max(1, window.innerHeight) - 0.5) * 0.26;
-      if (dragging) {
-        var dx = ev.clientX - lastX;
-        lastX = ev.clientX;
-        dragYaw += dx * 0.007;
-      }
-    }, { passive: true });
-
-    canvas.addEventListener("pointerdown", function (ev) {
-      dragging = true;
-      lastX = ev.clientX;
-    });
-    window.addEventListener("pointerup", function () {
-      dragging = false;
-    });
-
-    if (explodeSlider) {
-      explodeSlider.addEventListener("input", function () {
-        explodeState.value = Number(explodeSlider.value) / 100;
-        updateBarbellHud(explodeState.value);
-      });
-    }
-
-    function resize() {
-      var wrap = canvas.parentElement;
-      if (!wrap) return;
-      var w = wrap.clientWidth;
-      var h = wrap.clientHeight;
-      if (!w || !h) return;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      /* Responsive zoom so mobile fits entire exploded barbell */
-      camera.position.z = w < 520 ? 11.2 : w < 780 ? 9.8 : 8.5;
-      camera.updateProjectionMatrix();
-    }
-    resize();
-    window.addEventListener("resize", resize);
-
-    var isVisible = true;
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (entries) {
-        isVisible = entries[0].isIntersecting;
-      }, { threshold: 0.02 }).observe(canvas);
-    }
-
-    var smoothExplode = explodeState.value;
-    var clock = new THREE.Clock();
-
-    (function renderLoop() {
-      requestAnimationFrame(renderLoop);
-      if (!isVisible || document.hidden) return;
-
-      var tNow = clock.getElapsedTime();
-      smoothExplode += (explodeState.value - smoothExplode) * 0.09;
-
-      /* Position plates & spin-lock collars along bar axis */
-      for (var i = 0; i < animatedParts.length; i++) {
-        var p = animatedParts[i];
-        var targetX = p.side * (p.baseX + smoothExplode * p.spread);
-        p.mesh.position.x = targetX;
-        p.mesh.rotation.x = smoothExplode * p.spinFactor * (p.isCollar ? 3.2 : 0.7);
-      }
-
-      if (!dragging) {
-        dragYaw += 0.0018;
-      }
-      var targetRotY = dragYaw + ptrX;
-      var targetRotX = 0.24 + ptrY + Math.sin(tNow * 0.55) * 0.03;
-
-      assembly.rotation.y += (targetRotY - assembly.rotation.y) * 0.06;
-      assembly.rotation.x += (targetRotX - assembly.rotation.x) * 0.06;
-      assembly.position.y = Math.sin(tNow * 0.85) * 0.08;
-
-      chalkDust.rotation.y = tNow * 0.025;
-      chalkDust.position.y = Math.sin(tNow * 0.4) * 0.06;
-
-      renderer.render(scene, camera);
-    })();
-  })();
 
   /* ---------------- 3. FOREGROUND SERVICE LOCK-SCREEN REST TIMER ---------------- */
   var lsTotalSec = 150;
@@ -1069,111 +705,22 @@
     if (ev.key === "Escape" && drawer && !drawer.hidden) closeDrawer();
   });
 
-  /* ---------------- 6. GSAP + SCROLLTRIGGER PINNED STORYTELLING ---------------- */
-  if (window.gsap && window.ScrollTrigger && !reduceMotion) {
-    gsap.registerPlugin(ScrollTrigger);
-
-    /* Hero entrance choreography */
-    gsap.from(".hero__copy > *", {
-      y: 28,
-      opacity: 0,
-      duration: 0.85,
-      stagger: 0.09,
-      ease: "power3.out"
-    });
-
-    gsap.from(".barbell-stage", {
-      y: 36,
-      opacity: 0,
-      duration: 1.0,
-      delay: 0.15,
-      ease: "power3.out"
-    });
-
-    /* Scroll-scrubbed explosion of the 3D Olympic Barbell across the Hero */
-    ScrollTrigger.create({
-      trigger: "#hero",
-      start: "top top",
-      end: "bottom top",
-      scrub: 0.6,
-      onUpdate: function (self) {
-        explodeState.value = 0.12 + self.progress * 0.88;
-        updateBarbellHud(explodeState.value);
-      }
-    });
-
-    /* Hero background photo parallax */
-    gsap.to("[data-hero-parallax]", {
-      yPercent: 12,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: true
-      }
-    });
-
-    /* Desktop Pinned Narrative 01: The Basement Signal Drop */
-    var mm = gsap.matchMedia();
-    mm.add("(min-width: 1024px)", function () {
-      ScrollTrigger.create({
-        trigger: "#signal-drop",
-        start: "top top+=72",
-        end: "+=1150",
-        pin: true,
-        scrub: 0.5,
-        onUpdate: function (self) {
-          var idx = self.progress < 0.34 ? 0 : self.progress < 0.68 ? 1 : 2;
-          if (idx !== currentSignalStep) {
-            applySignalStep(idx);
-          }
+  /* ---------------- 6. QUIET REVEALS ----------------
+     Content is visible by default; with JS available it only gets a
+     short, soft fade-up the first time it enters the viewport. */
+  var revealEls = document.querySelectorAll("[data-reveal]");
+  if (revealEls.length && !reduceMotion && "IntersectionObserver" in window) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-inview");
+          revealObserver.unobserve(entry.target);
         }
       });
-
-      /* Desktop Pinned Narrative 02: ForegroundService Rest Timer scrub */
-      ScrollTrigger.create({
-        trigger: "#rest-service",
-        start: "top top+=72",
-        end: "+=900",
-        pin: true,
-        scrub: 0.5,
-        onUpdate: function (self) {
-          lsRemainSec = Math.round(150 * (1 - self.progress * 0.88));
-          if (lockDevice) {
-            lockDevice.classList.toggle("is-aod", self.progress > 0.45);
-          }
-          renderLockscreenTimer();
-        }
-      });
-    });
-
-    /* Full-bleed photography parallax bands */
-    gsap.utils.toArray("[data-band-parallax]").forEach(function (img) {
-      gsap.fromTo(img, { yPercent: -9 }, {
-        yPercent: 9,
-        ease: "none",
-        scrollTrigger: {
-          trigger: img.closest(".photo-band"),
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true
-        }
-      });
-    });
-
-    /* Architecture cards reveal */
-    gsap.utils.toArray("[data-reveal]").forEach(function (el) {
-      gsap.from(el, {
-        y: 28,
-        opacity: 0,
-        duration: 0.75,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 88%"
-        }
-      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) {
+      el.classList.add("reveal-init");
+      revealObserver.observe(el);
     });
   }
 
@@ -1184,6 +731,5 @@
     if (stored === "vi" || stored === "en") initLang = stored;
   } catch (e) { /* ignore */ }
   applyLang(initLang);
-  updateBarbellHud(explodeState.value);
   renderLockscreenTimer();
 })();

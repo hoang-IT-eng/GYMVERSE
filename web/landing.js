@@ -1,1064 +1,271 @@
-/* ==========================================================================
-   IronLog (GYMVERSE) — Sandbox, lock-screen timer & prototype drawer
-   Resilient offline-first progressive enhancement with EN / VI localization
-   ========================================================================== */
+/* IronLog landing: language switch, scroll story, small details.
+   English lives in index.html; this file only carries the Vietnamese copy. */
 (function () {
   "use strict";
 
-  /* ---------------- 1. BILINGUAL DICTIONARY (EN / VI) ---------------- */
-  var I18N = {
-    en: {
-      "meta.title": "IronLog — Offline-First Hypertrophy & Strength System",
-      "meta.desc": "IronLog (GYMVERSE) is an offline-first Android hypertrophy and strength log built with Kotlin, Jetpack Compose, Room SQLite WAL, and ForegroundService rest timers.",
-      "skip": "Skip to content",
-      "brand.sub": "GYMVERSE · ANDROID OFFLINE",
-      "nav.signal": "01 Signal Drop",
-      "nav.rest": "02 Rest Service",
-      "nav.sandbox": "03 Live Log",
-      "nav.arch": "04 Architecture",
-      "nav.proto": "Live App ↗",
-      "hero.kicker": "KOTLIN 2.0 · ROOM SQLITE WAL · API 27+",
-      "hero.h1": "Built for concrete basements. <em>Zero cloud lag.</em>",
-      "hero.lead": "IronLog is an offline-first hypertrophy and strength instrument for Android. Log heavy sets in reps × kg, track RIR &amp; Epley 1RM, keep a lock-screen ForegroundService rest timer running, and audit weekly MEV–MRV volume — with every byte committed locally on your device.",
-      "btn.apk": "Download Android APK ↓",
-      "btn.live": "Launch Live Interactive App ↗",
-      "btn.tryInline": "Log a Set Below",
-      "btn.fullProto": "Full Screen Prototype ↗",
-      "hero.t1": "Room SQLite WAL local commit",
-      "hero.t2": "Calibrated IPF collar stack",
-      "hero.t3": "Vietnamese dishes macro table",
-      "hero.t4": "Offline · zero account required",
-      "stage.spec": "29MM KNURLED SHAFT · CALIBRATED STACK",
-      "stage.explode": "EXPLODE AXIS",
-      "s1.kicker": "OFFLINE-FIRST PERSISTENCE",
-      "s1.h2": "The basement signal drop",
-      "s1.lead": "Heavy squat racks live behind reinforced concrete where cellular reception dies. Step through the signal drop below to watch how IronLog commits a top set atomically to local Room SQLite (WAL) while cloud workout trackers hang and lose sets.",
-      "s1.scrubHint": "Inspect each stage directly:",
-      "s1.ironSub": "Zero network socket touched. Direct Kotlin Coroutine DAO transaction on local flash storage.",
-      "s1.cloudLabel": "CLOUD-ONLY TRACKER",
-      "band1.quote": "Iron does not wait for a retry spinner.",
-      "band1.sub": "LOCAL-FIRST ANDROID ARCHITECTURE · ZERO ACCOUNT WALL",
-      "s2.kicker": "ANDROID FOREGROUND SERVICE",
-      "s2.h2": "Survives screen-off &amp; app backgrounding",
-      "s2.lead": "Ordinary web wrappers and naive timers get killed by Android Doze the moment you lock your phone and chalk your hands. IronLog promotes an ongoing ForegroundService notification that counts down accurately on your lock screen.",
-      "s2.locked": "ANDROID LOCK SCREEN · SCREEN OFF",
-      "s2.notifLift": "Next: Barbell Squat · 140 kg × 5",
-      "s2.notifSub": "Target RIR 1–2 · Chime + Haptic at 00:00",
-      "s2.pause": "Pause",
-      "s2.resume": "Resume",
-      "s2.skip": "Skip →",
-      "s2.rightTitle": "Honest chronometry between heavy sets",
-      "s2.rightLead": "Hypertrophy and strength progression depend on reproducible inter-set recovery. Whether you switch to your music player, answer a message, or pocket a locked phone for two and a half minutes, the countdown stays anchored to monotonic system uptime.",
-      "s2.sp1t": "SystemClock.elapsedRealtime()",
-      "s2.sp1d": "Immune to CPU throttling and deep sleep drift — remaining rest is computed against hardware boot timestamps rather than fragile UI intervals.",
-      "s2.sp2t": "Direct Notification Actions",
-      "s2.sp2d": "Add +30 seconds after a grinder set, pause visibly, or skip straight to your next set right from the Android lock-screen shade.",
-      "s2.sp3t": "Explicit Guardrails",
-      "s2.sp3d": "Finishing a workout with 0 logged sets or accidentally typing 600 kg instead of 60 kg triggers immediate confirmation guards before touching history.",
-      "s3.kicker": "LIVE INTERACTIVE WORKBENCH · TRY ON PAGE",
-      "s3.h2": "Log a real set. Watch E1RM &amp; volume react.",
-      "s3.lead": "Adjust load, reps, and RPE below and commit a set. IronLog computes your Epley 1RM, checks progressive overload criteria, triggers the live rest timer, and updates weekly muscle-group sets against MEV–MRV landmarks immediately.",
-      "s3.sessionTag": "ACTIVE SESSION · UPPER / LOWER HYPERTROPHY",
-      "s3.weight": "LOAD (KG)",
-      "s3.reps": "REPS",
-      "s3.commitBtn": "Commit Set to Local Log +",
-      "s3.openDrawer": "Open Full Android Prototype Drawer ↗",
-      "s3.reset": "Reset",
-      "s3.restIdle": "REST TIMER IDLE · AUTO-STARTS ON SET COMMIT",
-      "s3.restRunning": "RESTING · FOREGROUND SERVICE ACTIVE",
-      "s3.thLift": "Exercise",
-      "s3.teleTitle": "EPLEY 1RM &amp; WEEKLY MEV–MRV TELEMETRY",
-      "s3.e1rmLabel": "ESTIMATED 1RM (EPLEY)",
-      "s3.overloadLabel": "NEXT SESSION DECISION",
-      "s3.reasonPlus": "RIR ≥ 1.5 · Headroom confirmed",
-      "s3.reasonHold": "Near failure (RIR ≤ 1) · Hold weight",
-      "s3.volHeading": "WEEKLY SETS VS MEV–MRV LANDMARKS",
-      "m.quads": "Quads &amp; Glutes",
-      "m.chest": "Chest",
-      "m.back": "Back &amp; Posterior",
-      "m.shoulders": "Deltoids",
-      "s3.nutritionNote": "Includes built-in Katch-McArdle / Mifflin-St Jeor TDEE calculator and an offline Vietnamese macro table (~90 dishes: Cơm tấm, Phở bò, Ức gà) plus optional Gemini meal photo parsing.",
-      "band2.quote": "CHALK ON STEEL. NUMBERS IN STONE.",
-      "band2.sub": "CSV SPREADSHEET EXPORT · FULL JSON BACKUP &amp; RESTORE",
-      "s4.kicker": "SYSTEM ARCHITECTURE · KOTLIN &amp; JETPACK COMPOSE",
-      "s4.h2": "Engineered without bloat",
-      "s4.lead": "Designed and written by Trần Huy Hoàng from real training logs: unidirectional Compose state, deterministic hypertrophy math, local SQLite durability, and zero third-party analytics trackers.",
-      "s4.n1": "Material 3 adaptive screens bound via lifecycle-aware StateFlow. Sub-frame recomposition for set tables and rest banners.",
-      "s4.n2": "Pure Kotlin calculators for Epley e1RM, RIR progression gates, muscle recovery decay, and weekly MEV–MRV landmarks.",
-      "s4.n3": "Write-Ahead Logging local database with Coroutine DAOs, 4 built-in splits (PPL, Upper/Lower, Arnold, Full Body), CSV &amp; JSON export.",
-      "s4.n4": "Dedicated Android Service + Notification chronometer surviving lock screen, app switching, and aggressive battery savers.",
-      "s4.cap1": "CALIBRATED HARDWARE INSPIRATION — Raw steel knurling, competition red 25 kg plates, and machined brass collars.",
-      "s4.makerKicker": "SOLO ENGINEERED · OPEN SOURCE MIT",
-      "s4.makerTitle": "From the gym floor to every line of Kotlin.",
-      "s4.makerBody": "Built by Trần Huy Hoàng. Every screen in IronLog earned its place during real hypertrophy blocks — answering what load you moved last week, how recovered each muscle group is today, and when you are ready to pull the next set.",
-      "drawer.expand": "Full Page ↗",
-      "drawer.close": "Close ✕",
-      "foot.copy": "Designed &amp; engineered by Trần Huy Hoàng. Android 8.1+ (API 27+) · Kotlin · Jetpack Compose · Room SQLite. Sample telemetry shown for interactive demonstration."
-    },
-    vi: {
-      "meta.title": "IronLog — Hệ Thống Nhật Ký Tập Hypertrophy & Sức Mạnh Offline-First",
-      "meta.desc": "IronLog (GYMVERSE) là ứng dụng Android ghi nhật ký tập gym offline-first viết bằng Kotlin, Jetpack Compose, Room SQLite WAL và đồng hồ nghỉ ForegroundService.",
-      "skip": "Chuyển tới nội dung chính",
-      "brand.sub": "GYMVERSE · ANDROID OFFLINE",
-      "nav.signal": "01 Mất Sóng Hầm",
-      "nav.rest": "02 Đồng Hồ Nền",
-      "nav.sandbox": "03 Ghi Hiệp Thử",
-      "nav.arch": "04 Kiến Trúc",
-      "nav.proto": "Mở App ↗",
-      "hero.kicker": "KOTLIN 2.0 · ROOM SQLITE WAL · API 27+",
-      "hero.h1": "Đúc cho phòng tập tầng hầm. <em>Không độ trễ mây.</em>",
-      "hero.lead": "IronLog là thiết bị ghi nhật ký hypertrophy &amp; sức mạnh offline-first trên Android. Ghi nhanh hiệp nặng theo rep × kg, tính RIR &amp; Epley 1RM, giữ đồng hồ nghỉ ForegroundService ngay trên màn hình khoá và đối chiếu volume tuần MEV–MRV — lưu 100% trực tiếp trên máy.",
-      "btn.apk": "Tải APK Android ↓",
-      "btn.live": "Mở App Tương Tác Trực Tiếp ↗",
-      "btn.tryInline": "Ghi Thử Một Hiệp Bên Dưới",
-      "btn.fullProto": "Mở Prototype Toàn Màn Hình ↗",
-      "hero.t1": "Ghi Room SQLite WAL nội bộ",
-      "hero.t2": "Bộ bánh tạ chuẩn thi đấu IPF",
-      "hero.t3": "Món Việt có sẵn bảng dinh dưỡng",
-      "hero.t4": "Lưu offline · không cần tài khoản",
-      "stage.spec": "ĐÒN THÉP NHÁM 29MM · BÁNH TẠ CHUẨN IPF",
-      "stage.explode": "TÁCH TRỤC TẠ",
-      "s1.kicker": "LƯU TRỮ OFFLINE-FIRST",
-      "s1.h2": "Khi tầng hầm mất sạch sóng",
-      "s1.lead": "Khung squat nặng thường nằm sâu dưới tầng hầm bê tông nơi sóng 4G tắt hẳn. Bấm qua từng nấc bên dưới để thấy IronLog ghi tức thì hiệp 140 kg × 5 vào Room SQLite (WAL) trong < 2.4ms, trong khi app phụ thuộc đám mây treo cứng.",
-      "s1.scrubHint": "Chọn từng mức để xem trực tiếp:",
-      "s1.ironSub": "Không mở kết nối mạng. Giao dịch DAO Kotlin Coroutine ghi thẳng vào bộ nhớ flash trên máy.",
-      "s1.cloudLabel": "APP GHI TẬP ĐÁM MÂY",
-      "band1.quote": "Tạ nặng không đợi vòng xoay mất mạng.",
-      "band1.sub": "KIẾN TRÚC ANDROID LOCAL-FIRST · KHÔNG TƯỜNG ĐĂNG NHẬP",
-      "s2.kicker": "ANDROID FOREGROUND SERVICE",
-      "s2.h2": "Đếm chuẩn ngay cả khi tắt màn hình",
-      "s2.lead": "Các web-app bọc tạm sẽ bị Android Doze đóng băng ngay khi bạn khoá máy và xoa phấn. IronLog ghim thông báo ForegroundService chạy nền giúp đồng hồ nghỉ đếm chính xác trên màn hình khoá.",
-      "s2.locked": "MÀN HÌNH KHOÁ ANDROID · ĐÃ TẮT SÁNG",
-      "s2.notifLift": "Tiếp theo: Barbell Squat · 140 kg × 5",
-      "s2.notifSub": "Mục tiêu RIR 1–2 · Chuông + Rung ở 00:00",
-      "s2.pause": "Tạm dừng",
-      "s2.resume": "Tiếp tục",
-      "s2.skip": "Bỏ qua →",
-      "s2.rightTitle": "Đồng hồ nghỉ trung thực giữa các hiệp nặng",
-      "s2.rightLead": "Tiến bộ sức mạnh đòi hỏi thời gian nghỉ nhất quán. Dù bạn chuyển sang đổi nhạc, trả lời tin nhắn hay bỏ điện thoại đã khoá vào túi suốt hai phút rưỡi, bộ đếm vẫn bám chặt mốc thời gian phần cứng.",
-      "s2.sp1t": "SystemClock.elapsedRealtime()",
-      "s2.sp1d": "Không lệch nhịp khi CPU hạ xung — thời gian còn lại đối chiếu trực tiếp với mốc uptime phần cứng thay vì vòng lặp UI mỏng manh.",
-      "s2.sp2t": "Thao Tác Ngay Trên Thông Báo",
-      "s2.sp2d": "Cộng thêm +30 giây sau một hiệp vắt kiệt sức, tạm dừng rõ ràng hoặc bỏ qua ngay trên màn hình khoá Android.",
-      "s2.sp3t": "Chốt Chặn Chống Nhập Nhầm",
-      "s2.sp3d": "Bấm kết thúc khi chưa ghi hiệp nào hoặc gõ nhầm 600 kg thay vì 60 kg đều được chặn hỏi lại rõ ràng trước khi lưu.",
-      "s3.kicker": "BÀN GHI TẬP TƯƠNG TÁC · THỬ TRỰC TIẾP",
-      "s3.h2": "Ghi thử một hiệp. Xem E1RM &amp; volume cập nhật.",
-      "s3.lead": "Chỉnh mức tạ, số rep và RPE bên dưới rồi bấm ghi hiệp. IronLog tính ngay Epley 1RM, đưa gợi ý tăng tạ buổi tới, kích hoạt đồng hồ nghỉ và cộng số hiệp vào thang MEV–MRV trong tuần.",
-      "s3.sessionTag": "PHIÊN ĐANG CHẠY · UPPER / LOWER HYPERTROPHY",
-      "s3.weight": "MỨC TẠ (KG)",
-      "s3.reps": "SỐ REP",
-      "s3.commitBtn": "Ghi Hiệp Vào Nhật Ký +",
-      "s3.openDrawer": "Mở Ngăn Kéo Prototype Android ↗",
-      "s3.reset": "Đặt lại",
-      "s3.restIdle": "ĐỒNG HỒ NGHỈ CHỜ · TỰ CHẠY KHI GHI HIỆP",
-      "s3.restRunning": "ĐANG NGHỈ · DỊCH VỤ NỀN ĐANG CHẠY",
-      "s3.thLift": "Bài tập",
-      "s3.teleTitle": "CHỈ SỐ EPLEY 1RM &amp; VOLUME TUẦN MEV–MRV",
-      "s3.e1rmLabel": "1RM ƯỚC TÍNH (EPLEY)",
-      "s3.overloadLabel": "QUYẾT ĐỊNH BUỔI TỚI",
-      "s3.reasonPlus": "RIR ≥ 1.5 · Còn dư lực để tăng tạ",
-      "s3.reasonHold": "Sát ngưỡng thất bại (RIR ≤ 1) · Giữ mức tạ",
-      "s3.volHeading": "SỐ HIỆP TUẦN SO VỚI NGƯỠNG MEV–MRV",
-      "m.quads": "Đùi trước &amp; Mông",
-      "m.chest": "Ngực",
-      "m.back": "Lưng &amp; Đùi sau",
-      "m.shoulders": "Vai (Deltoids)",
-      "s3.nutritionNote": "Tích hợp sẵn thẻ BMR/TDEE (Katch-McArdle, Mifflin-St Jeor) và bảng ~90 món ăn Việt offline (Cơm tấm, Phở bò, Ức gà) kèm nhận diện bữa ăn qua Gemini.",
-      "band2.quote": "PHẤN TRẮNG TRÊN THÉP. SỐ LIỆU RÕ RÀNG.",
-      "band2.sub": "XUẤT BẢNG TÍNH CSV · SAO LƯU &amp; KHÔI PHỤC JSON TOÀN DIỆN",
-      "s4.kicker": "KIẾN TRÚC HỆ THỐNG · KOTLIN &amp; JETPACK COMPOSE",
-      "s4.h2": "Thiết kế gọn chắc, không dư thừa",
-      "s4.lead": "Do Trần Huy Hoàng trực tiếp thiết kế và lập trình từ nhật ký tập thực tế: luồng trạng thái Compose một chiều, công thức hypertrophy minh bạch, SQLite bền bỉ trên máy và không gắn bất kỳ trình theo dõi quảng cáo nào.",
-      "s4.n1": "Giao diện Material 3 kết nối StateFlow theo vòng đời. Cập nhật bảng hiệp và thanh nghỉ mượt tức thì.",
-      "s4.n2": "Bộ tính Kotlin thuần cho Epley e1RM, ngưỡng RIR tăng tạ, độ phục hồi nhóm cơ và khoảng MEV–MRV.",
-      "s4.n3": "Cơ sở dữ liệu Room chế độ WAL cùng Coroutine DAO, 4 giáo án sẵn (PPL, Upper/Lower, Arnold, Full Body), xuất CSV &amp; JSON.",
-      "s4.n4": "ForegroundService độc lập giữ thông báo đếm ngược sống sót qua khoá màn hình, chuyển ứng dụng và chế độ tiết kiệm pin.",
-      "s4.cap1": "CẢM HỨNG VẬT LIỆU CƠ KHÍ — Thép đòn nhám kim cương, bánh tạ đỏ 25 kg chuẩn IPF và khoá đồng thau tiện CNC.",
-      "s4.makerKicker": "PHÁT TRIỂN ĐỘC LẬP · MÃ NGUỒN MỞ MIT",
-      "s4.makerTitle": "Từ sàn tập tới từng dòng code Kotlin.",
-      "s4.makerBody": "Phát triển bởi Trần Huy Hoàng. Từng màn hình trong IronLog đều ra đời từ nhu cầu thật giữa các hiệp tập nặng — trả lời nhanh tuần trước đẩy bao nhiêu kg, nhóm cơ nào đã hồi phục và bao lâu nữa vào hiệp kế tiếp.",
-      "drawer.expand": "Mở Trang Riêng ↗",
-      "drawer.close": "Đóng ✕",
-      "foot.copy": "Thiết kế &amp; phát triển bởi Trần Huy Hoàng. Android 8.1+ (API 27+) · Kotlin · Jetpack Compose · Room SQLite. Số liệu trên web là dữ liệu mẫu phục vụ trải nghiệm tương tác."
-    }
-  };
-
-  var SIGNAL_STAGES = {
-    en: [
-      {
-        level: "4",
-        carrier: "4G LTE · -78 dBm",
-        loc: "Ground Lobby · Entering Gym",
-        badge: "ONLINE",
-        badgeClass: "",
-        title: "Approaching Top Set: Barbell Back Squat",
-        desc: "Warm-ups complete. Pre-filled from last week’s local Room history: 137.5 kg × 5 @ RPE 8.5. Today’s loaded bar: 140.0 kg × 5.",
-        ironLatency: "1.6 ms COMMIT",
-        cloudLatency: "340 ms",
-        cloudTitle: "Session active on 4G",
-        cloudSub: "Cloud workout app fetches exercise catalog over HTTPS while reception still holds near street level.",
-        cloudNet: "HTTP 200 OK · session token valid",
-        cloudErr: "> Waiting for next set submission..."
-      },
-      {
-        level: "1",
-        carrier: "1 BAR EDGE · -114 dBm",
-        loc: "Sub-Level B1 · Concrete Stairwell",
-        badge: "PACKET LOSS 78%",
-        badgeClass: "is-warn",
-        title: "Unracking Under Weak Basement Signal",
-        desc: "Reinforced concrete attenuates cellular signal to -114 dBm. Cloud-dependent apps stall on auth refresh and lock the set button behind a spinner.",
-        ironLatency: "1.9 ms COMMIT",
-        cloudLatency: "6,820 ms…",
-        cloudTitle: "Retrying POST /v2/sets…",
-        cloudSub: "TCP packets drop mid-handshake; UI blocks input while waiting on remote server acknowledgement.",
-        cloudNet: "TLS handshake retry (2/3)...",
-        cloudErr: "> WARN: Socket read timeout after 5000ms"
-      },
-      {
-        level: "0",
-        carrier: "0 BARS · AIRPLANE / DEAD ZONE",
-        loc: "Basement Squat Rack · Zero Signal",
-        badge: "0 BARS · OFFLINE",
-        badgeClass: "is-zero",
-        title: "140 kg × 5 @ RPE 8.5 — Committed in 1.8 ms",
-        desc: "Zero cell reception. IronLog writes atomically to on-device Room SQLite (WAL mode), updates Epley e1RM to 163.3 kg, and fires the ForegroundService rest timer immediately.",
-        ironLatency: "1.8 ms WAL OK",
-        cloudLatency: "TIMEOUT (504)",
-        cloudTitle: "Failed to save set",
-        cloudSub: "Request aborted when screen locked; uncached set payload lost before reaching database.",
-        cloudNet: "Retry 3/3 failed · Network unreachable",
-        cloudErr: "> ERR_INTERNET_DISCONNECTED · Set lost"
-      }
-    ],
-    vi: [
-      {
-        level: "4",
-        carrier: "4G LTE · -78 dBm",
-        loc: "Sảnh Tầng Trệt · Bước Vào Phòng Tập",
-        badge: "CÓ MẠNG",
-        badgeClass: "",
-        title: "Chuẩn Bị Hiệp Chính: Barbell Back Squat",
-        desc: "Khởi động xong. Dữ liệu buổi trước nạp sẵn từ Room nội bộ: 137.5 kg × 5 @ RPE 8.5. Mức tạ lắp trên đòn hôm nay: 140.0 kg × 5.",
-        ironLatency: "1.6 ms ĐÃ LƯU",
-        cloudLatency: "340 ms",
-        cloudTitle: "Đang kết nối 4G ở sảnh",
-        cloudSub: "App đám mây tải danh mục bài qua HTTPS khi vẫn còn đứng gần cửa tầng trệt.",
-        cloudNet: "HTTP 200 OK · phiên đăng nhập hợp lệ",
-        cloudErr: "> Đang chờ gửi hiệp tiếp theo..."
-      },
-      {
-        level: "1",
-        carrier: "1 VẠCH YẾU · -114 dBm",
-        loc: "Cầu Thang Hầm B1 · Tường Bê Tông",
-        badge: "RỚT GÓI 78%",
-        badgeClass: "is-warn",
-        title: "Ra Đòn Giữa Vùng Sóng Chập Chờn",
-        desc: "Sàn bê tông cốt thép làm suy hao tín hiệu xuống -114 dBm. App phụ thuộc máy chủ bắt đầu xoay vòng làm mới token và khoá nút lưu.",
-        ironLatency: "1.9 ms ĐÃ LƯU",
-        cloudLatency: "6,820 ms…",
-        cloudTitle: "Đang thử lại POST /v2/sets…",
-        cloudSub: "Gói tin TCP rớt liên tục; giao diện treo cứng chờ phản hồi từ server từ xa.",
-        cloudNet: "Thử lại bắt tay TLS (2/3)...",
-        cloudErr: "> CẢNH BÁO: Quá hạn đọc socket 5000ms"
-      },
-      {
-        level: "0",
-        carrier: "0 VẠCH · MẤT SÓNG / MÁY BAY",
-        loc: "Khung Squat Hầm B2 · Chết Sóng Hoàn Toàn",
-        badge: "0 VẠCH · OFFLINE",
-        badgeClass: "is-zero",
-        title: "140 kg × 5 @ RPE 8.5 — Lưu Xong Trong 1.8 ms",
-        desc: "Không còn một vạch sóng. IronLog ghi nguyên tử thẳng vào Room SQLite (chế độ WAL), cập nhật e1RM lên 163.3 kg và bật ngay đồng hồ nghỉ chạy nền.",
-        ironLatency: "1.8 ms WAL OK",
-        cloudLatency: "LỖI MẠNG (504)",
-        cloudTitle: "Không thể lưu hiệp tập",
-        cloudSub: "Yêu cầu bị huỷ khi khoá màn hình; dữ liệu hiệp chưa kịp đồng bộ bị mất trắng.",
-        cloudNet: "Thất bại 3/3 · Không có kết nối Internet",
-        cloudErr: "> ERR_INTERNET_DISCONNECTED · Mất hiệp"
-      }
-    ]
-  };
-
-  var currentLang = "en";
-  var currentSignalStep = 2;
-
-  /* ---------------- LANGUAGE SWITCHER ---------------- */
+  var root = document.documentElement;
   var LANG_KEY = "ironlog-lang";
-  var langToggle = document.getElementById("langToggle");
-  var langMenu = document.getElementById("langMenu");
-  var langCode = document.getElementById("langCode");
-  var langOpts = langMenu ? Array.prototype.slice.call(langMenu.querySelectorAll(".lang-opt")) : [];
 
-  function t(key) {
-    var dict = I18N[currentLang] || I18N.en;
-    return dict[key] != null ? dict[key] : (I18N.en[key] || key);
-  }
-
-  function applySignalStep(idx) {
-    currentSignalStep = Math.max(0, Math.min(2, idx));
-    var list = SIGNAL_STAGES[currentLang] || SIGNAL_STAGES.en;
-    var st = list[currentSignalStep];
-    var bars = document.getElementById("signalBars");
-    var carrier = document.getElementById("signalCarrier");
-    var loc = document.getElementById("signalLocation");
-    var badge = document.getElementById("signalBadge");
-    var title = document.getElementById("signalStageTitle");
-    var desc = document.getElementById("signalStageDesc");
-    var ironLat = document.getElementById("ironLatencyBadge");
-    var cloudLat = document.getElementById("cloudLatencyBadge");
-    var cloudHead = document.getElementById("cloudStateHeading");
-    var cloudSub = document.getElementById("cloudStateSub");
-    var cloudNet = document.getElementById("cloudNetLine");
-    var cloudErr = document.getElementById("cloudErrLine");
-
-    if (bars) bars.setAttribute("data-level", st.level);
-    if (carrier) carrier.textContent = st.carrier;
-    if (loc) loc.textContent = st.loc;
-    if (badge) {
-      badge.textContent = st.badge;
-      badge.className = "signal-badge" + (st.badgeClass ? " " + st.badgeClass : "");
-    }
-    if (title) title.textContent = st.title;
-    if (desc) desc.textContent = st.desc;
-    if (ironLat) ironLat.textContent = st.ironLatency;
-    if (cloudLat) cloudLat.textContent = st.cloudLatency;
-    if (cloudHead) cloudHead.textContent = st.cloudTitle;
-    if (cloudSub) cloudSub.textContent = st.cloudSub;
-    if (cloudNet) cloudNet.textContent = st.cloudNet;
-    if (cloudErr) cloudErr.textContent = st.cloudErr;
-
-    document.querySelectorAll("[data-signal-step]").forEach(function (btn) {
-      var active = Number(btn.getAttribute("data-signal-step")) === currentSignalStep;
-      btn.classList.toggle("is-active", active);
-    });
-  }
-
-  function applyLang(lang) {
-    currentLang = lang === "vi" ? "vi" : "en";
-    var dict = I18N[currentLang];
-    document.documentElement.lang = currentLang;
-    document.title = dict["meta.title"];
-    var metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute("content", dict["meta.desc"]);
-
-    document.querySelectorAll("[data-i18n]").forEach(function (el) {
-      var k = el.getAttribute("data-i18n");
-      if (dict[k] != null) el.innerHTML = dict[k];
-    });
-
-    if (typeof splitHeroTitle === "function") splitHeroTitle();
-
-    if (langCode) langCode.textContent = currentLang.toUpperCase();
-    langOpts.forEach(function (opt) {
-      var isSel = opt.getAttribute("data-lang") === currentLang;
-      opt.classList.toggle("is-active", isSel);
-      opt.setAttribute("aria-selected", isSel ? "true" : "false");
-    });
-
-    applySignalStep(currentSignalStep);
-    updateSandboxMetrics();
-    updatePauseBtnLabel();
-    try { localStorage.setItem(LANG_KEY, currentLang); } catch (e) { /* ignore */ }
-  }
-
-  if (langToggle && langMenu) {
-    langToggle.addEventListener("click", function (ev) {
-      ev.stopPropagation();
-      var open = !langMenu.hidden;
-      langMenu.hidden = open;
-      langToggle.setAttribute("aria-expanded", open ? "false" : "true");
-    });
-    langOpts.forEach(function (opt) {
-      opt.addEventListener("click", function () {
-        applyLang(opt.getAttribute("data-lang"));
-        langMenu.hidden = true;
-        langToggle.setAttribute("aria-expanded", "false");
-      });
-    });
-    document.addEventListener("click", function (ev) {
-      if (!langMenu.hidden && !ev.target.closest(".lang-switch")) {
-        langMenu.hidden = true;
-        langToggle.setAttribute("aria-expanded", "false");
-      }
-    });
-  }
-
-  document.querySelectorAll("[data-signal-step]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      applySignalStep(Number(btn.getAttribute("data-signal-step")));
-    });
-  });
-
-  /* ---------------- 2. MOTION PREFERENCE & SCENE STATE ----------------
-     Shared mutable state for the cinematic layer (section 7): hovering
-     a download CTA eases the hero scene — calmer drift, particles
-     gather toward the barbell. */
-  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var heroState = { hover: 0, target: 0 };
-
-  /* Split the hero headline into masked word spans for the intro rise.
-     Runs again after every language switch (applyLang hook above);
-     the spans carry no hidden state of their own — GSAP alone moves
-     them, and only during the first intro. */
-  function splitHeroTitle() {
-    var h1 = document.querySelector(".hero__title");
-    if (!h1) return;
-    function wrapWords(node) {
-      var frag = document.createDocumentFragment();
-      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
-        if (child.nodeType === 3) {
-          child.textContent.split(/(\s+)/).forEach(function (part) {
-            if (!part) return;
-            if (/^\s+$/.test(part)) {
-              frag.appendChild(document.createTextNode(" "));
-              return;
-            }
-            var mask = document.createElement("span");
-            mask.className = "w-mask";
-            var inner = document.createElement("span");
-            inner.className = "w-inner";
-            inner.textContent = part;
-            mask.appendChild(inner);
-            frag.appendChild(mask);
-          });
-        } else if (child.nodeType === 1) {
-          var clone = child.cloneNode(false);
-          clone.appendChild(wrapWords(child));
-          frag.appendChild(clone);
-        }
-      });
-      return frag;
-    }
-    var frag = wrapWords(h1);
-    h1.innerHTML = "";
-    h1.appendChild(frag);
-  }
-
-  /* ---------------- 3. FOREGROUND SERVICE LOCK-SCREEN REST TIMER ---------------- */
-  var lsTotalSec = 150;
-  var lsRemainSec = 150;
-  var lsPaused = false;
-  var lsTimerEl = document.getElementById("lsTimerReadout");
-  var lsBarEl = document.getElementById("lsProgressBar");
-  var lsPauseBtn = document.getElementById("lsPauseBtn");
-  var lsAdd30Btn = document.getElementById("lsAdd30Btn");
-  var lsSkipBtn = document.getElementById("lsSkipBtn");
-  var lsToggleAodBtn = document.getElementById("lsToggleAodBtn");
-  var lockDevice = document.getElementById("lockDevice");
-  var lsStatus = document.getElementById("lsServiceStatus");
-
-  function fmtMMSS(sec) {
-    var s = Math.max(0, Math.round(sec));
-    var m = Math.floor(s / 60);
-    var r = s % 60;
-    return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r;
-  }
-
-  function renderLockscreenTimer() {
-    if (lsTimerEl) lsTimerEl.textContent = fmtMMSS(lsRemainSec);
-    if (lsBarEl) {
-      var pct = lsTotalSec > 0 ? Math.max(0, Math.min(100, (lsRemainSec / lsTotalSec) * 100)) : 0;
-      lsBarEl.style.width = pct.toFixed(1) + "%";
-    }
-    if (lsStatus) {
-      if (lsRemainSec <= 0) {
-        lsStatus.textContent = currentLang === "vi" ? "00:00 · SẴN SÀNG VÀO HIỆP" : "00:00 · READY TO LIFT";
-      } else if (lsPaused) {
-        lsStatus.textContent = currentLang === "vi" ? "ĐÃ TẠM DỪNG · HIỆP 3/4" : "PAUSED · SET 3/4";
-      } else {
-        lsStatus.textContent = currentLang === "vi" ? "ĐANG CHẠY · HIỆP 3/4" : "ACTIVE · SET 3/4";
-      }
-    }
-  }
-
-  function updatePauseBtnLabel() {
-    if (!lsPauseBtn) return;
-    lsPauseBtn.textContent = lsPaused ? t("s2.resume") : t("s2.pause");
-  }
-
-  setInterval(function () {
-    if (!lsPaused && lsRemainSec > 0) {
-      lsRemainSec -= 1;
-      renderLockscreenTimer();
-    }
-  }, 1000);
-
-  if (lsPauseBtn) {
-    lsPauseBtn.addEventListener("click", function () {
-      lsPaused = !lsPaused;
-      updatePauseBtnLabel();
-      renderLockscreenTimer();
-    });
-  }
-  if (lsAdd30Btn) {
-    lsAdd30Btn.addEventListener("click", function () {
-      lsRemainSec += 30;
-      lsTotalSec = Math.max(lsTotalSec, lsRemainSec);
-      renderLockscreenTimer();
-    });
-  }
-  if (lsSkipBtn) {
-    lsSkipBtn.addEventListener("click", function () {
-      lsRemainSec = 150;
-      lsTotalSec = 150;
-      lsPaused = false;
-      updatePauseBtnLabel();
-      renderLockscreenTimer();
-    });
-  }
-  if (lsToggleAodBtn && lockDevice) {
-    lsToggleAodBtn.addEventListener("click", function () {
-      lockDevice.classList.toggle("is-aod");
-    });
-  }
-
-  /* ---------------- 4. INTERACTIVE EMBEDDED WORKOUT LOG SANDBOX ---------------- */
-  var LIFTS = {
-    squat: { name: "Barbell Squat", defaultKg: 140, defaultReps: 5, muscle: "quads" },
-    bench: { name: "Bench Press", defaultKg: 92.5, defaultReps: 8, muscle: "chest" },
-    deadlift: { name: "Deadlift", defaultKg: 175, defaultReps: 5, muscle: "back" },
-    ohp: { name: "Overhead Press", defaultKg: 60, defaultReps: 8, muscle: "shoulders" }
+  var VI = {
+    "doc.title": "IronLog: sổ tập gym trên Android, tính sẵn hiệp tiếp theo",
+    "doc.desc": "IronLog (GYMVERSE) là sổ tập gym offline trên Android. Ghi hiệp theo kg và rep, nhận mức tạ buổi sau theo double progression, đồng hồ nghỉ trên màn hình khóa và ghi bữa ăn Việt.",
+    "skip": "Tới nội dung",
+    "nav.overload": "Mức tạ",
+    "nav.rest": "Nghỉ",
+    "nav.progress": "Tiến bộ",
+    "nav.food": "Ăn uống",
+    "nav.apk": "Tải APK",
+    "hero.title": '<span class="line"><span>Ghi hiệp này.</span></span><span class="line"><span>Biết trước hiệp sau.</span></span>',
+    "hero.lead": "IronLog là sổ tập gym trên Android. Ghi từng hiệp theo kg và rep, ứng dụng gợi ý mức tạ cho buổi sau dựa trên buổi trước. Mọi dữ liệu nằm trên điện thoại của bạn.",
+    "cta.apk": "Tải APK",
+    "cta.proto": "Dùng thử trên trình duyệt",
+    "hero.note": "Android 8.1 trở lên. Miễn phí, không cần tài khoản.",
+    "log.title": "Ghi hiệp trước khi phấn kịp khô.",
+    "log.body": "Chỉnh kg và rep bằng nút tăng giảm nhanh rồi ghi hiệp. Hiệp được lưu ngay trên máy và đồng hồ nghỉ tự chạy.",
+    "log.f1": "bài tập có sẵn, bài nào cũng có tên tiếng Việt, các bước vào thế, mẹo tập và những lỗi form cần tránh.",
+    "log.f2": "giáo án dựng sẵn, cộng thêm giáo án bạn tự tạo.",
+    "log.f3": "nghỉ mặc định, chỉnh được từ 15 giây đến 15 phút.",
+    "ladder.title": "Đọc buổi tập trước, chọn mức tạ cho hôm nay.",
+    "ladder.body": "IronLog dùng double progression trên các hiệp nặng nhất: làm đầy khoảng rep rồi mới tăng tạ. Ví dụ dưới đây là Bench Press, khoảng 6–10 rep, mỗi bước 2.5&nbsp;kg.",
+    "ladder.note": "Tắt tự tăng tạ trong mục Cá nhân thì ứng dụng giữ nguyên mức tạ. Mức tạ được làm tròn theo bánh tạ nhỏ nhất phòng tập của bạn có: 0.5, 1.25 hoặc 2.5&nbsp;kg.",
+    "ladder.range": "6–10 rep, +2.5 kg",
+    "scene.last": "Buổi trước",
+    "scene.next": "Hôm nay",
+    "s1.name": "Đã đầy khoảng rep",
+    "s1.rule": "Mọi set đạt 10 rep → tăng 2.5 kg",
+    "s2.name": "Đang tích rep",
+    "s2.rule": "Giữ tạ, nhắm 8 rep",
+    "s3.name": "Tăng hơi sớm",
+    "s3.rule": "Chưa đạt 6 rep → giảm 2.5 kg",
+    "rest.title": "Màn hình khóa rồi, giờ nghỉ vẫn chạy.",
+    "rest.body": "Đồng hồ chạy dưới dạng dịch vụ nền, đếm ngược ngay trong thông báo, nên vẫn chạy khi bạn chuyển ứng dụng hay khóa máy. Hết giờ, máy rung và nhắc bạn vào set tiếp theo.",
+    "rest.notif": "Thông báo của IronLog: Nghỉ giữa set, chạm để mở buổi tập",
+    "rest.caption": "Thông báo đúng như trong ứng dụng.",
+    "progress.title": "Sức mạnh hiện rõ qua từng buổi tập.",
+    "progress.body": "Với mỗi bài, IronLog ước tính 1RM bằng công thức Epley và vẽ biểu đồ cạnh khối lượng tập. Hiệp trên 12 rep không được tính vì công thức sẽ thổi phồng kết quả.",
+    "chart.title": "1RM ước tính của Bench Press qua mười hai buổi, tăng từ 92 lên 103.1 kg (số liệu minh hoạ)",
+    "chart.first": "Buổi 1",
+    "chart.last": "Buổi 12",
+    "chart.caption": "Bench Press, 1RM ước tính theo kg. Số liệu minh hoạ.",
+    "volume.title": "Số hiệp mỗi tuần cho từng nhóm cơ",
+    "volume.body": "Mỗi nhóm cơ có một vùng mục tiêu, từ khối lượng tối thiểu để cơ còn phát triển (MEV) đến mức tối đa bạn còn hồi phục được (MRV). Màn hình Hôm nay còn cho thấy chuỗi ngày tập và mức hồi phục của từng nhóm cơ.",
+    "volume.caption": "Vùng mục tiêu lấy đúng từ ứng dụng. Số hiệp là số liệu minh hoạ.",
+    "m.chest": "Ngực",
+    "m.back": "Lưng xô",
+    "m.quads": "Đùi trước",
+    "m.hams": "Đùi sau và mông",
+    "m.shoulders": "Vai",
+    "m.arms": "Tay",
+    "m.calves": "Bắp chân và bụng",
+    "programs.title": "Bốn giáo án dùng được ngay từ ngày đầu.",
+    "programs.caption": "Giáo án có sẵn, số ngày mỗi tuần và thời lượng mỗi buổi",
+    "programs.th1": "Giáo án",
+    "programs.th2": "Ngày mỗi tuần",
+    "programs.th3": "Mỗi buổi",
+    "programs.d1": "50–65 phút",
+    "programs.d2": "60–70 phút",
+    "programs.d3": "65–75 phút",
+    "programs.after": "Hoặc tự tạo giáo án. Màn hình Hôm nay tự biết tới buổi nào dựa trên những bài bạn tập lần trước.",
+    "food.title": "Bát phở cũng được tính.",
+    "food.body": "Chụp ảnh bữa ăn, chọn ảnh có sẵn hoặc chỉ cần mô tả. Gemini tách từng món và ước lượng số gram, bạn sửa lại rồi lưu. Hoặc tự nhập từ bảng khoảng 90 món Việt, hay theo số trên nhãn.",
+    "food.body2": "Mục tiêu mỗi ngày dựa trên BMR và TDEE, tính bằng Katch-McArdle (dựa trên khối lượng nạc) và đối chiếu với Mifflin-St Jeor.",
+    "food.note": "Phân tích bữa ăn và huấn luyện viên tuần dùng Gemini, nên cần mạng và khóa API được thêm vào lúc build ứng dụng. Bản APK công khai được build không kèm khóa; nhập từ bảng món ăn vẫn dùng được.",
+    "yours.title": "Tuần tập được tổng kết. Dữ liệu vẫn là của bạn.",
+    "yours.h1": "Huấn luyện viên mỗi tuần",
+    "yours.p1": "Ở tab Tiến bộ, Gemini tổng kết bảy ngày qua: số hiệp từng nhóm cơ so với MEV–MRV, bài đang chững lại, calo và đạm, rồi gợi ý điều cần đổi cho tuần tới.",
+    "yours.h2": "Dữ liệu của bạn",
+    "yours.p2": "Không cần tạo tài khoản. Buổi tập lưu trong cơ sở dữ liệu ngay trên máy. Xuất CSV để mở bằng Excel, hoặc sao lưu và khôi phục toàn bộ bằng một file JSON.",
+    "close.title": "Hẹn bạn dưới thanh đòn.",
+    "close.body": "Cài APK trên điện thoại Android 8.1 trở lên, hoặc dùng thử bản prototype trên trình duyệt trước. Prototype chạy bằng dữ liệu hư cấu.",
+    "close.note": "APK là bản debug do GitHub Actions build tự động từ nhánh main.",
+    "foot.made": "IronLog (GYMVERSE) do Trần Huy Hoàng thiết kế và xây dựng bằng Kotlin, Jetpack Compose và Room. Giấy phép MIT.",
+    "foot.photos": "Ảnh trên Unsplash của",
+    "foot.and": "và",
+    "foot.top": "Lên đầu trang",
+    "alt.hero": "Một người tập cúi xuống bên thanh đòn đã lắp tạ trong phòng gym tối, ánh đèn rọi từ trên",
+    "alt.chalk": "Hai bàn tay xoa phấn, bụi trắng bay lên",
+    "alt.load": "Bàn tay lắp bánh tạ màu đen vào thanh đòn",
+    "alt.racks": "Phòng gym vắng với khung squat và thanh đòn đã lắp tạ",
+    "alt.pho": "Bát phở bò với bánh phở và hành lá, nhìn từ trên xuống",
+    "alt.phone": "Người đội mũ, đeo tai nghe xem điện thoại giữa hai hiệp",
+    "alt.close": "Thanh đòn nằm trên sàn phòng gym, vệt nắng và bóng cửa sổ cắt ngang",
+    "alt.none": ""
   };
 
-  var INITIAL_SETS = [
-    { liftKey: "squat", lift: "Barbell Squat", kg: 130, reps: 5, rpe: 7.5 },
-    { liftKey: "squat", lift: "Barbell Squat", kg: 135, reps: 5, rpe: 8.0 }
-  ];
-
-  var BASE_WEEKLY_SETS = { quads: 11, chest: 14, back: 12, shoulders: 10 };
-  var MRV_CAPS = { quads: 18, chest: 20, back: 20, shoulders: 18 };
-
-  var activeLift = "squat";
-  var loggedSets = INITIAL_SETS.slice();
-  var sbRestRemaining = 0;
-
-  var weightIn = document.getElementById("sbWeightInput");
-  var repsIn = document.getElementById("sbRepsInput");
-  var rpeIn = document.getElementById("sbRpeInput");
-  var setTableBody = document.getElementById("sbSetTableBody");
-  var logSetBtn = document.getElementById("sbLogSetBtn");
-  var resetBtn = document.getElementById("sbResetBtn");
-  var walBadge = document.getElementById("sbWalCommitBadge");
-  var restLabel = document.getElementById("sbRestLabel");
-  var restClock = document.getElementById("sbRestClock");
-
-  function calcEpley(kg, reps) {
-    if (reps <= 1) return kg;
-    return kg * (1 + reps / 30);
-  }
-
-  function renderSetRows() {
-    if (!setTableBody) return;
-    setTableBody.innerHTML = loggedSets.map(function (s, idx) {
-      var e1rm = calcEpley(s.kg, s.reps).toFixed(1);
-      return (
-        "<tr>" +
-        '<td class="num">' + (idx + 1) + "</td>" +
-        "<td><strong>" + s.lift + "</strong></td>" +
-        '<td class="num">' + s.kg.toFixed(1) + " kg × " + s.reps + "</td>" +
-        '<td class="num">@' + s.rpe.toFixed(1) + "</td>" +
-        '<td class="num" style="color:var(--brass);">' + e1rm + " kg</td>" +
-        "</tr>"
-      );
-    }).join("");
-  }
-
-  function updateSandboxMetrics() {
-    var kg = Math.max(1, parseFloat(weightIn ? weightIn.value : 140) || 140);
-    var reps = Math.max(1, parseInt(repsIn ? repsIn.value : 5, 10) || 5);
-    var rpe = Math.min(10, Math.max(5, parseFloat(rpeIn ? rpeIn.value : 8.5) || 8.5));
-
-    var e1rm = calcEpley(kg, reps);
-    var e1rmEl = document.getElementById("sbE1rmVal");
-    var formEl = document.getElementById("sbFormulaReadout");
-    var decVal = document.getElementById("sbDecisionVal");
-    var decReason = document.getElementById("sbDecisionReason");
-    var totalBadge = document.getElementById("sbTotalVolBadge");
-
-    if (e1rmEl) e1rmEl.textContent = e1rm.toFixed(1) + " kg";
-    if (formEl) formEl.textContent = kg + " × (1 + " + reps + "/30) · RIR " + (10 - rpe).toFixed(1);
-
-    if (decVal && decReason) {
-      if (rpe <= 8.5) {
-        decVal.textContent = "+2.5 kg";
-        decVal.style.color = "var(--ok)";
-        decReason.textContent = t("s3.reasonPlus");
-      } else {
-        decVal.textContent = currentLang === "vi" ? "Giữ mức tạ" : "Hold load";
-        decVal.style.color = "var(--brass)";
-        decReason.textContent = t("s3.reasonHold");
-      }
-    }
-
-    /* Session volume & weekly MEV-MRV muscle bars */
-    var totalVol = 0;
-    var counts = {
-      quads: BASE_WEEKLY_SETS.quads - 2,
-      chest: BASE_WEEKLY_SETS.chest,
-      back: BASE_WEEKLY_SETS.back,
-      shoulders: BASE_WEEKLY_SETS.shoulders
-    };
-    loggedSets.forEach(function (s) {
-      totalVol += s.kg * s.reps;
-      var m = (LIFTS[s.liftKey] && LIFTS[s.liftKey].muscle) || "quads";
-      counts[m] = (counts[m] || 0) + 1;
-    });
-
-    if (totalBadge) {
-      totalBadge.textContent = (currentLang === "vi" ? "VOLUME BUỔI: " : "SESSION VOL: ") + Math.round(totalVol).toLocaleString("en-US") + " KG";
-    }
-
-    ["quads", "chest", "back", "shoulders"].forEach(function (m) {
-      var cap = MRV_CAPS[m];
-      var val = counts[m];
-      var keyCap = m.charAt(0).toUpperCase() + m.slice(1);
-      var numEl = document.getElementById("vol" + keyCap + "Val");
-      var barEl = document.getElementById("vol" + keyCap + "Bar");
-      if (numEl) numEl.textContent = String(val);
-      if (barEl) barEl.style.width = Math.min(100, Math.round((val / cap) * 100)) + "%";
-    });
-  }
-
-  document.querySelectorAll(".lift-tab").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      activeLift = btn.getAttribute("data-lift") || "squat";
-      document.querySelectorAll(".lift-tab").forEach(function (b) {
-        b.classList.toggle("is-active", b === btn);
-      });
-      var spec = LIFTS[activeLift];
-      if (spec && weightIn && repsIn) {
-        weightIn.value = String(spec.defaultKg);
-        repsIn.value = String(spec.defaultReps);
-        updateSandboxMetrics();
-      }
+  /* ---------- Language ---------- */
+  var EN = {};
+  var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-i18n]"));
+  var altNodes = Array.prototype.slice.call(document.querySelectorAll("[data-i18n-alt]"));
+  var attrNodes = Array.prototype.slice.call(document.querySelectorAll("[data-i18n-attr]"));
+  var metaDesc = document.querySelector('meta[name="description"]');
+  nodes.forEach(function (el) { var k = el.getAttribute("data-i18n"); if (!(k in EN)) EN[k] = el.innerHTML; });
+  altNodes.forEach(function (el) { EN[el.getAttribute("data-i18n-alt")] = el.getAttribute("alt"); });
+  attrNodes.forEach(function (el) {
+    el.getAttribute("data-i18n-attr").split(";").forEach(function (pair) {
+      var p = pair.split(":"); EN[p[1]] = el.getAttribute(p[0]);
     });
   });
+  EN["doc.title"] = document.title;
+  EN["doc.desc"] = metaDesc ? metaDesc.getAttribute("content") : "";
 
-  document.querySelectorAll(".dial-step").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var target = btn.getAttribute("data-step-target");
-      var delta = parseFloat(btn.getAttribute("data-step")) || 0;
-      var input = target === "weight" ? weightIn : target === "reps" ? repsIn : rpeIn;
-      if (!input) return;
-      var next = (parseFloat(input.value) || 0) + delta;
-      if (target === "weight") next = Math.max(20, Math.min(400, next));
-      if (target === "reps") next = Math.max(1, Math.min(30, Math.round(next)));
-      if (target === "rpe") next = Math.max(6, Math.min(10, next));
-      input.value = String(next);
-      updateSandboxMetrics();
-    });
-  });
+  var current = "en";
+  function tr(key) { var d = current === "vi" ? VI : EN; return d[key] != null ? d[key] : EN[key]; }
 
-  [weightIn, repsIn, rpeIn].forEach(function (inp) {
-    if (inp) inp.addEventListener("input", updateSandboxMetrics);
-  });
-
-  if (logSetBtn) {
-    logSetBtn.addEventListener("click", function () {
-      var t0 = performance.now();
-      var kg = Math.max(1, parseFloat(weightIn.value) || 140);
-      var reps = Math.max(1, parseInt(repsIn.value, 10) || 5);
-      var rpe = Math.min(10, Math.max(6, parseFloat(rpeIn.value) || 8.5));
-      var spec = LIFTS[activeLift] || LIFTS.squat;
-
-      loggedSets.push({
-        liftKey: activeLift,
-        lift: spec.name,
-        kg: kg,
-        reps: reps,
-        rpe: rpe
-      });
-      renderSetRows();
-      updateSandboxMetrics();
-
-      var elapsed = Math.max(0.6, Math.min(2.3, performance.now() - t0 + 0.9));
-      if (walBadge) {
-        walBadge.textContent = "WAL COMMITTED · " + elapsed.toFixed(1) + " ms (#TX-" + (840 + loggedSets.length) + ")";
-      }
-
-      /* Start sandbox rest countdown */
-      sbRestRemaining = 150;
-      if (restLabel) restLabel.textContent = t("s3.restRunning");
-      if (restClock) restClock.textContent = fmtMMSS(sbRestRemaining);
-    });
-  }
-
-  if (resetBtn) {
-    resetBtn.addEventListener("click", function () {
-      loggedSets = INITIAL_SETS.slice();
-      activeLift = "squat";
-      if (weightIn) weightIn.value = "140";
-      if (repsIn) repsIn.value = "5";
-      if (rpeIn) rpeIn.value = "8.5";
-      sbRestRemaining = 0;
-      if (restLabel) restLabel.textContent = t("s3.restIdle");
-      if (restClock) restClock.textContent = "02:30";
-      renderSetRows();
-      updateSandboxMetrics();
-    });
-  }
-
-  setInterval(function () {
-    if (sbRestRemaining > 0) {
-      sbRestRemaining -= 1;
-      if (restClock) restClock.textContent = fmtMMSS(sbRestRemaining);
-      if (sbRestRemaining === 0 && restLabel) {
-        restLabel.textContent = t("s3.restIdle");
-      }
-    }
-  }, 1000);
-
-  renderSetRows();
-
-  /* ---------------- 5. PROTOTYPE DRAWER ---------------- */
-  var drawer = document.getElementById("protoDrawer");
-  var iframe = document.getElementById("protoIframe");
-  var openNavBtn = document.getElementById("openDrawerNavBtn");
-  var openSbBtn = document.getElementById("openDrawerSandboxBtn");
-  var closeDrawerBtn = document.getElementById("closeDrawerBtn");
-
-  function openDrawer() {
-    if (!drawer) return;
-    if (iframe && !iframe.getAttribute("src")) {
-      iframe.setAttribute("src", iframe.getAttribute("data-src") || "prototype.html");
-    }
-    drawer.hidden = false;
-    document.body.style.overflow = "hidden";
-    if (lenis) lenis.stop();
-  }
-
-  function closeDrawer() {
-    if (!drawer) return;
-    drawer.hidden = true;
-    document.body.style.overflow = "";
-    if (lenis) lenis.start();
-  }
-
-  if (openNavBtn) openNavBtn.addEventListener("click", openDrawer);
-  if (openSbBtn) openSbBtn.addEventListener("click", openDrawer);
-  if (closeDrawerBtn) closeDrawerBtn.addEventListener("click", closeDrawer);
-  if (drawer) {
-    drawer.addEventListener("click", function (ev) {
-      if (ev.target === drawer) closeDrawer();
-    });
-  }
-  document.addEventListener("keydown", function (ev) {
-    if (ev.key === "Escape" && drawer && !drawer.hidden) closeDrawer();
-  });
-
-  /* ---------------- 6. QUIET REVEALS (fallback path) ----------------
-     Content is visible by default; with JS available it only gets a
-     short, soft fade-up the first time it enters the viewport. Used
-     when GSAP is unavailable — see section 7 for the GSAP path. */
-  function initIoReveals() {
-    var revealEls = document.querySelectorAll("[data-reveal]");
-    if (revealEls.length && !reduceMotion && "IntersectionObserver" in window) {
-      var revealObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-inview");
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12 });
-      revealEls.forEach(function (el) {
-        el.classList.add("reveal-init");
-        revealObserver.observe(el);
-      });
-    }
-  }
-
-  /* ---------------- 7. CINEMATIC LAYER ----------------
-     Lenis smooth scroll + GSAP ScrollTrigger reveals + a real-time
-     Three.js hero scene behind the interface. Every piece is guarded:
-     reduced motion, a missing library or a WebGL failure leaves the
-     plain document — fully visible, exactly as authored. Hidden
-     initial states are only ever set from inside this section,
-     after the guards pass. Palette stays in the paper / forest /
-     volt family — no violet anywhere, scene lighting included. */
-  var lenis = null;
-
-  function initGsapReveals(gsap) {
-    var ST = window.ScrollTrigger;
-
-    /* Hero intro — masked word rise, soft fades, board clip reveal */
-    var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    var words = document.querySelectorAll(".hero__title .w-inner");
-    if (words.length) {
-      gsap.set(words, { yPercent: 115 });
-      tl.to(words, { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.045 }, 0.1);
-    }
-    var introEls = document.querySelectorAll(".hero .spec-index, .hero__lead, .hero__ctas, .hero__telemetry");
-    if (introEls.length) {
-      gsap.set(introEls, { opacity: 0, y: 16 });
-      tl.to(introEls, { opacity: 1, y: 0, duration: 0.7, stagger: 0.09 }, 0.25);
-    }
-    var board = document.querySelector(".hero-board");
-    if (board) {
-      gsap.set(board, { opacity: 0, y: 28, clipPath: "inset(0 0 100% 0 round 28px)" });
-      tl.to(board, {
-        opacity: 1, y: 0, clipPath: "inset(0 0 0% 0 round 28px)",
-        duration: 1.05, ease: "power3.inOut"
-      }, 0.35);
-      gsap.to(board, {
-        yPercent: 5, ease: "none",
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }
-      });
-    }
-
-    /* Scroll reveals for the sections below the hero */
-    var revealSel = ".sec__head, .signal-hud, .compare-card, .lockscreen-device, .service-spec, .console-card, .photo-board, [data-reveal]";
-    document.querySelectorAll(revealSel).forEach(function (el) {
-      if (el.closest(".hero")) return;
-      gsap.fromTo(el, { opacity: 0, y: 26 }, {
-        opacity: 1, y: 0, duration: 0.8, ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 88%", once: true }
+  function applyLang(lang, persist) {
+    current = lang === "vi" ? "vi" : "en";
+    root.lang = current;
+    nodes.forEach(function (el) { var v = tr(el.getAttribute("data-i18n")); if (v != null) el.innerHTML = v; });
+    altNodes.forEach(function (el) { var v = tr(el.getAttribute("data-i18n-alt")); if (v != null) el.setAttribute("alt", v); });
+    attrNodes.forEach(function (el) {
+      el.getAttribute("data-i18n-attr").split(";").forEach(function (pair) {
+        var p = pair.split(":"); var v = tr(p[1]); if (v != null) el.setAttribute(p[0], v);
       });
     });
-
-    /* Clip-path reveal for the framed photo board */
-    var photo = document.querySelector(".photo-board img");
-    if (photo) {
-      gsap.fromTo(photo, { clipPath: "inset(0 0 100% 0 round 28px)" }, {
-        clipPath: "inset(0 0 0% 0 round 28px)", duration: 1.1, ease: "power3.inOut",
-        scrollTrigger: { trigger: photo, start: "top 85%", once: true }
-      });
-    }
-
-    window.addEventListener("load", function () { ST.refresh(); });
+    document.title = tr("doc.title");
+    if (metaDesc) metaDesc.setAttribute("content", tr("doc.desc"));
+    document.querySelectorAll(".lang__btn").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === current));
+    });
+    if (persist) { try { localStorage.setItem(LANG_KEY, current); } catch (e) { /* private mode */ } }
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
   }
 
-  function initHeroScene() {
-    var canvas = document.getElementById("heroCanvas");
-    var hero = document.getElementById("hero");
-    if (!canvas || !hero || !window.THREE) return;
-    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return;
-
-    var renderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        canvas: canvas, alpha: true, antialias: true, powerPreference: "low-power"
-      });
-    } catch (e) { return; }
-    if (!renderer || !renderer.getContext()) return;
-
-    var FOREST = 0x16451f;
-    var FOREST_DEEP = 0x0d2f15;
-    var VOLT = 0xd6f53c;
-    var PAPER = 0xf6f5ef;
-
-    var scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(PAPER, 9.5, 17);
-    var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 60);
-    camera.position.set(0, 0.3, 9.2);
-
-    /* --- Barbell blueprint: paper-toned plates, forest linework --- */
-    var barbell = new THREE.Group();
-
-    var shaft = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.045, 0.045, 7.6, 10),
-      new THREE.MeshBasicMaterial({ color: 0x979c8d })
-    );
-    shaft.rotation.z = Math.PI / 2;
-    barbell.add(shaft);
-
-    var plateSpecs = [
-      { r: 1.5, h: 0.17, fill: 0xe9e6d8 },
-      { r: 1.3, h: 0.15, fill: 0xdfdcc9 },
-      { r: 1.08, h: 0.14, fill: VOLT },
-      { r: 0.86, h: 0.13, fill: 0xe9e6d8 },
-      { r: 0.48, h: 0.24, fill: FOREST }
-    ];
-    function makePlate(spec) {
-      var g = new THREE.Group();
-      var geo = new THREE.CylinderGeometry(spec.r, spec.r, spec.h, 56);
-      g.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
-        color: spec.fill, transparent: true, opacity: 0.92
-      })));
-      g.add(new THREE.LineSegments(
-        new THREE.EdgesGeometry(geo, 24),
-        new THREE.LineBasicMaterial({ color: FOREST, transparent: true, opacity: 0.45 })
-      ));
-      g.rotation.z = Math.PI / 2;
-      return g;
-    }
-    [-1, 1].forEach(function (side) {
-      var x = 1.12 * side;
-      plateSpecs.forEach(function (spec) {
-        x += (spec.h / 2) * side;
-        var p = makePlate(spec);
-        p.position.x = x;
-        x += (spec.h / 2) * side;
-        barbell.add(p);
-      });
-    });
-
-    /* Blueprint guide rings behind the bar */
-    [[2.7, 0.16], [1.95, 0.1]].forEach(function (ringSpec) {
-      var pts = [];
-      for (var i = 0; i <= 96; i++) {
-        var a = (i / 96) * Math.PI * 2;
-        pts.push(new THREE.Vector3(Math.cos(a) * ringSpec[0], Math.sin(a) * ringSpec[0], 0));
-      }
-      var ring = new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints(pts),
-        new THREE.LineBasicMaterial({ color: FOREST, transparent: true, opacity: ringSpec[1] })
-      );
-      ring.position.z = -1.4;
-      barbell.add(ring);
-    });
-
-    barbell.position.set(1.7, 0.15, 0);
-    barbell.rotation.set(0.1, -0.3, -0.05);
-    scene.add(barbell);
-
-    /* --- Drifting dust in forest / volt tones --- */
-    var COUNT = hero.clientWidth < 768 ? 320 : 700;
-    var base = new Float32Array(COUNT * 3);
-    var pos = new Float32Array(COUNT * 3);
-    var speeds = new Float32Array(COUNT);
-    var rise = new Float32Array(COUNT);
-    var colors = new Float32Array(COUNT * 3);
-    var cForest = new THREE.Color(FOREST);
-    var cDeep = new THREE.Color(FOREST_DEEP);
-    var cVolt = new THREE.Color(0x9db81c);
-    for (var j = 0; j < COUNT; j++) {
-      base[j * 3] = (Math.random() - 0.5) * 13;
-      base[j * 3 + 1] = (Math.random() - 0.5) * 6.4;
-      base[j * 3 + 2] = -2 + Math.random() * 3.5;
-      speeds[j] = 0.05 + Math.random() * 0.12;
-      var c = Math.random() < 0.22 ? cVolt : (Math.random() < 0.5 ? cForest : cDeep);
-      colors[j * 3] = c.r; colors[j * 3 + 1] = c.g; colors[j * 3 + 2] = c.b;
-    }
-    pos.set(base);
-    var pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    pGeo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    var points = new THREE.Points(pGeo, new THREE.PointsMaterial({
-      size: 0.06, vertexColors: true, transparent: true, opacity: 0.7,
-      depthWrite: false, sizeAttenuation: true
-    }));
-    scene.add(points);
-
-    /* Pointer tilt */
-    var pointer = { x: 0, y: 0 };
-    hero.addEventListener("pointermove", function (ev) {
-      var r = hero.getBoundingClientRect();
-      pointer.x = ((ev.clientX - r.left) / r.width) * 2 - 1;
-      pointer.y = ((ev.clientY - r.top) / r.height) * 2 - 1;
-    });
-    hero.addEventListener("pointerleave", function () { pointer.x = 0; pointer.y = 0; });
-
-    /* CTA coupling — hovering a download button settles the scene */
-    document.querySelectorAll('a[href$="gymverse.apk"]').forEach(function (a) {
-      a.addEventListener("pointerenter", function () { heroState.target = 1; });
-      a.addEventListener("pointerleave", function () { heroState.target = 0; });
-      a.addEventListener("focus", function () { heroState.target = 1; });
-      a.addEventListener("blur", function () { heroState.target = 0; });
-    });
-
-    /* Pause rendering while the hero is off-screen */
-    var running = true;
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (entries) {
-        running = entries[0].isIntersecting;
-      }, { threshold: 0.02 }).observe(hero);
-    }
-
-    function resize() {
-      var w = hero.clientWidth, h = hero.clientHeight;
-      if (!w || !h) return;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    resize();
-    window.addEventListener("resize", resize);
-
-    var clock = new THREE.Clock();
-    var CENTER = { x: 1.7, y: 0.15, z: 0 };
-    function tick() {
-      requestAnimationFrame(tick);
-      if (!running || document.hidden) return;
-      var dt = Math.min(clock.getDelta(), 0.05);
-      var t = clock.elapsedTime;
-
-      heroState.hover += (heroState.target - heroState.hover) * Math.min(1, dt * 5);
-      var calm = 1 - heroState.hover * 0.65;
-      var gather = heroState.hover * 0.5;
-
-      barbell.position.y = 0.15 + Math.sin(t * 0.45) * 0.09;
-      barbell.rotation.z = -0.05 + Math.sin(t * 0.3) * 0.02 * calm;
-      barbell.rotation.y = -0.3 + Math.sin(t * 0.22) * 0.05 * calm;
-
-      var arr = pGeo.attributes.position.array;
-      for (var j = 0; j < COUNT; j++) {
-        rise[j] += speeds[j] * dt * calm;
-        var y = base[j * 3 + 1] + rise[j];
-        if (y > 3.4) { rise[j] -= 6.8; y -= 6.8; }
-        arr[j * 3] = base[j * 3] + Math.sin(t * 0.3 + j * 1.7) * 0.08
-          + (CENTER.x - base[j * 3]) * gather;
-        arr[j * 3 + 1] = y + (CENTER.y - base[j * 3 + 1]) * gather;
-        arr[j * 3 + 2] = base[j * 3 + 2] + (CENTER.z - base[j * 3 + 2]) * gather;
-      }
-      pGeo.attributes.position.needsUpdate = true;
-
-      camera.position.x += (pointer.x * 0.55 - camera.position.x) * Math.min(1, dt * 3);
-      camera.position.y += (0.3 - pointer.y * 0.35 - camera.position.y) * Math.min(1, dt * 3);
-      camera.lookAt(0.7, 0, 0);
-      renderer.render(scene, camera);
-      if (!hero.classList.contains("hero--scene-on")) hero.classList.add("hero--scene-on");
-    }
-    tick();
-
-    window.addEventListener("pagehide", function () {
-      running = false;
-      scene.traverse(function (obj) {
-        if (obj.geometry) obj.geometry.dispose();
-        if (obj.material) {
-          (Array.isArray(obj.material) ? obj.material : [obj.material]).forEach(function (m) { m.dispose(); });
-        }
-      });
-      renderer.dispose();
-    });
-  }
-
-  function initCinematic() {
-    var gsap = window.gsap || null;
-    var hasST = !!(gsap && window.ScrollTrigger);
-    if (hasST) gsap.registerPlugin(window.ScrollTrigger);
-
-    if (!reduceMotion && window.Lenis) {
-      try {
-        lenis = new window.Lenis({ lerp: 0.1, anchors: true });
-        if (hasST) {
-          lenis.on("scroll", window.ScrollTrigger.update);
-          gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
-          gsap.ticker.lagSmoothing(0);
-        } else {
-          var rafLenis = function (time) { lenis.raf(time); requestAnimationFrame(rafLenis); };
-          requestAnimationFrame(rafLenis);
-        }
-      } catch (e) { lenis = null; }
-    }
-
-    if (!reduceMotion && hasST) initGsapReveals(gsap);
-    else initIoReveals();
-
-    if (!reduceMotion) initHeroScene();
-  }
-
-  /* Initialize saved language (default EN or saved preference) */
-  var initLang = "en";
+  var initial = "en";
   try {
-    var stored = localStorage.getItem(LANG_KEY);
-    if (stored === "vi" || stored === "en") initLang = stored;
+    var saved = localStorage.getItem(LANG_KEY);
+    if (saved === "vi" || saved === "en") initial = saved;
+    else if (/^vi\b/i.test(navigator.language || "")) initial = "vi";
   } catch (e) { /* ignore */ }
-  applyLang(initLang);
-  renderLockscreenTimer();
-  initCinematic();
+  applyLang(initial, false);
+  document.querySelectorAll(".lang__btn").forEach(function (b) {
+    b.addEventListener("click", function () { applyLang(b.getAttribute("data-lang"), true); });
+  });
+
+  /* ---------- Nav ---------- */
+  var nav = document.getElementById("nav");
+  function onScrollNav() { nav.classList.toggle("is-solid", window.scrollY > 40); }
+  onScrollNav();
+  window.addEventListener("scroll", onScrollNav, { passive: true });
+
+  var links = Array.prototype.slice.call(document.querySelectorAll(".nav__links a"));
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        links.forEach(function (a) { a.classList.toggle("is-current", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    links.forEach(function (a) { var t = document.querySelector(a.getAttribute("href")); if (t) io.observe(t); });
+  }
+
+  /* ---------- Motion ---------- */
+  var gsap = window.gsap;
+  var ST = window.ScrollTrigger;
+  if (!root.classList.contains("motion")) return;
+  if (!gsap || !ST) { root.classList.remove("motion", "pin"); return; }
+  gsap.registerPlugin(ST);
+
+  // Smooth scroll
+  var lenis = null;
+  if (window.Lenis) {
+    lenis = new window.Lenis({ duration: 1.1, smoothWheel: true });
+    lenis.on("scroll", ST.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener("click", function (ev) {
+        var id = a.getAttribute("href");
+        var target = id === "#top" ? 0 : document.querySelector(id);
+        if (target === null) return;
+        ev.preventDefault();
+        lenis.scrollTo(target, { offset: 0 });
+        if (id !== "#top" && target.focus) { target.setAttribute("tabindex", "-1"); target.focus({ preventScroll: true }); }
+      });
+    });
+  }
+
+  // Opening: the one orchestrated moment
+  var heroImg = document.querySelector(".hero__media img");
+  var intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+  intro.to(heroImg, { scale: 1, duration: 2.4, ease: "power2.out" }, 0)
+       .to(".hero__title .line > span", { yPercent: 0, y: 0, duration: 1.3, stagger: 0.14 }, 0.25)
+       .from(".hero__lead", { y: 16, duration: 1.2 }, 0.6)
+       .to(".hero__actions", { opacity: 1, duration: 1 }, 1.0)
+       .to(".hero__note", { opacity: 1, duration: 1 }, 1.1);
+  gsap.set(".hero__title .line > span", { yPercent: 105, y: 0 });
+  // Once the opening has played, drop the hidden start state so a language
+  // switch (which rebuilds the title spans) shows the new title at rest.
+  intro.eventCallback("onComplete", function () {
+    root.classList.add("intro-done");
+    gsap.set(".hero__title .line > span", { clearProps: "transform" });
+  });
+  document.querySelectorAll(".lang__btn").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (root.classList.contains("intro-done")) return;
+      intro.progress(1);
+    });
+  });
+
+  // Hero drifts as it leaves
+  gsap.to(".hero__media", { yPercent: 14, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+  gsap.to(".hero__copy", { yPercent: -10, opacity: 0.2, ease: "none", scrollTrigger: { trigger: ".hero", start: "40% top", end: "bottom top", scrub: true } });
+
+  // Gentle parallax on full-bleed photography
+  ["log", "programs", "yours", "close"].forEach(function (cls) {
+    var img = document.querySelector("." + cls + "__media img");
+    if (!img) return;
+    gsap.fromTo(img, { yPercent: -6, scale: 1.12 }, { yPercent: 6, scale: 1.12, ease: "none", scrollTrigger: { trigger: "." + cls + "__media", start: "top bottom", end: "bottom top", scrub: true } });
+  });
+
+  // Double progression: pinned, the three sessions play in order
+  if (root.classList.contains("pin")) {
+    var scenes = gsap.utils.toArray(".scene");
+    var ticks = gsap.utils.toArray(".ticks i");
+    var tl = gsap.timeline({
+      scrollTrigger: { trigger: ".ladder", start: "top top", end: "+=" + Math.round(window.innerHeight * 2.4), pin: ".ladder__pin", scrub: 0.6, anticipatePin: 1 }
+    });
+    scenes.forEach(function (scene, i) {
+      var at = i * 1.0;
+      var parts = scene.querySelectorAll(".scene__name, .sets li, .scene__rule, .load");
+      if (i > 0) {
+        tl.to(scenes[i - 1], { autoAlpha: 0, y: -24, duration: 0.25, ease: "power2.in" }, at - 0.05);
+        tl.fromTo(scene, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" }, at + 0.15);
+      }
+      if (i > 0) tl.from(parts, { opacity: 0, y: 12, stagger: 0.06, duration: 0.25, ease: "power2.out" }, at + 0.2);
+      tl.fromTo(ticks[i], { "--p": 0 }, { "--p": 1, duration: 0.8, ease: "none" }, at);
+    });
+    tl.to({}, { duration: 0.25 });
+    gsap.fromTo(".ladder__media img", { scale: 1.15, yPercent: -4 }, { scale: 1.02, yPercent: 4, ease: "none", scrollTrigger: { trigger: ".ladder", start: "top top", end: "+=" + Math.round(window.innerHeight * 2.4), scrub: true } });
+  }
+
+  // Rest: the clock runs down from the app's default 90 s as you scroll
+  var clock = document.querySelector(".clock");
+  var cm = document.querySelector(".clock__m");
+  var cs = document.querySelector(".clock__s");
+  var notifTime = document.querySelector("[data-clock]");
+  function setClock(sec) {
+    var s = Math.max(0, Math.round(sec));
+    var m = Math.floor(s / 60), r = s % 60;
+    cm.textContent = String(m);
+    cs.textContent = (r < 10 ? "0" : "") + r;
+    if (notifTime) notifTime.textContent = m + ":" + (r < 10 ? "0" : "") + r;
+    clock.classList.toggle("is-zero", s === 0);
+  }
+  var restPin = root.classList.contains("pin");
+  var restState = { t: 90 };
+  gsap.to(restState, {
+    t: 0, ease: "none",
+    onUpdate: function () { setClock(restState.t); },
+    scrollTrigger: restPin
+      ? { trigger: ".rest", start: "top top", end: "+=" + Math.round(window.innerHeight * 1.6), pin: ".rest__pin", scrub: 0.4, anticipatePin: 1 }
+      : { trigger: ".rest", start: "top 70%", end: "bottom 60%", scrub: 0.4 }
+  });
+  gsap.fromTo(".rest__media img", { scale: 1.12 }, { scale: 1, ease: "none", scrollTrigger: { trigger: ".rest", start: "top bottom", end: restPin ? "+=" + Math.round(window.innerHeight * 2.6) : "bottom top", scrub: true } });
+
+  // Progress: line draws in, bars fill
+  gsap.fromTo(".chart__line", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: "none", scrollTrigger: { trigger: ".progress__chart", start: "top 80%", end: "bottom 55%", scrub: 0.5 } });
+  gsap.from(".chart__dot, .chart__last", { opacity: 0, stagger: 0.04, duration: 0.3, scrollTrigger: { trigger: ".progress__chart", start: "top 75%" } });
+  gsap.from(".bar__fill", { scaleX: 0, duration: 1.2, ease: "expo.out", stagger: 0.06, scrollTrigger: { trigger: ".bars", start: "top 80%" } });
+
+  window.addEventListener("load", function () { ST.refresh(); });
 })();

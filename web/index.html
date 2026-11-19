@@ -2,589 +2,352 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IronLog — Offline-First Hypertrophy &amp; Strength System</title>
-  <meta name="description" content="IronLog (GYMVERSE) is an offline-first Android hypertrophy and strength log built with Kotlin, Jetpack Compose, Room SQLite WAL, and ForegroundService rest timers.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>IronLog: the Android training log that works out your next set</title>
+  <meta name="description" content="IronLog (GYMVERSE) is an offline Android training log. Log sets in kg and reps, get the next load from double progression, keep a rest timer on the lock screen, and track Vietnamese meals.">
   <meta name="author" content="Trần Huy Hoàng">
+  <meta name="theme-color" content="#10171d">
+  <meta name="color-scheme" content="dark">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#f6f5ef">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="IronLog · GYMVERSE">
-  <meta property="og:title" content="IronLog — Offline-First Hypertrophy &amp; Strength System">
-  <meta property="og:description" content="Zero-latency Room SQLite WAL logging, ForegroundService lock-screen rest timer, Epley 1RM &amp; MEV–MRV volume telemetry for Android.">
+  <meta property="og:title" content="IronLog: log the set, know the next one">
+  <meta property="og:description" content="An offline Android training log with double progression, a lock-screen rest timer, e1RM and MEV–MRV tracking, and Vietnamese meal logging.">
   <meta property="og:url" content="https://hoang-ironlog.pages.dev/">
   <meta property="og:image" content="https://hoang-ironlog.pages.dev/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" type="image/avif" href="assets/photos/hero-1600.avif" imagesrcset="assets/photos/hero-960.avif 960w, assets/photos/hero-1600.avif 1600w, assets/photos/hero-2400.avif 2400w" imagesizes="100vw" media="(min-width: 701px), (orientation: landscape)">
+  <link rel="preload" as="image" type="image/avif" href="assets/photos/hero-tall-640.avif" imagesrcset="assets/photos/hero-tall-640.avif 640w, assets/photos/hero-tall-960.avif 960w" imagesizes="100vw" media="(max-width: 700px) and (orientation: portrait)">
   <link rel="stylesheet" href="landing.css">
+  <script>(function(d){d.classList.add('js');try{var l=localStorage.getItem('ironlog-lang');if(l==='vi'||(!l&&/^vi\b/i.test(navigator.language||'')))d.lang='vi';}catch(e){}if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('motion');if(matchMedia('(min-width: 1101px) and (min-height: 640px)').matches)d.classList.add('pin');}})(document.documentElement);</script>
 </head>
 <body>
-  <a class="skip" href="#main-content" data-i18n="skip">Skip to content</a>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
-  <header class="nav" id="top">
-    <div class="container nav__row">
-      <a class="brand" href="#top" aria-label="IronLog Home">
-        <svg class="brand__mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-          <circle cx="32" cy="32" r="30" fill="#16451f" stroke="#0d2f15" stroke-width="2"/>
-          <circle cx="32" cy="32" r="24.5" stroke="#d6f53c" stroke-width="3.5"/>
-          <circle cx="32" cy="32" r="18" fill="#0d2f15" stroke="#3f5a45" stroke-width="1.2"/>
-          <path d="M32 6v7M32 51v7M6 32h7M51 32h7" stroke="#f6f5ef" stroke-opacity="0.55" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="32" cy="32" r="9.5" fill="#d6f53c"/>
-          <circle cx="32" cy="32" r="4.5" fill="#16451f" stroke="#f6f5ef" stroke-width="1.3"/>
-        </svg>
-        <span class="brand__text">
-          <span class="brand__word">IRONLOG</span>
-          <span class="brand__sub" data-i18n="brand.sub">GYMVERSE · ANDROID OFFLINE</span>
-        </span>
+  <header class="nav" id="nav">
+    <div class="nav__row">
+      <a class="wordmark" href="#top" aria-label="IronLog, back to top">
+        <svg class="wordmark__plate" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14.5" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="16" r="4.5" fill="currentColor"/></svg>
+        <span>IronLog</span>
       </a>
-
-      <nav class="nav__center" aria-label="Primary sections">
-        <a class="nav__link" href="#signal-drop" data-i18n="nav.signal">01 Signal Drop</a>
-        <a class="nav__link" href="#rest-service" data-i18n="nav.rest">02 Rest Service</a>
-        <a class="nav__link" href="#sandbox" data-i18n="nav.sandbox">03 Live Log</a>
-        <a class="nav__link" href="#architecture" data-i18n="nav.arch">04 Architecture</a>
+      <nav class="nav__links" aria-label="Sections">
+        <a href="#overload" data-i18n="nav.overload">Next load</a>
+        <a href="#rest" data-i18n="nav.rest">Rest</a>
+        <a href="#progress" data-i18n="nav.progress">Progress</a>
+        <a href="#food" data-i18n="nav.food">Food</a>
       </nav>
-
-      <div class="nav__actions">
-        <button class="btn btn--iron btn--sm" id="openDrawerNavBtn" type="button" data-i18n="nav.proto">Live App ↗</button>
-        <div class="lang-switch">
-          <button class="lang-pill" id="langToggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Switch language">
-            <span id="langCode">EN</span>
-            <span aria-hidden="true">▾</span>
-          </button>
-          <div class="lang-menu" id="langMenu" role="listbox" aria-label="Language" hidden>
-            <button class="lang-opt is-active" type="button" role="option" data-lang="en" aria-selected="true">
-              <span>English (EN)</span><span class="lang-check" aria-hidden="true">✓</span>
-            </button>
-            <button class="lang-opt" type="button" role="option" data-lang="vi" aria-selected="false">
-              <span>Tiếng Việt (VI)</span><span class="lang-check" aria-hidden="true">✓</span>
-            </button>
-          </div>
+      <div class="nav__end">
+        <div class="lang" role="group" aria-label="Language">
+          <button type="button" class="lang__btn" data-lang="en" aria-pressed="true" lang="en">EN</button>
+          <button type="button" class="lang__btn" data-lang="vi" aria-pressed="false" lang="vi">VI</button>
         </div>
+        <a class="btn btn--plate btn--small" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="nav.apk">Get the APK</a>
       </div>
     </div>
   </header>
 
-  <main id="main-content">
-    <!-- ==================== HERO ==================== -->
-    <section class="hero" id="hero">
-      <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
-      <div class="hero__vignette" aria-hidden="true"></div>
-      <div class="hero__credits" aria-hidden="true">
-        <span class="hero__credit hero__credit--tl">IRONLOG · TRAINING JOURNAL — REEL 01</span>
-        <span class="hero__credit hero__credit--tr">29MM SHAFT · 165.0 KG</span>
-        <span class="hero__credit hero__credit--bl">ROOM SQLITE WAL · OFFLINE-FIRST</span>
-        <span class="hero__credit hero__credit--br">KOTLIN 2.0 · API 27+</span>
+  <main id="main">
+    <!-- Opening -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__media" data-parallax>
+        <picture class="hero__pic">
+<source media="(max-width: 700px) and (orientation: portrait)" type="image/avif" srcset="assets/photos/hero-tall-640.avif 640w, assets/photos/hero-tall-960.avif 960w" sizes="100vw">
+<source media="(max-width: 700px) and (orientation: portrait)" type="image/webp" srcset="assets/photos/hero-tall-640.webp 640w, assets/photos/hero-tall-960.webp 960w" sizes="100vw">
+<source type="image/avif" srcset="assets/photos/hero-960.avif 960w, assets/photos/hero-1600.avif 1600w, assets/photos/hero-2400.avif 2400w" sizes="100vw">
+<source type="image/webp" srcset="assets/photos/hero-960.webp 960w, assets/photos/hero-1600.webp 1600w, assets/photos/hero-2400.webp 2400w" sizes="100vw">
+<img src="assets/photos/hero-1600.webp" width="2400" height="1600" alt="A lifter crouched over a loaded barbell in a dark gym, lit from above" data-i18n-alt="alt.hero" fetchpriority="high">
+</picture>
       </div>
-      <div class="container hero__grid">
-        <div class="hero__copy">
-          <p class="spec-index" data-i18n="hero.kicker">KOTLIN 2.0 · ROOM SQLITE WAL · API 27+</p>
-          <h1 class="hero__title" data-i18n="hero.h1">Built for concrete basements. <em>Zero cloud lag.</em></h1>
-          <p class="hero__lead" data-i18n="hero.lead">
-            IronLog is an offline-first hypertrophy and strength instrument for Android. Log heavy sets in reps × kg, track RIR &amp; Epley 1RM, keep a lock-screen ForegroundService rest timer running, and audit weekly MEV–MRV volume — with every byte committed locally on your device.
-          </p>
+      <div class="hero__shade" aria-hidden="true"></div>
+      <div class="wrap hero__copy">
+        <h1 class="hero__title" id="hero-title" data-i18n="hero.title"><span class="line"><span>Log the set.</span></span><span class="line"><span>Know the next one.</span></span></h1>
+        <p class="hero__lead" data-i18n="hero.lead">IronLog is a training log for Android. Record each set in kilos and reps, and it suggests the weight for your next session from the last one. Everything stays on your phone.</p>
+        <div class="actions hero__actions">
+          <a class="btn btn--plate" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="cta.apk">Download the APK</a>
+          <a class="btn btn--line" href="prototype.html" data-i18n="cta.proto">Try it in the browser</a>
+        </div>
+        <p class="hero__note" data-i18n="hero.note">Android 8.1 or newer. Free, no account.</p>
+      </div>
+    </section>
 
-          <div class="hero__ctas">
-            <a class="btn btn--brass" id="downloadApkHero" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="btn.apk">Download Android APK ↓</a>
-            <a class="btn btn--iron" id="launchLiveAppHero" href="prototype.html" data-i18n="btn.live">Launch Live Interactive App ↗</a>
-            <a class="btn btn--ghost" href="#sandbox" data-i18n="btn.tryInline">Log a Set Below</a>
+    <!-- The log -->
+    <section class="log" id="log" aria-labelledby="log-title">
+      <div class="log__media" data-parallax>
+        <picture class="log__pic">
+<source type="image/avif" srcset="assets/photos/chalk-800.avif 800w, assets/photos/chalk-1200.avif 1200w, assets/photos/chalk-1600.avif 1600w" sizes="(min-width: 900px) 58vw, 100vw">
+<source type="image/webp" srcset="assets/photos/chalk-800.webp 800w, assets/photos/chalk-1200.webp 1200w, assets/photos/chalk-1600.webp 1600w" sizes="(min-width: 900px) 58vw, 100vw">
+<img src="assets/photos/chalk-1200.webp" width="1600" height="1067" alt="Two hands clapping chalk into a cloud of white dust" data-i18n-alt="alt.chalk" loading="lazy" decoding="async">
+</picture>
+      </div>
+      <div class="log__copy">
+        <h2 class="h2" id="log-title" data-i18n="log.title">Write the set down before the chalk dries.</h2>
+        <p class="body" data-i18n="log.body">Dial in the weight and reps with quick steppers and log the set. It is saved to the phone on the spot, and the rest timer starts by itself.</p>
+        <dl class="facts">
+          <div class="facts__row">
+            <dt>25</dt>
+            <dd data-i18n="log.f1">built-in exercises, each with a Vietnamese name, setup steps, a coaching tip and the form mistakes to avoid.</dd>
+          </div>
+          <div class="facts__row">
+            <dt>4</dt>
+            <dd data-i18n="log.f2">ready-made programs, plus any you build yourself.</dd>
+          </div>
+          <div class="facts__row">
+            <dt>90&thinsp;s</dt>
+            <dd data-i18n="log.f3">default rest, adjustable from 15 seconds to 15 minutes.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Next load: double progression -->
+    <section class="ladder" id="overload" aria-labelledby="ladder-title">
+      <div class="ladder__pin">
+        <div class="wrap ladder__grid">
+          <div class="ladder__head">
+            <h2 class="h2" id="ladder-title" data-i18n="ladder.title">It reads your last session and picks the weight.</h2>
+            <p class="body" data-i18n="ladder.body">IronLog uses double progression on your heaviest sets: fill the rep range, then add weight. Here is Bench Press, set to 6–10 reps in 2.5&nbsp;kg steps.</p>
+            <p class="small" data-i18n="ladder.note">Turn auto-increase off in Profile and it holds the weight instead. Loads round to the smallest plates your gym has: 0.5, 1.25 or 2.5&nbsp;kg.</p>
           </div>
 
-          <div class="hero__telemetry" role="list" aria-label="System telemetry">
-            <div class="tele-cell tele-cell--accent" role="listitem">
-              <span class="tele-val">&lt; 2.4 ms</span>
-              <span class="tele-lbl" data-i18n="hero.t1">Room SQLite WAL local commit</span>
-            </div>
-            <div class="tele-cell tele-cell--red" role="listitem">
-              <span class="tele-val">165.0 kg</span>
-              <span class="tele-lbl" data-i18n="hero.t2">Calibrated IPF collar stack</span>
-            </div>
-            <div class="tele-cell" role="listitem">
-              <span class="tele-val">~90</span>
-              <span class="tele-lbl" data-i18n="hero.t3">Vietnamese dishes macro table</span>
-            </div>
-            <div class="tele-cell" role="listitem">
-              <span class="tele-val">100%</span>
-              <span class="tele-lbl" data-i18n="hero.t4">Offline · zero account required</span>
-            </div>
+          <div class="ladder__stage">
+            <p class="ladder__exercise"><span>Bench Press</span><span class="ladder__range" data-i18n="ladder.range">6–10 reps, +2.5 kg</span></p>
+            <ol class="scenes">
+              <li class="scene" data-scene="0">
+                <p class="scene__name" data-i18n="s1.name">The range is full</p>
+                <div class="scene__row">
+                  <span class="scene__label" data-i18n="scene.last">Last session</span>
+                  <ul class="sets">
+                    <li><b>80</b> × 10</li><li><b>80</b> × 10</li><li><b>80</b> × 10</li>
+                  </ul>
+                </div>
+                <p class="scene__rule" data-i18n="s1.rule">Every set hit 10 reps → add 2.5 kg</p>
+                <div class="scene__row scene__row--next">
+                  <span class="scene__label" data-i18n="scene.next">Today</span>
+                  <p class="load"><span class="load__kg">82.5</span><span class="load__unit">kg</span><span class="load__reps">× 6</span></p>
+                </div>
+              </li>
+              <li class="scene" data-scene="1">
+                <p class="scene__name" data-i18n="s2.name">Building reps</p>
+                <div class="scene__row">
+                  <span class="scene__label" data-i18n="scene.last">Last session</span>
+                  <ul class="sets">
+                    <li><b>82.5</b> × 8</li><li><b>82.5</b> × 7</li><li><b>82.5</b> × 7</li>
+                  </ul>
+                </div>
+                <p class="scene__rule" data-i18n="s2.rule">Hold the weight, aim for 8 reps</p>
+                <div class="scene__row scene__row--next">
+                  <span class="scene__label" data-i18n="scene.next">Today</span>
+                  <p class="load"><span class="load__kg">82.5</span><span class="load__unit">kg</span><span class="load__reps">× 8</span></p>
+                </div>
+              </li>
+              <li class="scene" data-scene="2">
+                <p class="scene__name" data-i18n="s3.name">Too heavy, too soon</p>
+                <div class="scene__row">
+                  <span class="scene__label" data-i18n="scene.last">Last session</span>
+                  <ul class="sets">
+                    <li><b>85</b> × 5</li><li><b>85</b> × 5</li><li><b>85</b> × 4</li>
+                  </ul>
+                </div>
+                <p class="scene__rule" data-i18n="s3.rule">Under 6 reps → drop 2.5 kg</p>
+                <div class="scene__row scene__row--next">
+                  <span class="scene__label" data-i18n="scene.next">Today</span>
+                  <p class="load"><span class="load__kg">82.5</span><span class="load__unit">kg</span><span class="load__reps">× 6</span></p>
+                </div>
+              </li>
+            </ol>
+            <div class="ticks" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+
+          <div class="ladder__media">
+            <picture class="ladder__pic">
+<source type="image/avif" srcset="assets/photos/load-640.avif 640w, assets/photos/load-1000.avif 1000w, assets/photos/load-1400.avif 1400w" sizes="(min-width: 900px) 24vw, 100vw">
+<source type="image/webp" srcset="assets/photos/load-640.webp 640w, assets/photos/load-1000.webp 1000w, assets/photos/load-1400.webp 1400w" sizes="(min-width: 900px) 24vw, 100vw">
+<img src="assets/photos/load-1000.webp" width="1400" height="1764" alt="Hands sliding a black plate onto a barbell" data-i18n-alt="alt.load" loading="lazy" decoding="async">
+</picture>
           </div>
         </div>
+      </div>
+    </section>
 
-        <figure class="hero-board" aria-label="Technical board of the Olympic barbell and calibrated competition plate stack">
-          <div class="hero-board__top">
-            <span data-i18n="stage.spec">29MM KNURLED SHAFT · CALIBRATED STACK</span>
-            <span class="num">165.0 KG</span>
-          </div>
-
-          <div class="hero-board__figure">
-            <svg viewBox="0 0 680 260" width="100%" height="100%" fill="none" role="img" aria-label="Exploded technical diagram of Olympic barbell with 25kg, 20kg, 15kg, 10kg calibrated plates and collar">
-              <line x1="30" y1="130" x2="650" y2="130" stroke="#8c919c" stroke-width="12"/>
-              <rect x="200" y="123" width="280" height="14" fill="#2c2f36" stroke="#8c919c" stroke-width="1"/>
-              <!-- Left Stack -->
-              <rect x="158" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#16451f" stroke-opacity="0.35"/>
-              <rect x="130" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#16451f" stroke-width="1.5"/>
-              <rect x="104" y="64" width="16" height="132" rx="3" fill="#d6f53c" stroke="#16451f"/>
-              <rect x="82" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
-              <rect x="58" y="106" width="16" height="48" rx="2" fill="#16451f"/>
-              <!-- Right Stack -->
-              <rect x="502" y="42" width="20" height="176" rx="3" fill="#c83e2b" stroke="#16451f" stroke-opacity="0.35"/>
-              <rect x="532" y="52" width="18" height="156" rx="3" fill="#1f2126" stroke="#16451f" stroke-width="1.5"/>
-              <rect x="560" y="64" width="16" height="132" rx="3" fill="#d6f53c" stroke="#16451f"/>
-              <rect x="584" y="78" width="14" height="104" rx="2" fill="#282a31" stroke="#8c919c"/>
-              <rect x="606" y="106" width="16" height="48" rx="2" fill="#16451f"/>
-              <text x="340" y="238" fill="#16451f" font-family="Manrope, sans-serif" font-weight="600" font-size="11" text-anchor="middle">20KG SHAFT + 2×(25 · 20 · 15 · 10 · 2.5KG COLLAR) = 165.0 KG</text>
-            </svg>
-          </div>
-
-          <figcaption class="hero-board__bottom">
-            <div class="plate-legend" aria-hidden="true">
-              <span class="plate-tag"><i class="plate-dot" style="background:#c83e2b"></i>25KG</span>
-              <span class="plate-tag"><i class="plate-dot" style="background:#5a6270"></i>20KG</span>
-              <span class="plate-tag"><i class="plate-dot" style="background:#d6f53c"></i>15KG</span>
-              <span class="plate-tag"><i class="plate-dot" style="background:#2c2f36"></i>10KG</span>
-              <span class="plate-tag"><i class="plate-dot" style="background:#16451f"></i>2.5KG COLLAR</span>
+    <!-- Rest -->
+    <section class="rest" id="rest" aria-labelledby="rest-title">
+      <div class="rest__pin">
+        <div class="rest__media" aria-hidden="true">
+          <picture class="rest__pic">
+<source type="image/avif" srcset="assets/photos/bench-960.avif 960w, assets/photos/bench-1600.avif 1600w, assets/photos/bench-2400.avif 2400w" sizes="100vw">
+<source type="image/webp" srcset="assets/photos/bench-960.webp 960w, assets/photos/bench-1600.webp 1600w, assets/photos/bench-2400.webp 2400w" sizes="100vw">
+<img src="assets/photos/bench-1600.webp" width="2400" height="1350" alt="" data-i18n-alt="alt.none" loading="lazy" decoding="async">
+</picture>
+        </div>
+        <div class="rest__shade" aria-hidden="true"></div>
+        <div class="wrap rest__grid">
+          <p class="clock" aria-hidden="true"><span class="clock__m">1</span><span class="clock__sep">:</span><span class="clock__s">30</span></p>
+          <div class="rest__copy">
+            <h2 class="h2" id="rest-title" data-i18n="rest.title">Rest keeps counting on the lock screen.</h2>
+            <p class="body" data-i18n="rest.body">The timer runs as a foreground service with a live countdown in the notification, so it keeps going when you switch apps or lock the phone. At zero the phone vibrates and tells you to start the next set.</p>
+            <div class="notif" role="img" aria-label="Notification from IronLog reading Nghỉ giữa set, tap to open the workout" data-i18n-attr="aria-label:rest.notif">
+              <div class="notif__top"><span class="notif__app">IronLog</span><span class="notif__time" data-clock>1:30</span></div>
+              <p class="notif__title">Nghỉ giữa set</p>
+              <p class="notif__text">Chạm để mở buổi tập</p>
             </div>
-          </figcaption>
+            <p class="small" data-i18n="rest.caption">The notification as the app shows it, in Vietnamese.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section class="progress" id="progress" aria-labelledby="progress-title">
+      <div class="wrap progress__grid">
+        <div class="progress__copy">
+          <h2 class="h2" id="progress-title" data-i18n="progress.title">Strength you can see, one session at a time.</h2>
+          <p class="body" data-i18n="progress.body">For each exercise IronLog estimates your one-rep max with the Epley formula and charts it next to training volume. Sets above 12 reps are left out, because the formula overstates them.</p>
+          <p class="formula"><span>e1RM</span> = kg × (1 + reps ÷ 30)</p>
+        </div>
+        <figure class="progress__chart">
+          <svg class="chart" viewBox="0 0 640 300" role="img" aria-labelledby="chartTitle">
+<title id="chartTitle" data-i18n="chart.title">Bench Press estimated 1RM over twelve sessions, rising from 92 to 103.1 kg (illustrative data)</title>
+<line x1="44" x2="624" y1="266.0" y2="266.0" class="chart__grid"/><text x="34" y="270.0" class="chart__tick" text-anchor="end">90</text><line x1="44" x2="624" y1="184.0" y2="184.0" class="chart__grid"/><text x="34" y="188.0" class="chart__tick" text-anchor="end">95</text><line x1="44" x2="624" y1="102.0" y2="102.0" class="chart__grid"/><text x="34" y="106.0" class="chart__tick" text-anchor="end">100</text><line x1="44" x2="624" y1="20.0" y2="20.0" class="chart__grid"/><text x="34" y="24.0" class="chart__tick" text-anchor="end">105</text>
+<path d="M44.0 233.2 L96.7 211.9 L149.5 192.2 L202.2 192.2 L254.9 167.6 L307.6 152.8 L360.4 134.8 L413.1 143.0 L465.8 111.8 L518.5 95.4 L571.3 77.4 L624.0 51.2 L624.0 266 L44.0 266 Z" class="chart__area"/>
+<path d="M44.0 233.2 L96.7 211.9 L149.5 192.2 L202.2 192.2 L254.9 167.6 L307.6 152.8 L360.4 134.8 L413.1 143.0 L465.8 111.8 L518.5 95.4 L571.3 77.4 L624.0 51.2" class="chart__line" pathLength="1"/>
+<circle cx="44.0" cy="233.2" r="3" class="chart__dot"/><circle cx="96.7" cy="211.9" r="3" class="chart__dot"/><circle cx="149.5" cy="192.2" r="3" class="chart__dot"/><circle cx="202.2" cy="192.2" r="3" class="chart__dot"/><circle cx="254.9" cy="167.6" r="3" class="chart__dot"/><circle cx="307.6" cy="152.8" r="3" class="chart__dot"/><circle cx="360.4" cy="134.8" r="3" class="chart__dot"/><circle cx="413.1" cy="143.0" r="3" class="chart__dot"/><circle cx="465.8" cy="111.8" r="3" class="chart__dot"/><circle cx="518.5" cy="95.4" r="3" class="chart__dot"/><circle cx="571.3" cy="77.4" r="3" class="chart__dot"/><circle cx="624.0" cy="51.2" r="3" class="chart__dot"/><circle cx="624.0" cy="51.2" r="6" class="chart__last"/>
+<text x="44" y="292" class="chart__tick" data-i18n="chart.first">Session 1</text>
+<text x="624" y="292" class="chart__tick" text-anchor="end" data-i18n="chart.last">Session 12</text>
+</svg>
+          <figcaption class="small" data-i18n="chart.caption">Bench Press, estimated 1RM in kg. Illustrative data.</figcaption>
         </figure>
       </div>
+
+      <div class="wrap volume">
+        <div class="volume__head">
+          <h3 class="h3" data-i18n="volume.title">Weekly sets for each muscle group</h3>
+          <p class="body" data-i18n="volume.body">Every muscle group has a target band, from the least volume that still builds muscle (MEV) to the most you can recover from (MRV). Home also shows your streak and how recovered each group is.</p>
+        </div>
+        <ul class="bars">
+          <li class="bar" style="--mev:10;--mrv:20;--sets:14"><span class="bar__name" data-i18n="m.chest">Chest</span><span class="bar__track"><span class="bar__band"></span><span class="bar__fill"></span></span><span class="bar__val">14 <small>/ 10–20</small></span></li>
+          <li class="bar" style="--mev:10;--mrv:20;--sets:16"><span class="bar__name" data-i18n="m.back">Back</span><span class="bar__track"><span class="bar__band"></span><span class="bar__fill"></span></span><span class="bar__val">16 <small>/ 10–20</small></span></li>
+          <li class="bar is-under" style="--mev:10;--mrv:18;--sets:8"><span class="bar__name" data-i18n="m.quads">Quads</span><span class="bar__track"><span class="bar__band"></span><span class="bar__fill"></span></span><span class="bar__val">8 <small>/ 10–18</small></span></li>
+          <li class="bar" style="--mev:10;--mrv:16;--sets:12"><span class="bar__name" data-i18n="m.hams">Hamstrings and glutes</span><span class="bar__track"><span class="bar__band"></span><span class="bar__fill"></span></span><span class="bar__val">12 <small>/ 10–16</small></span></li>
+          <li class="bar" style="--mev:8;--mrv:16;--sets:10"><span class="bar__name" data-i18n="m.shoulders">Shoulders</span><span class="bar__track"><span class="bar__band"></span><span class="bar__fill"></span></span><span class="bar__val">10 <small>/ 8–16</small></span></li>
+          <li class="bar is-over" style="--mev:8;--mrv:16;--sets:18"><span class="bar__name" data-i18n="m.arms">Arms</span><span class="bar__track"><span class="bar__band"></span><span class="bar__fill"></span></span><span class="bar__val">18 <small>/ 8–16</small></span></li>
+          <li class="bar" style="--mev:8;--mrv:14;--sets:9"><span class="bar__name" data-i18n="m.calves">Calves and abs</span><span class="bar__track"><span class="bar__band"></span><span class="bar__fill"></span></span><span class="bar__val">9 <small>/ 8–14</small></span></li>
+        </ul>
+        <p class="small" data-i18n="volume.caption">Bands are the app's own targets. The set counts are illustrative.</p>
+      </div>
     </section>
 
-    <!-- ==================== CASE 01: BASEMENT SIGNAL DROP ==================== -->
-    <section class="sec" id="signal-drop" aria-labelledby="signal-heading">
-      <div class="container">
-        <header class="sec__head">
-          <span class="sec__index num">01</span>
+    <!-- Programs -->
+    <section class="programs" id="programs" aria-labelledby="programs-title">
+      <div class="programs__media" data-parallax>
+        <picture class="programs__pic">
+<source type="image/avif" srcset="assets/photos/racks-800.avif 800w, assets/photos/racks-1400.avif 1400w, assets/photos/racks-2000.avif 2000w" sizes="100vw">
+<source type="image/webp" srcset="assets/photos/racks-800.webp 800w, assets/photos/racks-1400.webp 1400w, assets/photos/racks-2000.webp 2000w" sizes="100vw">
+<img src="assets/photos/racks-1400.webp" width="2000" height="1333" alt="An empty gym with power racks and loaded barbells" data-i18n-alt="alt.racks" loading="lazy" decoding="async">
+</picture>
+      </div>
+      <div class="wrap programs__body">
+        <h2 class="h2" id="programs-title" data-i18n="programs.title">Four programs ready on day one.</h2>
+        <table class="plans">
+          <caption class="visually-hidden" data-i18n="programs.caption">Built-in programs with days per week and session length</caption>
+          <thead><tr><th scope="col" data-i18n="programs.th1">Program</th><th scope="col" data-i18n="programs.th2">Days a week</th><th scope="col" data-i18n="programs.th3">Session</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">PPL Hypertrophy 6 Days</th><td>6</td><td data-i18n="programs.d1">50–65 min</td></tr>
+            <tr><th scope="row">Upper / Lower 4 Days</th><td>4</td><td data-i18n="programs.d2">60–70 min</td></tr>
+            <tr><th scope="row">Arnold Split Cổ Điển</th><td>6</td><td data-i18n="programs.d3">65–75 min</td></tr>
+            <tr><th scope="row">Full Body Hypertrophy 3 Days</th><td>3</td><td data-i18n="programs.d3">65–75 min</td></tr>
+          </tbody>
+        </table>
+        <p class="body programs__after" data-i18n="programs.after">Or build your own. Home works out which day comes next from the exercises you trained last time.</p>
+      </div>
+    </section>
+
+    <!-- Food -->
+    <section class="food" id="food" aria-labelledby="food-title">
+      <div class="wrap food__grid">
+        <div class="food__copy">
+          <h2 class="h2" id="food-title" data-i18n="food.title">Phở counts too.</h2>
+          <p class="body" data-i18n="food.body">Photograph a meal, pick a photo from the gallery or just describe it. Gemini splits it into dishes with estimated grams, and you correct them before saving. Or enter it yourself from a table of about 90 Vietnamese dishes, or from the numbers on a label.</p>
+          <p class="body" data-i18n="food.body2">Daily targets come from your BMR and TDEE, worked out with Katch-McArdle, which uses lean mass, and checked against Mifflin-St Jeor.</p>
+          <p class="small" data-i18n="food.note">Meal analysis and the weekly coach use Gemini, so they need an internet connection and an API key added when the app is built. The public APK is built without a key; logging from the dish table works without one.</p>
+        </div>
+        <div class="food__media">
+          <picture class="food__pic">
+<source type="image/avif" srcset="assets/photos/pho-640.avif 640w, assets/photos/pho-1000.avif 1000w, assets/photos/pho-1400.avif 1400w" sizes="(min-width: 900px) 46vw, 100vw">
+<source type="image/webp" srcset="assets/photos/pho-640.webp 640w, assets/photos/pho-1000.webp 1000w, assets/photos/pho-1400.webp 1400w" sizes="(min-width: 900px) 46vw, 100vw">
+<img src="assets/photos/pho-1000.webp" width="1400" height="1096" alt="A bowl of beef phở with rice noodles and spring onion, seen from above" data-i18n-alt="alt.pho" loading="lazy" decoding="async">
+</picture>
+        </div>
+      </div>
+    </section>
+
+    <!-- Yours -->
+    <section class="yours" id="yours" aria-labelledby="yours-title">
+      <div class="yours__media" data-parallax>
+        <picture class="yours__pic">
+<source type="image/avif" srcset="assets/photos/phone-800.avif 800w, assets/photos/phone-1400.avif 1400w, assets/photos/phone-2000.avif 2000w" sizes="100vw">
+<source type="image/webp" srcset="assets/photos/phone-800.webp 800w, assets/photos/phone-1400.webp 1400w, assets/photos/phone-2000.webp 2000w" sizes="100vw">
+<img src="assets/photos/phone-1400.webp" width="2000" height="1333" alt="A man in a cap and headphones checking his phone between sets" data-i18n-alt="alt.phone" loading="lazy" decoding="async">
+</picture>
+      </div>
+      <div class="wrap yours__body">
+        <h2 class="h2" id="yours-title" data-i18n="yours.title">The week, reviewed. The log, still yours.</h2>
+        <div class="yours__cols">
           <div>
-            <p class="sec__kicker" data-i18n="s1.kicker">OFFLINE-FIRST PERSISTENCE</p>
-            <h2 id="signal-heading" data-i18n="s1.h2">The basement signal drop</h2>
-            <p class="sec__lead" data-i18n="s1.lead">
-              Heavy squat racks live behind reinforced concrete where cellular reception dies. Step through the signal drop below to watch how IronLog commits a top set atomically to local Room SQLite (WAL) while cloud workout trackers hang and lose sets.
-            </p>
+            <h3 class="h3" data-i18n="yours.h1">Weekly coach</h3>
+            <p class="body" data-i18n="yours.p1">On the Progress tab, Gemini sums up your last seven days: sets per muscle against MEV–MRV, lifts that have stalled, calories and protein. Then it suggests what to change next week.</p>
           </div>
-        </header>
-
-        <div class="signal-stage">
-          <div class="signal-hud">
-            <div>
-              <div class="signal-meter">
-                <div style="display:flex;align-items:center;gap:0.85rem;">
-                  <div class="signal-bars" id="signalBars" data-level="4" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span>
-                  </div>
-                  <div>
-                    <div class="mono" id="signalCarrier" style="font-size:0.88rem;font-weight:700;">4G LTE · -78 dBm</div>
-                    <div class="mono" id="signalLocation" style="font-size:0.72rem;color:var(--chalk-muted);" data-i18n="s1.loc0">Ground Lobby · Entering Gym</div>
-                  </div>
-                </div>
-                <span class="signal-badge" id="signalBadge">ONLINE</span>
-              </div>
-
-              <h3 id="signalStageTitle" style="font-size:clamp(1.6rem,2.6vw,2.2rem);margin-top:1.35rem;" data-i18n="s1.st0Title">
-                Approaching Top Set: Barbell Back Squat
-              </h3>
-              <p id="signalStageDesc" style="margin-top:0.65rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s1.st0Desc">
-                Warm-ups complete. Pre-filled from last week’s local history: 137.5 kg × 5 @ RPE 8.5. Today’s target load on the bar: 140.0 kg × 5.
-              </p>
-            </div>
-
-            <div>
-              <p class="mono" style="font-size:0.7rem;color:var(--chalk-muted);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.1em;" data-i18n="s1.scrubHint">
-                Inspect each stage directly:
-              </p>
-              <div class="signal-steps" role="tablist" aria-label="Signal stages">
-                <button class="step-btn is-active" type="button" data-signal-step="0">4G LTE (-78dBm)</button>
-                <button class="step-btn" type="button" data-signal-step="1">1 BAR (-114dBm)</button>
-                <button class="step-btn" type="button" data-signal-step="2">0 BARS · AIRPLANE</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="signal-compare">
-            <!-- IronLog Local Room WAL Card -->
-            <article class="compare-card compare-card--iron">
-              <div>
-                <div class="compare-head">
-                  <span style="color:var(--brass);font-weight:700;">IRONLOG · ROOM SQLITE (WAL)</span>
-                  <span class="num" id="ironLatencyBadge" style="color:var(--ok);">1.8 ms COMMIT</span>
-                </div>
-                <h4 style="font-size:1.35rem;margin-top:0.85rem;">140.0 KG × 5 @ RPE 8.5</h4>
-                <p style="font-size:0.84rem;color:var(--chalk-muted);margin-top:0.25rem;" data-i18n="s1.ironSub">
-                  Zero network socket touched. Direct Kotlin Coroutine DAO transaction on local flash storage.
-                </p>
-              </div>
-
-              <div class="wal-terminal" id="ironWalLog">
-                <div>&gt; BEGIN IMMEDIATE TRANSACTION <span class="amber">#TX-0842</span></div>
-                <div>&gt; INSERT INTO workout_sets(lift,kg,reps,rpe)</div>
-                <div>&nbsp;&nbsp;VALUES('Squat', 140.0, 5, 8.5);</div>
-                <div>&gt; WAL_CHECKPOINT(PASSIVE) · <span class="ok">COMMITTED 1.8ms</span></div>
-                <div>&gt; e1RM: <span class="amber">163.3 kg</span> (+2.5 kg PR)</div>
-              </div>
-            </article>
-
-            <!-- Typical Cloud Fitness App Failure Card -->
-            <article class="compare-card compare-card--cloud">
-              <div>
-                <div class="compare-head">
-                  <span style="color:#ff7a66;font-weight:700;" data-i18n="s1.cloudLabel">CLOUD-ONLY TRACKER</span>
-                  <span class="num" id="cloudLatencyBadge" style="color:#ff7a66;">12,400 ms…</span>
-                </div>
-                <h4 style="font-size:1.35rem;margin-top:0.85rem;" id="cloudStateHeading" data-i18n="s1.cloudTitle">Syncing to remote API…</h4>
-                <p style="font-size:0.84rem;color:var(--chalk-muted);margin-top:0.25rem;" id="cloudStateSub" data-i18n="s1.cloudSub">
-                  Auth token refresh stalls behind basement concrete; optimistic UI rolls back your set when screen locks.
-                </p>
-              </div>
-
-              <div class="wal-terminal" id="cloudErrLog">
-                <div>&gt; POST https://api.cloudgym.app/v2/sets</div>
-                <div>&gt; <span class="cloud-spinner"></span><span id="cloudNetLine">TLS handshake retry (3/3)...</span></div>
-                <div class="err" id="cloudErrLine">&gt; ERR_INTERNET_DISCONNECTED (504)</div>
-                <div class="err">&gt; WARN: Unsaved set state discarded</div>
-              </div>
-            </article>
+          <div>
+            <h3 class="h3" data-i18n="yours.h2">Your data</h3>
+            <p class="body" data-i18n="yours.p2">No account to create. Workouts live in a database on the phone. Export a CSV to open in Excel, or back up and restore everything as a single JSON file.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="container">
-      <figure class="photo-board">
-        <img src="img/ironlog-basement-rack.jpg" alt="Underground concrete powerlifting gym with squat rack and chalked floor" loading="lazy">
-        <figcaption class="photo-board__caption">
-          <p class="photo-board__quote" data-i18n="band1.quote">Iron does not wait for a retry spinner.</p>
-          <p class="photo-board__sub" data-i18n="band1.sub">LOCAL-FIRST ANDROID ARCHITECTURE · ZERO ACCOUNT WALL</p>
-        </figcaption>
-      </figure>
-    </div>
-
-    <!-- ==================== CASE 02: FOREGROUND SERVICE REST TIMER ==================== -->
-    <section class="sec sec--forest" id="rest-service" aria-labelledby="rest-heading">
-      <div class="container">
-        <header class="sec__head">
-          <span class="sec__index num">02</span>
-          <div>
-            <p class="sec__kicker" data-i18n="s2.kicker">ANDROID FOREGROUND SERVICE</p>
-            <h2 id="rest-heading" data-i18n="s2.h2">Survives screen-off &amp; app backgrounding</h2>
-            <p class="sec__lead" data-i18n="s2.lead">
-              Ordinary web wrappers and naive timers get killed by Android Doze the moment you lock your phone and chalk your hands. IronLog promotes an ongoing ForegroundService notification that counts down accurately on your lock screen.
-            </p>
-          </div>
-        </header>
-
-        <div class="rest-grid">
-          <div class="lockscreen-device" id="lockDevice">
-            <div class="lockscreen-glass">
-              <div class="ls-clock">
-                <div class="ls-clock__lock" id="lsStateBadge" data-i18n="s2.locked">ANDROID LOCK SCREEN · SCREEN OFF</div>
-                <div class="ls-clock__time num" id="lsWallClock">18:42</div>
-              </div>
-
-              <div class="notif-banner" role="region" aria-label="Simulated Android ForegroundService Rest Notification">
-                <div class="notif-banner__meta">
-                  <span>IRONLOG · FOREGROUND SERVICE</span>
-                  <span id="lsServiceStatus">ACTIVE · SET 3/4</span>
-                </div>
-                <div class="notif-banner__main">
-                  <div>
-                    <div style="font-weight:700;font-size:0.95rem;color:var(--chalk);" data-i18n="s2.notifLift">Next: Barbell Squat · 140 kg × 5</div>
-                    <div style="font-size:0.76rem;color:var(--chalk-muted);margin-top:2px;" data-i18n="s2.notifSub">Target RIR 1–2 · Chime + Haptic at 00:00</div>
-                  </div>
-                  <div class="notif-countdown" id="lsTimerReadout">02:30</div>
-                </div>
-                <div class="notif-progress" aria-hidden="true">
-                  <div class="notif-progress__bar" id="lsProgressBar"></div>
-                </div>
-                <div class="notif-actions">
-                  <button class="notif-chip" type="button" id="lsPauseBtn" data-i18n="s2.pause">Pause</button>
-                  <button class="notif-chip" type="button" id="lsAdd30Btn">+0:30</button>
-                  <button class="notif-chip" type="button" id="lsSkipBtn" data-i18n="s2.skip">Skip →</button>
-                  <button class="notif-chip" type="button" id="lsToggleAodBtn">AOD</button>
-                </div>
-              </div>
-
-              <div style="display:flex;justify-content:space-between;font-family:var(--font-outlier);font-size:0.68rem;color:var(--chalk-muted);">
-                <span>START_STICKY</span>
-                <span>CHANNEL: REST_CHRONOMETER</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 style="font-size:clamp(1.75rem,3vw,2.5rem);" data-i18n="s2.rightTitle">
-              Honest chronometry between heavy sets
-            </h3>
-            <p style="margin-top:0.85rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s2.rightLead">
-              Hypertrophy and strength progression depend on reproducible inter-set recovery. Whether you switch to your music player, answer a message, or pocket a locked phone for two and a half minutes, the countdown stays anchored to monotonic system uptime.
-            </p>
-
-            <div class="service-specs">
-              <div class="service-spec">
-                <h3 data-i18n="s2.sp1t">SystemClock.elapsedRealtime()</h3>
-                <p data-i18n="s2.sp1d">Immune to CPU throttling and deep sleep drift — remaining rest is computed against hardware boot timestamps rather than fragile UI intervals.</p>
-              </div>
-              <div class="service-spec">
-                <h3 data-i18n="s2.sp2t">Direct Notification Actions</h3>
-                <p data-i18n="s2.sp2d">Add +30 seconds after a grinder set, pause visibly, or skip straight to your next set right from the Android lock-screen shade.</p>
-              </div>
-              <div class="service-spec">
-                <h3 data-i18n="s2.sp3t">Explicit Guardrails</h3>
-                <p data-i18n="s2.sp3d">Finishing a workout with 0 logged sets or accidentally typing 600 kg instead of 60 kg triggers immediate confirmation guards before touching history.</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- Closing -->
+    <section class="close" id="start" aria-labelledby="close-title">
+      <div class="close__media" data-parallax>
+        <picture class="close__pic">
+<source type="image/avif" srcset="assets/photos/close-960.avif 960w, assets/photos/close-1600.avif 1600w, assets/photos/close-2400.avif 2400w" sizes="100vw">
+<source type="image/webp" srcset="assets/photos/close-960.webp 960w, assets/photos/close-1600.webp 1600w, assets/photos/close-2400.webp 2400w" sizes="100vw">
+<img src="assets/photos/close-1600.webp" width="2400" height="1800" alt="A barbell resting on a gym floor, crossed by window light and shadow" data-i18n-alt="alt.close" loading="lazy" decoding="async">
+</picture>
       </div>
-    </section>
-
-    <!-- ==================== INTERACTIVE EMBEDDED WORKOUT LOG SANDBOX ==================== -->
-    <section class="sec" id="sandbox" aria-labelledby="sandbox-heading">
-      <div class="container">
-        <header class="sec__head">
-          <span class="sec__index num">03</span>
-          <div>
-            <p class="sec__kicker" data-i18n="s3.kicker">LIVE INTERACTIVE WORKBENCH · TRY ON PAGE</p>
-            <h2 id="sandbox-heading" data-i18n="s3.h2">Log a real set. Watch E1RM &amp; volume react.</h2>
-            <p class="sec__lead" data-i18n="s3.lead">
-              Adjust load, reps, and RPE below and commit a set. IronLog computes your Epley 1RM, checks progressive overload criteria, triggers the live rest timer, and updates weekly muscle-group sets against MEV–MRV landmarks immediately.
-            </p>
-          </div>
-        </header>
-
-        <div class="sandbox">
-          <!-- Left: Set Logger Console -->
-          <div class="console-card">
-            <div class="console-card__bar">
-              <span class="mono" style="font-size:0.76rem;color:var(--brass);" data-i18n="s3.sessionTag">ACTIVE SESSION · UPPER / LOWER HYPERTROPHY</span>
-              <span class="mono" id="sbWalCommitBadge" style="font-size:0.72rem;color:var(--ok);">WAL READY · 0.0 ms</span>
-            </div>
-
-            <div class="lift-tabs" role="tablist" aria-label="Select exercise">
-              <button class="lift-tab is-active" type="button" data-lift="squat">Barbell Squat</button>
-              <button class="lift-tab" type="button" data-lift="bench">Bench Press</button>
-              <button class="lift-tab" type="button" data-lift="deadlift">Deadlift</button>
-              <button class="lift-tab" type="button" data-lift="ohp">Overhead Press</button>
-            </div>
-
-            <div class="input-trio">
-              <div class="dial-box">
-                <label for="sbWeightInput" data-i18n="s3.weight">LOAD (KG)</label>
-                <div class="dial-row">
-                  <button class="dial-step" type="button" data-step-target="weight" data-step="-2.5" aria-label="Decrease weight">−</button>
-                  <input class="dial-val" id="sbWeightInput" type="number" step="2.5" min="20" max="400" value="140">
-                  <button class="dial-step" type="button" data-step-target="weight" data-step="2.5" aria-label="Increase weight">+</button>
-                </div>
-              </div>
-
-              <div class="dial-box">
-                <label for="sbRepsInput" data-i18n="s3.reps">REPS</label>
-                <div class="dial-row">
-                  <button class="dial-step" type="button" data-step-target="reps" data-step="-1" aria-label="Decrease reps">−</button>
-                  <input class="dial-val" id="sbRepsInput" type="number" step="1" min="1" max="30" value="5">
-                  <button class="dial-step" type="button" data-step-target="reps" data-step="1" aria-label="Increase reps">+</button>
-                </div>
-              </div>
-
-              <div class="dial-box">
-                <label for="sbRpeInput">RPE (RIR)</label>
-                <div class="dial-row">
-                  <button class="dial-step" type="button" data-step-target="rpe" data-step="-0.5" aria-label="Decrease RPE">−</button>
-                  <input class="dial-val" id="sbRpeInput" type="number" step="0.5" min="6" max="10" value="8.5">
-                  <button class="dial-step" type="button" data-step-target="rpe" data-step="0.5" aria-label="Increase RPE">+</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="sandbox-actions">
-              <button class="btn btn--brass" type="button" id="sbLogSetBtn" data-i18n="s3.commitBtn">Commit Set to Local Log +</button>
-              <button class="btn btn--iron" type="button" id="openDrawerSandboxBtn" data-i18n="s3.openDrawer">Open Full Android Prototype Drawer ↗</button>
-              <button class="btn btn--ghost btn--sm" type="button" id="sbResetBtn" data-i18n="s3.reset">Reset</button>
-            </div>
-
-            <div class="sandbox-rest-strip" id="sbRestStrip">
-              <span id="sbRestLabel" data-i18n="s3.restIdle">REST TIMER IDLE · AUTO-STARTS ON SET COMMIT</span>
-              <span class="num" id="sbRestClock" style="font-weight:700;color:var(--brass);">02:30</span>
-            </div>
-
-            <table class="set-log-table" aria-label="Logged sets">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th data-i18n="s3.thLift">Exercise</th>
-                  <th>KG × REPS</th>
-                  <th>RPE</th>
-                  <th>e1RM</th>
-                </tr>
-              </thead>
-              <tbody id="sbSetTableBody"></tbody>
-            </table>
-          </div>
-
-          <!-- Right: Live Epley 1RM & Weekly MEV-MRV Volume Telemetry -->
-          <div class="console-card">
-            <div class="console-card__bar">
-              <span class="mono" style="font-size:0.76rem;color:var(--chalk);" data-i18n="s3.teleTitle">EPLEY 1RM &amp; WEEKLY MEV–MRV TELEMETRY</span>
-              <span class="mono" id="sbTotalVolBadge" style="font-size:0.76rem;color:var(--brass);">SESSION VOL: 2,060 KG</span>
-            </div>
-
-            <div class="e1rm-grid">
-              <div class="metric-tile">
-                <div class="metric-tile__lbl" data-i18n="s3.e1rmLabel">ESTIMATED 1RM (EPLEY)</div>
-                <div class="metric-tile__val" id="sbE1rmVal">163.3 kg</div>
-                <div class="mono" id="sbFormulaReadout" style="font-size:0.7rem;color:var(--chalk-muted);margin-top:0.25rem;">140 × (1 + 5/30)</div>
-              </div>
-              <div class="metric-tile">
-                <div class="metric-tile__lbl" data-i18n="s3.overloadLabel">NEXT SESSION DECISION</div>
-                <div class="metric-tile__val" id="sbDecisionVal" style="color:var(--ok);">+2.5 kg</div>
-                <div class="mono" id="sbDecisionReason" style="font-size:0.7rem;color:var(--chalk-muted);margin-top:0.25rem;" data-i18n="s3.reasonPlus">RIR ≥ 1.5 · Headroom confirmed</div>
-              </div>
-            </div>
-
-            <h3 style="font-size:1.15rem;margin-bottom:0.85rem;" data-i18n="s3.volHeading">WEEKLY SETS VS MEV–MRV LANDMARKS</h3>
-            <div class="vol-bars" id="sbVolumeBars">
-              <div class="vol-row" data-muscle="quads">
-                <div class="vol-row__head">
-                  <span data-i18n="m.quads">Quads &amp; Glutes</span>
-                  <span class="num"><strong id="volQuadsVal">11</strong> / 18 sets (MEV 6 · MRV 18)</span>
-                </div>
-                <div class="vol-track"><div class="vol-fill" id="volQuadsBar" style="width:61%"></div></div>
-              </div>
-
-              <div class="vol-row" data-muscle="chest">
-                <div class="vol-row__head">
-                  <span data-i18n="m.chest">Chest</span>
-                  <span class="num"><strong id="volChestVal">14</strong> / 20 sets (MEV 8 · MRV 20)</span>
-                </div>
-                <div class="vol-track"><div class="vol-fill" id="volChestBar" style="width:70%"></div></div>
-              </div>
-
-              <div class="vol-row" data-muscle="back">
-                <div class="vol-row__head">
-                  <span data-i18n="m.back">Back &amp; Posterior</span>
-                  <span class="num"><strong id="volBackVal">12</strong> / 20 sets (MEV 8 · MRV 20)</span>
-                </div>
-                <div class="vol-track"><div class="vol-fill vol-fill--red" id="volBackBar" style="width:60%"></div></div>
-              </div>
-
-              <div class="vol-row" data-muscle="shoulders">
-                <div class="vol-row__head">
-                  <span data-i18n="m.shoulders">Deltoids</span>
-                  <span class="num"><strong id="volShouldersVal">10</strong> / 18 sets (MEV 6 · MRV 18)</span>
-                </div>
-                <div class="vol-track"><div class="vol-fill" id="volShouldersBar" style="width:55%"></div></div>
-              </div>
-            </div>
-
-            <p style="margin-top:1.25rem;font-size:0.83rem;color:var(--chalk-muted);line-height:1.5;" data-i18n="s3.nutritionNote">
-              Includes built-in Katch-McArdle / Mifflin-St Jeor TDEE calculator and an offline Vietnamese macro table (~90 dishes: Cơm tấm, Phở bò, Ức gà) plus optional Gemini meal photo parsing.
-            </p>
-          </div>
+      <div class="close__shade" aria-hidden="true"></div>
+      <div class="wrap close__copy">
+        <h2 class="close__title" id="close-title" data-i18n="close.title">See you under the bar.</h2>
+        <p class="body" data-i18n="close.body">Install the APK on any phone with Android 8.1 or newer, or try the browser prototype first. The prototype runs on made-up data.</p>
+        <div class="actions">
+          <a class="btn btn--plate" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="cta.apk">Download the APK</a>
+          <a class="btn btn--line" href="prototype.html" data-i18n="cta.proto">Try it in the browser</a>
         </div>
-      </div>
-    </section>
-
-    <!-- ==================== ARCHITECTURE & MAKER ==================== -->
-    <section class="sec sec--surface" id="architecture" aria-labelledby="arch-heading">
-      <div class="container">
-        <header class="sec__head">
-          <span class="sec__index num">04</span>
-          <div>
-            <p class="sec__kicker" data-i18n="s4.kicker">SYSTEM ARCHITECTURE · KOTLIN &amp; JETPACK COMPOSE</p>
-            <h2 id="arch-heading" data-i18n="s4.h2">Engineered without bloat</h2>
-            <p class="sec__lead" data-i18n="s4.lead">
-              Designed and written by Trần Huy Hoàng from real training logs: unidirectional Compose state, deterministic hypertrophy math, local SQLite durability, and zero third-party analytics trackers.
-            </p>
-          </div>
-        </header>
-
-        <div class="arch-diagram">
-          <article class="arch-node" data-reveal>
-            <p class="arch-node__layer">LAYER 01 · UI</p>
-            <h3>JETPACK COMPOSE</h3>
-            <p data-i18n="s4.n1">Material 3 adaptive screens bound via lifecycle-aware StateFlow. Sub-frame recomposition for set tables and rest banners.</p>
-            <code>collectAsStateWithLifecycle()</code>
-          </article>
-
-          <article class="arch-node arch-node--red" data-reveal>
-            <p class="arch-node__layer">LAYER 02 · DOMAIN</p>
-            <h3>OVERLOAD ENGINE</h3>
-            <p data-i18n="s4.n2">Pure Kotlin calculators for Epley e1RM, RIR progression gates, muscle recovery decay, and weekly MEV–MRV landmarks.</p>
-            <code>domain/HypertrophyMath.kt</code>
-          </article>
-
-          <article class="arch-node" data-reveal>
-            <p class="arch-node__layer">LAYER 03 · PERSISTENCE</p>
-            <h3>ROOM SQLITE (WAL)</h3>
-            <p data-i18n="s4.n3">Write-Ahead Logging local database with Coroutine DAOs, 4 built-in splits (PPL, Upper/Lower, Arnold, Full Body), CSV &amp; JSON export.</p>
-            <code>data/GymDatabase.kt</code>
-          </article>
-
-          <article class="arch-node arch-node--red" data-reveal>
-            <p class="arch-node__layer">LAYER 04 · OS SERVICE</p>
-            <h3>FOREGROUND TIMER</h3>
-            <p data-i18n="s4.n4">Dedicated Android Service + Notification chronometer surviving lock screen, app switching, and aggressive battery savers.</p>
-            <code>service/RestTimerService.kt</code>
-          </article>
-        </div>
-
-        <div class="craft-gallery">
-          <div class="console-card" style="display:flex;flex-direction:column;justify-content:space-between;" data-reveal>
-            <div>
-              <p class="spec-index" data-i18n="s4.makerKicker">SOLO ENGINEERED · OPEN SOURCE MIT</p>
-              <h3 style="font-size:2rem;" data-i18n="s4.makerTitle">From the gym floor to every line of Kotlin.</h3>
-              <p style="margin-top:0.85rem;color:var(--chalk-soft);line-height:1.6;" data-i18n="s4.makerBody">
-                Built by Trần Huy Hoàng. Every screen in IronLog earned its place during real hypertrophy blocks — answering what load you moved last week, how recovered each muscle group is today, and when you are ready to pull the next set.
-              </p>
-            </div>
-
-            <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:0.75rem;">
-              <a class="btn btn--brass" href="https://github.com/hoang-IT-eng/GYMVERSE/releases/download/apk-latest/gymverse.apk" download data-i18n="btn.apk">Download Android APK ↓</a>
-              <a class="btn btn--iron" href="prototype.html" data-i18n="btn.fullProto">Full Screen Prototype ↗</a>
-            </div>
-          </div>
-        </div>
+        <p class="small" data-i18n="close.note">The APK is a debug build that GitHub Actions makes from the main branch.</p>
       </div>
     </section>
   </main>
 
-  <!-- Slide-Over Interactive Prototype Drawer -->
-  <div class="proto-drawer" id="protoDrawer" role="dialog" aria-modal="true" aria-label="IronLog Interactive App Prototype" hidden>
-    <div class="proto-drawer__panel">
-      <div class="proto-drawer__head">
-        <span class="mono" style="font-size:0.78rem;color:var(--brass);">IRONLOG LIVE INTERACTIVE PROTOTYPE</span>
-        <div style="display:flex;gap:0.5rem;">
-          <a class="btn btn--iron btn--sm" href="prototype.html" data-i18n="drawer.expand">Full Page ↗</a>
-          <button class="btn btn--ghost btn--sm" type="button" id="closeDrawerBtn" data-i18n="drawer.close">Close ✕</button>
-        </div>
-      </div>
-      <iframe class="proto-drawer__frame" id="protoIframe" title="IronLog Interactive Prototype" data-src="prototype.html"></iframe>
-    </div>
-  </div>
-
-  <footer class="mast">
-    <div class="container mast__grid">
-      <div>
-        <span class="brand__word">IRONLOG · GYMVERSE</span>
-        <p style="margin-top:0.5rem;color:var(--chalk-muted);font-size:0.88rem;max-width:48ch;" data-i18n="foot.copy">
-          Designed &amp; engineered by Trần Huy Hoàng. Android 8.1+ (API 27+) · Kotlin · Jetpack Compose · Room SQLite. Sample telemetry shown for interactive demonstration.
-        </p>
-      </div>
-      <nav class="mast__links" aria-label="Footer links">
-        <a href="#signal-drop" data-i18n="nav.signal">01 Signal Drop</a>
-        <a href="#rest-service" data-i18n="nav.rest">02 Rest Service</a>
-        <a href="#sandbox" data-i18n="nav.sandbox">03 Live Log</a>
-        <a href="prototype.html">Prototype</a>
-      </nav>
+  <footer class="foot">
+    <div class="wrap foot__grid">
+      <p class="foot__made" data-i18n="foot.made">IronLog (GYMVERSE) is designed and built by Trần Huy Hoàng with Kotlin, Jetpack Compose and Room. MIT licence.</p>
+      <p class="foot__credits"><span data-i18n="foot.photos">Photos on Unsplash by</span>
+        <a href="https://unsplash.com/photos/shirtless-man-lifting-barbell-in-gym-9dzWZQWZMdE">Anastase Maragos</a>,
+        <a href="https://unsplash.com/photos/a-close-up-of-a-person-holding-a-doughnut-ZYNg5xkuDts">Timothée Geenens</a>,
+        <a href="https://unsplash.com/photos/a-man-lifting-a-barbell-with-a-pair-of-scissors-Z0xdndoFc3k">Redd Francisco</a>,
+        <a href="https://unsplash.com/photos/man-wearing-black-tank-top-sitting-on-the-weight-bench-hCdFM3lELyA">Jaiden Peters</a>,
+        <a href="https://unsplash.com/photos/empty-gym-with-power-rack-barbells-and-weights-j4T5z94b8ns">Mirko Meister</a>,
+        <a href="https://unsplash.com/photos/white-noodle-soup-with-green-leaf-vegetable-in-white-ceramic-bowl-08aic3qPcag">Markus Winkler</a>,
+        <a href="https://unsplash.com/photos/man-in-black-long-sleeve-shirt-and-black-cap-holding-smartphone-tBne8kdxzbc">Kyle Loftus</a>
+        <span data-i18n="foot.and">and</span>
+        <a href="https://unsplash.com/photos/black-and-white-walking-stick-WH15dpm1F1E">Kirill Bogomolov</a>.
+      </p>
+      <a class="foot__top" href="#top" data-i18n="foot.top">Back to top</a>
     </div>
   </footer>
 
-  <div class="film-grain" aria-hidden="true"></div>
-
-  <script src="vendor/three.min.js"></script>
-  <script src="vendor/gsap.min.js"></script>
-  <script src="vendor/ScrollTrigger.min.js"></script>
-  <script src="vendor/lenis.min.js"></script>
-  <script src="landing.js"></script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
+  <script src="landing.js" defer></script>
 </body>
 </html>

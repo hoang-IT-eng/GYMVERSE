@@ -303,15 +303,117 @@ h1, h2, h3, h4 {
 
 /* ---------- HERO SECTION ---------- */
 .hero {
+  position: relative;
+  overflow: clip;
   padding-block: clamp(3rem, 6vw, 5.5rem);
   border-bottom: 1px solid var(--line);
 }
 
+/* Real-time scene layer — the interface floats above it */
+.hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.hero--scene-on .hero__canvas {
+  opacity: 1;
+}
+
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 95% at 50% 38%, transparent 56%, rgba(22, 69, 31, 0.1) 100%),
+    linear-gradient(to bottom, rgba(22, 69, 31, 0.05), transparent 18%, transparent 84%, rgba(22, 69, 31, 0.06));
+}
+
+/* Viewfinder frame line */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 0;
+  border: 1px solid rgba(22, 69, 31, 0.13);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* Film-credit corner labels */
+.hero__credits {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--chalk-muted);
+}
+
+.hero__credit {
+  position: absolute;
+}
+
+.hero__credit--tl { top: 1.65rem; left: 2rem; }
+.hero__credit--tr { top: 1.65rem; right: 2rem; }
+.hero__credit--bl { bottom: 1.65rem; left: 2rem; }
+.hero__credit--br { bottom: 1.65rem; right: 2rem; }
+
 .hero__grid {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
   gap: clamp(2rem, 4vw, 4rem);
   align-items: center;
+}
+
+/* Masked per-word headline rise (spans are built by JS only) */
+.w-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.09em;
+  margin-bottom: -0.09em;
+}
+
+.w-inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Static film grain over the whole page */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 760;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+/* Lenis smooth-scroll base (classes are added by the library) */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 .spec-index {
@@ -1287,6 +1389,10 @@ h1, h2, h3, h4 {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 68rem) {
+  .hero__credits,
+  .hero::before {
+    display: none;
+  }
   .hero__grid,
   .signal-stage,
   .rest-grid,
@@ -1325,5 +1431,11 @@ h1, h2, h3, h4 {
 @media (prefers-reduced-motion: reduce) {
   .cloud-spinner {
     animation: none;
+  }
+  .hero__canvas {
+    display: none;
+  }
+  .film-grain {
+    display: none;
   }
 }

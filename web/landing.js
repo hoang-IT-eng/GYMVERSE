@@ -349,6 +349,8 @@
       if (dict[k] != null) el.innerHTML = dict[k];
     });
 
+    if (typeof splitHeroTitle === "function") splitHeroTitle();
+
     if (langCode) langCode.textContent = currentLang.toUpperCase();
     langOpts.forEach(function (opt) {
       var isSel = opt.getAttribute("data-lang") === currentLang;
@@ -390,10 +392,50 @@
     });
   });
 
-  /* ---------------- 2. MOTION PREFERENCE ----------------
-     The hero board is a static SVG diagram — no WebGL, no canvas,
-     no scroll-scrubbed motion. The page stays a still document. */
+  /* ---------------- 2. MOTION PREFERENCE & SCENE STATE ----------------
+     Shared mutable state for the cinematic layer (section 7): hovering
+     a download CTA eases the hero scene — calmer drift, particles
+     gather toward the barbell. */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var heroState = { hover: 0, target: 0 };
+
+  /* Split the hero headline into masked word spans for the intro rise.
+     Runs again after every language switch (applyLang hook above);
+     the spans carry no hidden state of their own — GSAP alone moves
+     them, and only during the first intro. */
+  function splitHeroTitle() {
+    var h1 = document.querySelector(".hero__title");
+    if (!h1) return;
+    function wrapWords(node) {
+      var frag = document.createDocumentFragment();
+      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+        if (child.nodeType === 3) {
+          child.textContent.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(" "));
+              return;
+            }
+            var mask = document.createElement("span");
+            mask.className = "w-mask";
+            var inner = document.createElement("span");
+            inner.className = "w-inner";
+            inner.textContent = part;
+            mask.appendChild(inner);
+            frag.appendChild(mask);
+          });
+        } else if (child.nodeType === 1) {
+          var clone = child.cloneNode(false);
+          clone.appendChild(wrapWords(child));
+          frag.appendChild(clone);
+        }
+      });
+      return frag;
+    }
+    var frag = wrapWords(h1);
+    h1.innerHTML = "";
+    h1.appendChild(frag);
+  }
 
   /* ---------------- 3. FOREGROUND SERVICE LOCK-SCREEN REST TIMER ---------------- */
   var lsTotalSec = 150;
@@ -685,12 +727,14 @@
     }
     drawer.hidden = false;
     document.body.style.overflow = "hidden";
+    if (lenis) lenis.stop();
   }
 
   function closeDrawer() {
     if (!drawer) return;
     drawer.hidden = true;
     document.body.style.overflow = "";
+    if (lenis) lenis.start();
   }
 
   if (openNavBtn) openNavBtn.addEventListener("click", openDrawer);
@@ -705,23 +749,307 @@
     if (ev.key === "Escape" && drawer && !drawer.hidden) closeDrawer();
   });
 
-  /* ---------------- 6. QUIET REVEALS ----------------
+  /* ---------------- 6. QUIET REVEALS (fallback path) ----------------
      Content is visible by default; with JS available it only gets a
-     short, soft fade-up the first time it enters the viewport. */
-  var revealEls = document.querySelectorAll("[data-reveal]");
-  if (revealEls.length && !reduceMotion && "IntersectionObserver" in window) {
-    var revealObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-inview");
-          revealObserver.unobserve(entry.target);
+     short, soft fade-up the first time it enters the viewport. Used
+     when GSAP is unavailable — see section 7 for the GSAP path. */
+  function initIoReveals() {
+    var revealEls = document.querySelectorAll("[data-reveal]");
+    if (revealEls.length && !reduceMotion && "IntersectionObserver" in window) {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-inview");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      revealEls.forEach(function (el) {
+        el.classList.add("reveal-init");
+        revealObserver.observe(el);
+      });
+    }
+  }
+
+  /* ---------------- 7. CINEMATIC LAYER ----------------
+     Lenis smooth scroll + GSAP ScrollTrigger reveals + a real-time
+     Three.js hero scene behind the interface. Every piece is guarded:
+     reduced motion, a missing library or a WebGL failure leaves the
+     plain document — fully visible, exactly as authored. Hidden
+     initial states are only ever set from inside this section,
+     after the guards pass. Palette stays in the paper / forest /
+     volt family — no violet anywhere, scene lighting included. */
+  var lenis = null;
+
+  function initGsapReveals(gsap) {
+    var ST = window.ScrollTrigger;
+
+    /* Hero intro — masked word rise, soft fades, board clip reveal */
+    var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    var words = document.querySelectorAll(".hero__title .w-inner");
+    if (words.length) {
+      gsap.set(words, { yPercent: 115 });
+      tl.to(words, { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.045 }, 0.1);
+    }
+    var introEls = document.querySelectorAll(".hero .spec-index, .hero__lead, .hero__ctas, .hero__telemetry");
+    if (introEls.length) {
+      gsap.set(introEls, { opacity: 0, y: 16 });
+      tl.to(introEls, { opacity: 1, y: 0, duration: 0.7, stagger: 0.09 }, 0.25);
+    }
+    var board = document.querySelector(".hero-board");
+    if (board) {
+      gsap.set(board, { opacity: 0, y: 28, clipPath: "inset(0 0 100% 0 round 28px)" });
+      tl.to(board, {
+        opacity: 1, y: 0, clipPath: "inset(0 0 0% 0 round 28px)",
+        duration: 1.05, ease: "power3.inOut"
+      }, 0.35);
+      gsap.to(board, {
+        yPercent: 5, ease: "none",
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }
+      });
+    }
+
+    /* Scroll reveals for the sections below the hero */
+    var revealSel = ".sec__head, .signal-hud, .compare-card, .lockscreen-device, .service-spec, .console-card, .photo-board, [data-reveal]";
+    document.querySelectorAll(revealSel).forEach(function (el) {
+      if (el.closest(".hero")) return;
+      gsap.fromTo(el, { opacity: 0, y: 26 }, {
+        opacity: 1, y: 0, duration: 0.8, ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 88%", once: true }
+      });
+    });
+
+    /* Clip-path reveal for the framed photo board */
+    var photo = document.querySelector(".photo-board img");
+    if (photo) {
+      gsap.fromTo(photo, { clipPath: "inset(0 0 100% 0 round 28px)" }, {
+        clipPath: "inset(0 0 0% 0 round 28px)", duration: 1.1, ease: "power3.inOut",
+        scrollTrigger: { trigger: photo, start: "top 85%", once: true }
+      });
+    }
+
+    window.addEventListener("load", function () { ST.refresh(); });
+  }
+
+  function initHeroScene() {
+    var canvas = document.getElementById("heroCanvas");
+    var hero = document.getElementById("hero");
+    if (!canvas || !hero || !window.THREE) return;
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return;
+
+    var renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas, alpha: true, antialias: true, powerPreference: "low-power"
+      });
+    } catch (e) { return; }
+    if (!renderer || !renderer.getContext()) return;
+
+    var FOREST = 0x16451f;
+    var FOREST_DEEP = 0x0d2f15;
+    var VOLT = 0xd6f53c;
+    var PAPER = 0xf6f5ef;
+
+    var scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(PAPER, 9.5, 17);
+    var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 60);
+    camera.position.set(0, 0.3, 9.2);
+
+    /* --- Barbell blueprint: paper-toned plates, forest linework --- */
+    var barbell = new THREE.Group();
+
+    var shaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.045, 0.045, 7.6, 10),
+      new THREE.MeshBasicMaterial({ color: 0x979c8d })
+    );
+    shaft.rotation.z = Math.PI / 2;
+    barbell.add(shaft);
+
+    var plateSpecs = [
+      { r: 1.5, h: 0.17, fill: 0xe9e6d8 },
+      { r: 1.3, h: 0.15, fill: 0xdfdcc9 },
+      { r: 1.08, h: 0.14, fill: VOLT },
+      { r: 0.86, h: 0.13, fill: 0xe9e6d8 },
+      { r: 0.48, h: 0.24, fill: FOREST }
+    ];
+    function makePlate(spec) {
+      var g = new THREE.Group();
+      var geo = new THREE.CylinderGeometry(spec.r, spec.r, spec.h, 56);
+      g.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+        color: spec.fill, transparent: true, opacity: 0.92
+      })));
+      g.add(new THREE.LineSegments(
+        new THREE.EdgesGeometry(geo, 24),
+        new THREE.LineBasicMaterial({ color: FOREST, transparent: true, opacity: 0.45 })
+      ));
+      g.rotation.z = Math.PI / 2;
+      return g;
+    }
+    [-1, 1].forEach(function (side) {
+      var x = 1.12 * side;
+      plateSpecs.forEach(function (spec) {
+        x += (spec.h / 2) * side;
+        var p = makePlate(spec);
+        p.position.x = x;
+        x += (spec.h / 2) * side;
+        barbell.add(p);
+      });
+    });
+
+    /* Blueprint guide rings behind the bar */
+    [[2.7, 0.16], [1.95, 0.1]].forEach(function (ringSpec) {
+      var pts = [];
+      for (var i = 0; i <= 96; i++) {
+        var a = (i / 96) * Math.PI * 2;
+        pts.push(new THREE.Vector3(Math.cos(a) * ringSpec[0], Math.sin(a) * ringSpec[0], 0));
+      }
+      var ring = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({ color: FOREST, transparent: true, opacity: ringSpec[1] })
+      );
+      ring.position.z = -1.4;
+      barbell.add(ring);
+    });
+
+    barbell.position.set(1.7, 0.15, 0);
+    barbell.rotation.set(0.1, -0.3, -0.05);
+    scene.add(barbell);
+
+    /* --- Drifting dust in forest / volt tones --- */
+    var COUNT = hero.clientWidth < 768 ? 320 : 700;
+    var base = new Float32Array(COUNT * 3);
+    var pos = new Float32Array(COUNT * 3);
+    var speeds = new Float32Array(COUNT);
+    var rise = new Float32Array(COUNT);
+    var colors = new Float32Array(COUNT * 3);
+    var cForest = new THREE.Color(FOREST);
+    var cDeep = new THREE.Color(FOREST_DEEP);
+    var cVolt = new THREE.Color(0x9db81c);
+    for (var j = 0; j < COUNT; j++) {
+      base[j * 3] = (Math.random() - 0.5) * 13;
+      base[j * 3 + 1] = (Math.random() - 0.5) * 6.4;
+      base[j * 3 + 2] = -2 + Math.random() * 3.5;
+      speeds[j] = 0.05 + Math.random() * 0.12;
+      var c = Math.random() < 0.22 ? cVolt : (Math.random() < 0.5 ? cForest : cDeep);
+      colors[j * 3] = c.r; colors[j * 3 + 1] = c.g; colors[j * 3 + 2] = c.b;
+    }
+    pos.set(base);
+    var pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    pGeo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    var points = new THREE.Points(pGeo, new THREE.PointsMaterial({
+      size: 0.06, vertexColors: true, transparent: true, opacity: 0.7,
+      depthWrite: false, sizeAttenuation: true
+    }));
+    scene.add(points);
+
+    /* Pointer tilt */
+    var pointer = { x: 0, y: 0 };
+    hero.addEventListener("pointermove", function (ev) {
+      var r = hero.getBoundingClientRect();
+      pointer.x = ((ev.clientX - r.left) / r.width) * 2 - 1;
+      pointer.y = ((ev.clientY - r.top) / r.height) * 2 - 1;
+    });
+    hero.addEventListener("pointerleave", function () { pointer.x = 0; pointer.y = 0; });
+
+    /* CTA coupling — hovering a download button settles the scene */
+    document.querySelectorAll('a[href$="gymverse.apk"]').forEach(function (a) {
+      a.addEventListener("pointerenter", function () { heroState.target = 1; });
+      a.addEventListener("pointerleave", function () { heroState.target = 0; });
+      a.addEventListener("focus", function () { heroState.target = 1; });
+      a.addEventListener("blur", function () { heroState.target = 0; });
+    });
+
+    /* Pause rendering while the hero is off-screen */
+    var running = true;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        running = entries[0].isIntersecting;
+      }, { threshold: 0.02 }).observe(hero);
+    }
+
+    function resize() {
+      var w = hero.clientWidth, h = hero.clientHeight;
+      if (!w || !h) return;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    var clock = new THREE.Clock();
+    var CENTER = { x: 1.7, y: 0.15, z: 0 };
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!running || document.hidden) return;
+      var dt = Math.min(clock.getDelta(), 0.05);
+      var t = clock.elapsedTime;
+
+      heroState.hover += (heroState.target - heroState.hover) * Math.min(1, dt * 5);
+      var calm = 1 - heroState.hover * 0.65;
+      var gather = heroState.hover * 0.5;
+
+      barbell.position.y = 0.15 + Math.sin(t * 0.45) * 0.09;
+      barbell.rotation.z = -0.05 + Math.sin(t * 0.3) * 0.02 * calm;
+      barbell.rotation.y = -0.3 + Math.sin(t * 0.22) * 0.05 * calm;
+
+      var arr = pGeo.attributes.position.array;
+      for (var j = 0; j < COUNT; j++) {
+        rise[j] += speeds[j] * dt * calm;
+        var y = base[j * 3 + 1] + rise[j];
+        if (y > 3.4) { rise[j] -= 6.8; y -= 6.8; }
+        arr[j * 3] = base[j * 3] + Math.sin(t * 0.3 + j * 1.7) * 0.08
+          + (CENTER.x - base[j * 3]) * gather;
+        arr[j * 3 + 1] = y + (CENTER.y - base[j * 3 + 1]) * gather;
+        arr[j * 3 + 2] = base[j * 3 + 2] + (CENTER.z - base[j * 3 + 2]) * gather;
+      }
+      pGeo.attributes.position.needsUpdate = true;
+
+      camera.position.x += (pointer.x * 0.55 - camera.position.x) * Math.min(1, dt * 3);
+      camera.position.y += (0.3 - pointer.y * 0.35 - camera.position.y) * Math.min(1, dt * 3);
+      camera.lookAt(0.7, 0, 0);
+      renderer.render(scene, camera);
+      if (!hero.classList.contains("hero--scene-on")) hero.classList.add("hero--scene-on");
+    }
+    tick();
+
+    window.addEventListener("pagehide", function () {
+      running = false;
+      scene.traverse(function (obj) {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+          (Array.isArray(obj.material) ? obj.material : [obj.material]).forEach(function (m) { m.dispose(); });
         }
       });
-    }, { threshold: 0.12 });
-    revealEls.forEach(function (el) {
-      el.classList.add("reveal-init");
-      revealObserver.observe(el);
+      renderer.dispose();
     });
+  }
+
+  function initCinematic() {
+    var gsap = window.gsap || null;
+    var hasST = !!(gsap && window.ScrollTrigger);
+    if (hasST) gsap.registerPlugin(window.ScrollTrigger);
+
+    if (!reduceMotion && window.Lenis) {
+      try {
+        lenis = new window.Lenis({ lerp: 0.1, anchors: true });
+        if (hasST) {
+          lenis.on("scroll", window.ScrollTrigger.update);
+          gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+          gsap.ticker.lagSmoothing(0);
+        } else {
+          var rafLenis = function (time) { lenis.raf(time); requestAnimationFrame(rafLenis); };
+          requestAnimationFrame(rafLenis);
+        }
+      } catch (e) { lenis = null; }
+    }
+
+    if (!reduceMotion && hasST) initGsapReveals(gsap);
+    else initIoReveals();
+
+    if (!reduceMotion) initHeroScene();
   }
 
   /* Initialize saved language (default EN or saved preference) */
@@ -732,4 +1060,5 @@
   } catch (e) { /* ignore */ }
   applyLang(initLang);
   renderLockscreenTimer();
+  initCinematic();
 })();

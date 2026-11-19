@@ -70,6 +70,14 @@
   <main id="main-content">
     <!-- ==================== HERO ==================== -->
     <section class="hero" id="hero">
+      <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero__vignette" aria-hidden="true"></div>
+      <div class="hero__credits" aria-hidden="true">
+        <span class="hero__credit hero__credit--tl">IRONLOG · TRAINING JOURNAL — REEL 01</span>
+        <span class="hero__credit hero__credit--tr">29MM SHAFT · 165.0 KG</span>
+        <span class="hero__credit hero__credit--bl">ROOM SQLITE WAL · OFFLINE-FIRST</span>
+        <span class="hero__credit hero__credit--br">KOTLIN 2.0 · API 27+</span>
+      </div>
       <div class="container hero__grid">
         <div class="hero__copy">
           <p class="spec-index" data-i18n="hero.kicker">KOTLIN 2.0 · ROOM SQLITE WAL · API 27+</p>
@@ -571,6 +579,12 @@
     </div>
   </footer>
 
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="vendor/lenis.min.js"></script>
   <script src="landing.js"></script>
 </body>
 </html>

@@ -16,6 +16,19 @@
    per face. No violet anywhere, scene lighting included. All motion is
    eased in the render loop from plain state (progress / pointer / rep
    timeline) — no per-frame DOM.
+
+   THE FLEX: every bar part (shaft segments, sleeves, plates, collars)
+   samples one bend curve per frame — y position + tangent rotation — so
+   the whole bar arcs as one piece of steel. Static deflection steps up
+   with each unit claimed in the forge chapter (20 → 10 → 5 → collars =
+   95 kg) on an underdamped spring, so a plate "slam" visibly bounces the
+   bar; the closing rep adds whip (dip deepens the sag, the press drive
+   kicks an oscillation that decays through the plates' rattle). A small
+   chalk-dust point burst puffs off the grip at each slam and at the
+   press. Bend is exaggerated ~3× past a real 95 kg flex so the arc
+   reads in profile; the forge camera holds a near-side profile angle
+   while the load peaks, and the group lifts as it bends so the ends
+   stay clear of the floor — centre up, ends sagging: the deadlift arc.
    ========================================================================== */
 (function (global) {
   "use strict";
@@ -29,6 +42,13 @@
     canvas: null, renderer: null, scene: null, camera: null,
     rig: null, barbell: null, groundY: -1.585,
     units: [],            // [{plates:[{group,home,side}], mats:[...] }] claim units 20/10/5/collar
+    shaftParts: [],       // [{obj, x}] every rigid shaft piece, flexed per frame
+    keyLight: null, fillLight: null, groundMat: null, pool: null,
+    mood: 0, poolScale: 1, // profile-hold light mood + contact-pool spread, damped
+    bend: 0, bendV: 0,    // static deflection spring (world units at the bar ends)
+    whip: 0, whipV: 0,    // dynamic rep oscillation, same units
+    prevHighlight: -1, pressGo: false,
+    chalk: null,          // {points, pos, col, vel, life, cursor} dust pool
     clock: null, raf: 0, time: 0,
     progress: { hero: 0, forge: 0 },
     assemble: 0, assembleStart: -1,
@@ -128,6 +148,19 @@
     return tex;
   }
 
+  function dotTexture(THREE) {
+    var c = document.createElement("canvas");
+    c.width = c.height = 64;
+    var x = c.getContext("2d");
+    var g = x.createRadialGradient(32, 32, 2, 32, 32, 30);
+    g.addColorStop(0, "rgba(255,255,255,0.9)");
+    g.addColorStop(0.4, "rgba(255,255,255,0.38)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    x.fillStyle = g;
+    x.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  }
+
   function shadowDiscTexture(THREE) {
     var c = document.createElement("canvas");
     c.width = 256; c.height = 128;
@@ -196,8 +229,8 @@
     });
     var knurl = knurlTexture(THREE);
     var knurlMat = new THREE.MeshStandardMaterial({
-      color: 0x878e94, metalness: 1.0, roughness: 0.5,
-      bumpMap: knurl, bumpScale: 0.9, envMapIntensity: 0.8
+      color: 0x9aa1a6, metalness: 1.0, roughness: 0.5,
+      bumpMap: knurl, bumpScale: 0.55, envMapIntensity: 0.95
     });
     /* the long smooth shaft spans: a mid steel that still catches the
        warm window card — darker chrome disappears into the ground */
@@ -209,6 +242,7 @@
     });
 
     var bar = new THREE.Group();
+    var shaftParts = [];
 
     function seg(r, len, mat, cx) {
       var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 28), mat);
@@ -216,21 +250,46 @@
       m.position.x = cx;
       m.castShadow = true;
       bar.add(m);
+      shaftParts.push({ obj: m, x: cx });
       return m;
+    }
+    /* long spans are built from short sub-segments (slight length
+       overlap) so the flex pass can arc the shaft as a polyline instead
+       of a few stiff chords — the joints hide under plates and flanges */
+    function segRun(r, len, mat, cx) {
+      var n = Math.max(1, Math.ceil(len / 0.55));
+      var sub = len / n;
+      for (var i = 0; i < n; i++) {
+        var m = mat;
+        if (mat === knurlMat) {
+          /* the bump texture maps 0..1 across each mesh, so a short
+             sub-segment squeezes the whole crosshatch into a few
+             centimetres and crushes it to black — the centre knurl
+             read as a gap in the bar. Scale the repeat with the
+             segment length so the diamonds keep one size end to end. */
+          var kt = knurl.clone();
+          kt.repeat.set(14 * sub / 1.14, 1);
+          kt.needsUpdate = true;
+          m = knurlMat.clone();
+          m.bumpMap = kt;
+        }
+        seg(r, sub + 0.035, m, cx - len / 2 + sub * (i + 0.5));
+      }
     }
     /* shaft: knurled grips + centre knurl, smooth between, sleeves outboard.
        Radii keep real proportions against the 450 mm plates (1 unit ≈
        150 mm): 29 mm shaft, 50 mm sleeves. */
-    seg(0.078, 0.62, knurlMat, 0);                 // centre knurl
+    segRun(0.078, 0.62, knurlMat, 0);              // centre knurl
     seg(0.078, 0.58, shaftMat, 0.60);
-    seg(0.078, 1.14, knurlMat, 1.46);              // right grip knurl
-    seg(0.078, 1.14, knurlMat, -1.46);             // left grip knurl
+    seg(0.078, 0.58, shaftMat, -0.60);             // (was missing: a 0.58 hole in the left shaft)
+    segRun(0.078, 1.14, knurlMat, 1.46);           // right grip knurl
+    segRun(0.078, 1.14, knurlMat, -1.46);          // left grip knurl
     seg(0.078, 0.34, shaftMat, 2.20);
     seg(0.078, 0.34, shaftMat, -2.20);
     seg(0.108, 0.14, steelDark, 2.42);             // flange / collar stop
     seg(0.108, 0.14, steelDark, -2.42);
-    seg(0.138, 1.30, steel, 3.06);                 // sleeve R (2.41 → 3.71)
-    seg(0.138, 1.30, steel, -3.06);                // sleeve L
+    segRun(0.138, 1.30, steel, 3.06);              // sleeve R (2.41 → 3.71)
+    segRun(0.138, 1.30, steel, -3.06);             // sleeve L
     seg(0.152, 0.07, steelDark, 3.74);             // end cap R
     seg(0.152, 0.07, steelDark, -3.74);            // end cap L
     bar.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
@@ -327,7 +386,148 @@
       units[3].mats.push(collarMat);
     });
 
-    return { group: bar, units: units };
+    return { group: bar, units: units, shaftParts: shaftParts };
+  }
+
+  /* ---------------- the bend ----------------
+     Deflection profile of a held bar, per unit of bend (bend = the
+     deflection at the bar ends, in world units): the hands support the
+     bar around |x| = BEND_G, so between them the shaft only sags a
+     whisper at centre and leaves each hand with zero slope; outboard,
+     the plate load pulls the ends down on a cantilever curve whose
+     slope keeps growing to the sleeve tip. Past the end cap the shape
+     continues on a gentle tangent sag so exploded plates still ride
+     the arc. Even in x — bendShape works on |x| and returns
+     [y, dShape/d|x|]; bendAt folds the sign back in for the slope. */
+  var BEND_MAX = 0.62;
+  var BEND_G = 1.05, BEND_END = 3.78;
+  var BEND_STEPS = [0, 0.45, 0.70, 0.90, 1.0];  // by claimed unit + 1
+
+  function bendShape(ax) {
+    if (ax <= BEND_G) {
+      var u = (Math.PI / 2) * (ax / BEND_G);
+      var cu = Math.cos(u);
+      return [-0.10 * cu * cu, 0.10 * (Math.PI / (2 * BEND_G)) * Math.sin(2 * u)];
+    }
+    var t = (ax - BEND_G) / (BEND_END - BEND_G);
+    var tc = Math.min(t, 1);
+    var y = -(0.55 * tc * tc + 0.45 * tc * tc * tc);
+    var m = -(1.1 * tc + 1.35 * tc * tc) / (BEND_END - BEND_G);
+    if (t > 1) {
+      var over = (ax - BEND_END) / BEND_END;
+      y -= 0.18 * over;
+      m -= 0.18 / BEND_END;
+    }
+    return [y, m];
+  }
+
+  function bendAt(x, bend) {
+    var s = bendShape(Math.abs(x));
+    return [bend * s[0], Math.atan(bend * s[1] * (x < 0 ? -1 : 1))];
+  }
+
+  /* every bar part samples the curve: shaft pieces at their fixed x,
+     plates and collars at wherever the assemble/explode offsets have
+     currently put them — position from the curve, rotation from its
+     tangent, so plates stay seated on the sleeves as the bar arcs */
+  function applyFlex(bendTotal) {
+    var i, p, r;
+    for (i = 0; i < state.shaftParts.length; i++) {
+      p = state.shaftParts[i];
+      r = bendAt(p.x, bendTotal);
+      p.obj.position.y = r[0];
+      p.obj.rotation.z = Math.PI / 2 + r[1];
+    }
+    state.units.forEach(function (unit) {
+      unit.plates.forEach(function (pl) {
+        var rr = bendAt(pl.group.position.x, bendTotal);
+        pl.group.position.y = rr[0];
+        pl.group.rotation.z = rr[1];
+      });
+    });
+  }
+
+  /* ---------------- chalk dust ----------------
+     One small Points pool, reused for every burst: chalk puffs off the
+     grip when a plate slams home in the forge chapter and again at the
+     press in the closing. Soft additive motes, gravity + drag, gone in
+     under a second. An accent effect, not the scene's motif. */
+  var CHALK_N = 200;
+
+  function buildChalk(THREE, parent) {
+    var geo = new THREE.BufferGeometry();
+    var pos = new Float32Array(CHALK_N * 3);
+    var col = new Float32Array(CHALK_N * 3);
+    var i;
+    for (i = 0; i < CHALK_N; i++) pos[i * 3 + 1] = -999;
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    var mat = new THREE.PointsMaterial({
+      size: 0.17, map: dotTexture(THREE), transparent: true,
+      depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexColors: true, opacity: 0.9
+    });
+    var points = new THREE.Points(geo, mat);
+    points.frustumCulled = false;
+    parent.add(points);
+    return {
+      points: points, pos: pos, col: col,
+      vel: new Float32Array(CHALK_N * 3),
+      life: new Float32Array(CHALK_N), cursor: 0
+    };
+  }
+
+  function spawnBurst(count, strength) {
+    var ch = state.chalk;
+    if (!ch || !state.barbell) return;
+    var bx = state.barbell.position.x;
+    var by = state.barbell.position.y + 0.06;
+    for (var k = 0; k < count; k++) {
+      var i = ch.cursor;
+      ch.cursor = (ch.cursor + 1) % CHALK_N;
+      var i3 = i * 3;
+      ch.pos[i3] = bx + (Math.random() - 0.5) * 0.5;
+      ch.pos[i3 + 1] = by + (Math.random() - 0.5) * 0.22;
+      ch.pos[i3 + 2] = (Math.random() - 0.5) * 0.3;
+      var a = Math.random() * Math.PI * 2;
+      var sp = (0.35 + Math.random() * 0.9) * strength;
+      ch.vel[i3] = Math.cos(a) * sp * 0.9;
+      ch.vel[i3 + 1] = (0.35 + Math.random() * 0.85) * strength;
+      ch.vel[i3 + 2] = Math.sin(a) * sp * 0.55;
+      ch.life[i] = 0.55 + Math.random() * 0.45;
+    }
+  }
+
+  function updateChalk(dt) {
+    var ch = state.chalk;
+    if (!ch) return;
+    var drag = Math.exp(-2.1 * dt);
+    var dirty = false;
+    for (var i = 0; i < CHALK_N; i++) {
+      if (ch.life[i] <= 0) continue;
+      dirty = true;
+      ch.life[i] -= dt;
+      var i3 = i * 3;
+      if (ch.life[i] <= 0) {
+        ch.pos[i3 + 1] = -999;
+        ch.col[i3] = ch.col[i3 + 1] = ch.col[i3 + 2] = 0;
+        continue;
+      }
+      ch.vel[i3] *= drag;
+      ch.vel[i3 + 2] *= drag;
+      ch.vel[i3 + 1] = ch.vel[i3 + 1] * drag - 1.5 * dt;
+      ch.pos[i3] += ch.vel[i3] * dt;
+      ch.pos[i3 + 1] += ch.vel[i3 + 1] * dt;
+      ch.pos[i3 + 2] += ch.vel[i3 + 2] * dt;
+      var f = Math.min(1, ch.life[i] / 0.55) * 0.85;
+      ch.col[i3] = f;
+      ch.col[i3 + 1] = f * 0.97;
+      ch.col[i3 + 2] = f * 0.9;
+    }
+    if (dirty) {
+      ch.points.geometry.attributes.position.needsUpdate = true;
+      ch.points.geometry.attributes.color.needsUpdate = true;
+    }
   }
 
   /* ---------------- engine ---------------- */
@@ -383,9 +583,11 @@
     key.shadow.bias = -0.0004;
     key.shadow.normalBias = 0.02;
     scene.add(key);
+    state.keyLight = key;
     var fill = new THREE.DirectionalLight(0x9fb4c4, 0.35);
     fill.position.set(-6, 3, -5);
     scene.add(fill);
+    state.fillLight = fill;
 
     /* ground: shadow catcher + a soft painted contact pool */
     var ground = new THREE.Mesh(
@@ -396,6 +598,7 @@
     ground.position.y = state.groundY;
     ground.receiveShadow = true;
     scene.add(ground);
+    state.groundMat = ground.material;
     var pool = new THREE.Mesh(
       new THREE.PlaneGeometry(15.5, 4.6),
       new THREE.MeshBasicMaterial({
@@ -405,6 +608,7 @@
     pool.rotation.x = -Math.PI / 2;
     pool.position.y = state.groundY + 0.002;
     scene.add(pool);
+    state.pool = pool;
 
     var built = buildBarbell(THREE);
     var rig = new THREE.Group();       // rep / sway motion
@@ -417,6 +621,8 @@
     state.rig = rig;
     state.barbell = built.group;
     state.units = built.units;
+    state.shaftParts = built.shaftParts;
+    state.chalk = buildChalk(THREE, rig);
     /* NOTE: no THREE.Clock/Timer — in this vendored three (r187) Clock is a
        stub returning 0 and Timer needs update() calls. The frame loop runs
        on performance.now() deltas instead. */
@@ -483,6 +689,8 @@
 
   function getMode() { return state.mode; }
   function isReady() { return state.ready && !state.dead; }
+  function getBend() { return state.bend + state.whip; }
+  function getProgress() { return state.progress.forge; }
 
   function setProgress(which, p) {
     state.progress[which] = clamp(p, 0, 1);
@@ -511,6 +719,25 @@
     return idx;
   }
 
+  /* forge turntable path: the rotation eases INTO a near-side profile
+     (rotY ≈ 0.1) and holds it while the load — and the bend — peaks,
+     because a bending bar only reads from the side; then it swings on
+     around for the exploded finale. The hold is deliberately long:
+     most of the chapter's scroll dwell sits on the bent profile. */
+  var FORGE_KEYS = [[0, -0.55], [0.28, 0.84], [0.56, 0.10], [0.78, 0.16], [1, 2.45]];
+  var FORGE_KEYS_P = [[0, -0.55], [0.60, 0.05], [1, 1.9]];
+  function keyLerp(keys, p) {
+    if (p <= keys[0][0]) return keys[0][1];
+    for (var i = 1; i < keys.length; i++) {
+      if (p <= keys[i][0]) {
+        var t = (p - keys[i - 1][0]) / (keys[i][0] - keys[i - 1][0]);
+        t = t * t * (3 - 2 * t);
+        return keys[i - 1][1] + (keys[i][1] - keys[i - 1][1]) * t;
+      }
+    }
+    return keys[keys.length - 1][1];
+  }
+
   function fitDistance(needW) {
     var aspect = state.camera.aspect || 1;
     var half = Math.tan((state.camera.fov * Math.PI / 180) / 2);
@@ -527,7 +754,10 @@
       if (k >= 1) { rep.phase = "hold"; rep.t = 0; }
     } else if (rep.phase === "hold") {
       rep.t += dt;
-      if (rep.t >= 0.12) { rep.phase = "press"; rep.t = 0; rep.v = 0; }
+      if (rep.t >= 0.12) {
+        rep.phase = "press"; rep.t = 0; rep.v = 0;
+        state.pressGo = true;   // the frame loop turns this into whip + chalk
+      }
     } else if (rep.phase === "press") {
       rep.t += dt;
       /* spring drive: stiff spring, light damping → a small overshoot */
@@ -565,9 +795,10 @@
       state.assemble = damp(state.assemble, 1, 8, dt);
     }
 
-    /* --- explode from forge progress --- */
+    /* --- explode from forge progress: the plates stay seated while
+       the chapter loads and the bar bends; coming apart is the finale --- */
     var forgeP = state.progress.forge;
-    var explodeTarget = mode === "forge" ? smoothstep(0.06, 0.88, forgeP) : 0;
+    var explodeTarget = mode === "forge" ? smoothstep(0.52, 0.98, forgeP) : 0;
     state.explode = damp(state.explode, explodeTarget, 6, dt);
     var explode = state.explode;
 
@@ -604,6 +835,67 @@
     state.rig.rotation.z = Math.sin(t * 0.55) * 0.008 * sway;
     state.rig.rotation.x = state.rep.rattle * Math.sin(t * 52) * 0.006;
 
+    /* --- the flex: static bend steps up per claimed unit (a claim in
+       the forge chapter slams: spring kick + a puff of chalk), springs
+       to full in the closing, and straightens back out in the hero.
+       The rep adds whip on top — the dip deepens the sag, the press
+       drive kicks a decaying oscillation the plates rattle along with. --- */
+    var bendTarget = 0;
+    if (mode === "forge") bendTarget = BEND_STEPS[clamp(state.highlight + 1, 0, 4)] * BEND_MAX;
+    else if (mode === "closing") bendTarget = BEND_MAX;
+    if (mode === "forge" && state.highlight > state.prevHighlight && state.prevHighlight >= 0) {
+      state.bendV += 1.5;
+      spawnBurst(90, 0.8);
+    }
+    state.prevHighlight = state.highlight;
+
+    var loadFrac = clamp(state.bend / BEND_MAX, 0, 1);
+    if (state.pressGo) {
+      state.pressGo = false;
+      state.whipV += 5.2 * BEND_MAX * Math.max(loadFrac, 0.12);
+      spawnBurst(130, 1.0);
+    }
+    var whipTarget = 0;
+    if (state.rep.phase === "dip") {
+      whipTarget = 0.30 * BEND_MAX * loadFrac * clamp(-state.rep.y / 0.52, 0, 1);
+    }
+    /* substep the two springs: at the frame loop's dt clamp (0.05) a
+       single explicit step eats the whip's overshoot; two half-steps
+       keep the oscillation honest on slow renderers too */
+    var springSteps = dt > 0.024 ? 2 : 1;
+    var sh = dt / springSteps;
+    for (var si = 0; si < springSteps; si++) {
+      state.bendV += ((bendTarget - state.bend) * 48 - state.bendV * 8.5) * sh;
+      state.bend += state.bendV * sh;
+      state.whipV += ((whipTarget - state.whip) * 120 - state.whipV * 3.0) * sh;
+      state.whip += state.whipV * sh;
+    }
+    if (state.bend < -0.2) { state.bend = -0.2; state.bendV = 0; }
+    if (Math.abs(state.whip) > 0.02) {
+      state.rep.rattle = Math.max(state.rep.rattle, Math.min(0.7, Math.abs(state.whip) * 1.15));
+    }
+    applyFlex(state.bend + state.whip);
+    updateChalk(dt);
+
+    /* --- mood: while the profile holds, the warm key leans in and the
+       cool fill falls away, so the bent bar gets the contrast of the
+       photography; the painted contact pool also spreads under the
+       bigger forge/closing framings so the shadow anchors the bar.
+       Pure light and shadow — the Gunmetal Chalk grade is untouched. --- */
+    var moodT = 0, poolT = 1;
+    if (mode === "forge") {
+      moodT = smoothstep(0.5, 0.64, forgeP) * (1 - smoothstep(0.8, 0.92, forgeP));
+      poolT = (state.camera.aspect || 1) < 0.8 ? 1.1 : 1.28;
+    } else if (mode === "closing") {
+      poolT = 1.12;
+    }
+    state.mood = damp(state.mood, moodT, 4, dt);
+    state.poolScale = damp(state.poolScale, poolT, 4, dt);
+    if (state.keyLight) state.keyLight.intensity = 2.6 + 0.55 * state.mood;
+    if (state.fillLight) state.fillLight.intensity = 0.35 - 0.13 * state.mood;
+    if (state.groundMat) state.groundMat.opacity = 0.42 + 0.05 * state.mood;
+    if (state.pool) state.pool.scale.set(state.poolScale, state.poolScale, 1);
+
     /* --- pose targets per mode --- */
     var tgt;
     if (mode === "veil") {
@@ -627,19 +919,35 @@
       }
     } else if (mode === "forge") {
       var portraitF = (state.camera.aspect || 1) < 0.8;
-      tgt = {
-        grpX: 0, grpY: 0, camX: 0, camY: 0.45,
+      if (portraitF) {
         /* portrait: fit less of the bar's width so it stays legible,
            and turn less far — end-on, a bar is just a disc */
-        dist: portraitF
-          ? fitDistance(9.5 + explode * 2.5)
-          : fitDistance(9.6 + explode * 6.0),
-        lookX: 0, lookY: 0,
-        rotY: -0.55 + forgeP * (portraitF ? 2.2 : 2.9)
-      };
+        tgt = {
+          grpX: 0, grpY: 0, camX: 0, camY: 0.05,
+          dist: fitDistance(9.9 + explode * 2.6),
+          lookX: 0, lookY: 0.3 + state.bend * 0.7,
+          rotY: keyLerp(FORGE_KEYS_P, forgeP)
+        };
+      } else {
+        /* desktop: the bar owns the frame. The camera sits low and
+           looks UP at it (heroic angle), and the look height tracks
+           the bend lift so the loaded bar rides on a lower-third line
+           with its contact shadow anchored beneath it, instead of
+           floating at centre in a tall empty stage. The distance fit
+           is tuned on the rendered frames: as wide as the profile
+           hold can take without the fanned plates kissing the stage
+           edges, widening gently for the exploded finale. */
+        var lookF = 0.45 + state.bend * 0.9;
+        tgt = {
+          grpX: 0, grpY: 0, camX: 0, camY: lookF - 1.35,
+          dist: fitDistance(10.3 + explode * 3.4),
+          lookX: 0, lookY: lookF,
+          rotY: keyLerp(FORGE_KEYS, forgeP)
+        };
+      }
     } else { /* closing */
       state.spin += dt * 0.26;
-      tgt = { grpX: 0.9, grpY: -0.55, camX: 0.3, camY: 0.5, dist: fitDistance((state.camera.aspect || 1) < 0.8 ? 10.5 : 12.6), lookX: 0.6, lookY: 0.2, rotY: state.spin };
+      tgt = { grpX: 0.9, grpY: -0.55, camX: 0.3, camY: 0.5, dist: fitDistance((state.camera.aspect || 1) < 0.8 ? 9.5 : 11.0), lookX: 0.6, lookY: 0.2, rotY: state.spin };
     }
     var K = 5; /* heavy-cinematic damping, this page's tone */
     pose.grpX = damp(pose.grpX, tgt.grpX, K, dt);
@@ -654,7 +962,10 @@
     else pose.rotY = damp(pose.rotY, tgt.rotY, 5, dt);
 
     state.barbell.position.x = pose.grpX;
-    state.barbell.position.y = pose.grpY;
+    /* as the bar bends it is also lifted — the lifter holds the centre
+       up while the ends sag, so the plates stay clear of the floor and
+       the full centre-to-end differential reads as the arc */
+    state.barbell.position.y = pose.grpY + state.bend * 0.8;
     state.barbell.rotation.y = pose.rotY;
 
     /* --- pointer parallax (clamped, eased) --- */
@@ -719,6 +1030,8 @@
     setMode: setMode,
     getMode: getMode,
     isReady: isReady,
+    getBend: getBend,
+    getProgress: getProgress,
     setProgress: setProgress,
     setPointer: setPointer,
     doRep: doRep,

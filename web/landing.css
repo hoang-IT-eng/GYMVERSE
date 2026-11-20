@@ -556,3 +556,57 @@ body.forge-on .forge-dim { display: block; }
   .forge__stage { height: 56vh; min-height: 19rem; }
   .forge-reps { right: 1.25rem; bottom: 1.25rem; font-size: .72rem; }
 }
+
+/* ---------- Motion pass: a way in for every section ----------
+   One recurring device — a short plate rule draws itself above each
+   section head as the section arrives (the --mp-rule variable is
+   tweened from landing.js) — over a different entrance per section.
+   Everything lives behind .js.motion: without motion, the page is
+   exactly the page. */
+.js.motion .mp-head { --mp-rule: 0; }
+.js.motion .mp-head::before {
+  content: ""; display: block;
+  width: 3.5rem; height: 2px;
+  background: var(--plate);
+  margin-bottom: 1.35rem;
+  transform: scaleX(var(--mp-rule, 0));
+  transform-origin: left center;
+}
+
+/* Plate buttons: a band of light crosses on hover */
+.btn--plate { position: relative; isolation: isolate; overflow: hidden; }
+.btn--plate::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .45) 50%, transparent 58%);
+  transform: translateX(-130%) skewX(-8deg);
+  transition: transform .7s var(--ease);
+}
+.btn--plate:hover::after { transform: translateX(130%) skewX(-8deg); }
+@media (hover: hover) { .btn--plate:hover { transform: translateY(-1px); } }
+.btn--plate:active { transform: translateY(1px); }
+
+/* The closing APK button is magnetic; GSAP owns its transform, so the
+   CSS transform transition comes off while it is magnetised */
+.js.motion .btn--magnet {
+  transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+  will-change: transform;
+}
+
+/* Food photo: a gentle zoom, only once its entrance wipe has settled */
+.food__media.mp-settled img { transition: transform .8s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .food__media.mp-settled:hover img { transform: scale(1.03); }
+}
+
+/* Footer links: the resting rule is chalk; on hover a gold one fills */
+.js .foot a {
+  text-decoration: none;
+  background-image:
+    linear-gradient(var(--plate), var(--plate)),
+    linear-gradient(rgba(236, 231, 221, .3), rgba(236, 231, 221, .3));
+  background-size: 0% 1px, 100% 1px;
+  background-position: 0 100%, 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .35s var(--ease), color .25s var(--ease);
+}
+.js .foot a:hover { background-size: 100% 1px, 100% 1px; }

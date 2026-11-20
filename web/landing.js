@@ -271,6 +271,121 @@
   gsap.from(".chart__dot, .chart__last", { opacity: 0, stagger: 0.04, duration: 0.3, scrollTrigger: { trigger: ".progress__chart", start: "top 75%" } });
   gsap.from(".bar__fill", { scaleX: 0, duration: 1.2, ease: "expo.out", stagger: 0.06, scrollTrigger: { trigger: ".bars", start: "top 80%" } });
 
+  /* ---------- Motion pass: a way in for every section ----------
+     One recurring device (a short plate rule draws itself above each
+     section head) and a different entrance per section. Everything is
+     a from-state or a CSS variable: delete this block and the page is
+     exactly the page without it. Under automation nothing is hidden —
+     the pass simply does not run. */
+  if (!navigator.webdriver) {
+    var SMALL = window.matchMedia("(max-width: 700px)").matches;
+    var DY = SMALL ? 16 : 28;
+
+    function rise(targets, opts) {
+      opts = opts || {};
+      var els = gsap.utils.toArray(targets);
+      if (!els.length) return;
+      gsap.from(els, {
+        y: opts.y != null ? opts.y : DY,
+        autoAlpha: 0,
+        duration: opts.duration || 1.05,
+        ease: opts.ease || "expo.out",
+        stagger: opts.stagger || 0,
+        delay: opts.delay || 0,
+        clearProps: "transform,opacity,visibility",
+        scrollTrigger: { trigger: opts.trigger || els[0], start: opts.start || "top 84%", once: true }
+      });
+    }
+
+    // The recurring device: one gold rule per section head
+    gsap.utils.toArray(".log__copy, .ladder__head, .forge__head, .rest__copy, .progress__copy, .volume__head, .programs__body, .food__copy, .yours__body").forEach(function (head) {
+      head.classList.add("mp-head");
+      gsap.to(head, { "--mp-rule": 1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: head, start: "top 86%", once: true } });
+    });
+
+    // Nav settles in with the opening
+    gsap.from(".nav", { y: -28, autoAlpha: 0, duration: 1.1, ease: "expo.out", delay: 0.1, clearProps: "transform,opacity,visibility" });
+
+    // The log: the chalk photo wipes in, the facts count up
+    gsap.fromTo(".log__media", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".log", start: "top 78%", once: true } });
+    rise(".log__copy .h2, .log__copy .body", { trigger: ".log__copy", start: "top 82%", stagger: 0.12 });
+    rise(".facts__row", { trigger: ".facts", start: "top 88%", stagger: 0.1, y: 18 });
+    document.querySelectorAll(".facts dt").forEach(function (dt) {
+      var m = /^(\d+(?:\.\d+)?)([\s\S]*)$/.exec(dt.textContent.trim());
+      if (!m) return;
+      var target = parseFloat(m[1]), rest = m[2], dec = (m[1].split(".")[1] || "").length, obj = { v: 0 };
+      gsap.to(obj, {
+        v: target, duration: 1.5, ease: "expo.out",
+        scrollTrigger: { trigger: dt, start: "top 90%", once: true },
+        onUpdate: function () { dt.textContent = obj.v.toFixed(dec) + rest; },
+        onComplete: function () { dt.textContent = m[1] + rest; }
+      });
+    });
+
+    // Next load: head and stage arrive before the pin takes over
+    rise(".ladder__head .h2, .ladder__head .body, .ladder__head .small", { trigger: ".ladder__head", start: "top 84%", stagger: 0.12 });
+    rise(".ladder__stage", { trigger: ".ladder__stage", start: "top 84%", y: SMALL ? 20 : 40, duration: 1.2 });
+    gsap.fromTo(".ladder__media", { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".ladder", start: "top 78%", once: true } });
+
+    // The bar, loaded: entry dressing only — the 3D sequence is untouched
+    rise(".forge__head .h2, .forge__head .body, .forge__cap, .forge__head .small", { trigger: ".forge", start: "top 74%", stagger: 0.12, duration: 1.15 });
+
+    // Rest: everything moves slowly; the notification drops in like one
+    var restTl = gsap.timeline({ defaults: { ease: "power2.out" }, scrollTrigger: { trigger: ".rest", start: "top 68%", once: true } });
+    restTl.from(".clock", { autoAlpha: 0, duration: 1.8, clearProps: "opacity,visibility" }, 0)
+      .from(".rest__copy .h2", { y: 26, autoAlpha: 0, duration: 1.6, clearProps: "transform,opacity,visibility" }, 0.1)
+      .from(".rest__copy .body", { y: 22, autoAlpha: 0, duration: 1.6, clearProps: "transform,opacity,visibility" }, 0.28)
+      .from(".notif", { y: -16, scale: 0.97, autoAlpha: 0, duration: 1.1, ease: "power3.out", clearProps: "transform,opacity,visibility" }, 0.6)
+      .from(".rest__copy .small", { autoAlpha: 0, duration: 1.2, clearProps: "opacity,visibility" }, 0.85);
+
+    // Progress: copy and formula arrive; the values join the bar fills
+    rise(".progress__copy .h2, .progress__copy .body", { trigger: ".progress__copy", start: "top 84%", stagger: 0.12 });
+    gsap.from(".formula", { x: -24, autoAlpha: 0, duration: 1, ease: "expo.out", clearProps: "transform,opacity,visibility", scrollTrigger: { trigger: ".formula", start: "top 88%", once: true } });
+    rise(".progress__chart", { trigger: ".progress__chart", start: "top 84%", y: 32, duration: 1.2 });
+    rise(".volume__head .h3, .volume__head .body", { trigger: ".volume__head", start: "top 86%", stagger: 0.1 });
+    gsap.from(".bar__val", { autoAlpha: 0, x: 10, duration: 0.7, ease: "power2.out", stagger: 0.06, clearProps: "transform,opacity,visibility", scrollTrigger: { trigger: ".bars", start: "top 80%", once: true } });
+    gsap.from(".volume > .small", { autoAlpha: 0, duration: 1, clearProps: "opacity,visibility", scrollTrigger: { trigger: ".bars", start: "top 82%", once: true } });
+
+    // Programs: the table deals its rows in
+    rise(".programs__body .h2", { trigger: ".programs__body", start: "top 84%" });
+    gsap.from(".plans thead tr, .plans tbody tr", { autoAlpha: 0, y: 14, duration: 0.8, ease: "power2.out", stagger: 0.09, clearProps: "transform,opacity,visibility", scrollTrigger: { trigger: ".plans", start: "top 86%", once: true } });
+    rise(".programs__after", { trigger: ".programs__after", start: "top 92%", y: 18 });
+
+    // Food: the phở wipes in from the right and settles
+    rise(".food__copy .h2, .food__copy .body, .food__copy .small", { trigger: ".food__copy", start: "top 84%", stagger: 0.11 });
+    var foodMedia = document.querySelector(".food__media");
+    if (foodMedia) {
+      gsap.fromTo(foodMedia, { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".food", start: "top 76%", once: true } });
+      gsap.from(".food__media img", { scale: 1.08, duration: 1.6, ease: "expo.out", clearProps: "transform", scrollTrigger: { trigger: ".food", start: "top 76%", once: true }, onComplete: function () { foodMedia.classList.add("mp-settled"); } });
+    }
+
+    // Yours: the two columns rise in turn
+    rise(".yours__body .h2", { trigger: ".yours__body", start: "top 84%" });
+    rise(".yours__cols > div", { trigger: ".yours__cols", start: "top 86%", stagger: 0.16, y: 30 });
+
+    // Closing: the room darkens as you arrive, the big line wipes up
+    gsap.fromTo(".close__shade", { opacity: 0.45 }, { opacity: 1, ease: "none", scrollTrigger: { trigger: ".close", start: "top bottom", end: "bottom bottom", scrub: true } });
+    gsap.fromTo(".close__title", { clipPath: "inset(0% 0% 100% 0%)", y: 44 }, { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 1.35, ease: "expo.out", clearProps: "transform", scrollTrigger: { trigger: ".close", start: "top 58%", once: true } });
+    rise(".close__copy .body, .close__copy .actions, .close__copy .small", { trigger: ".close__copy", start: "top 74%", stagger: 0.13, y: 24 });
+
+    // The closing APK button leans toward the cursor
+    var magnet = document.querySelector(".close__copy .btn--plate");
+    if (magnet && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      magnet.classList.add("btn--magnet");
+      var mX = gsap.quickTo(magnet, "x", { duration: 0.4, ease: "power3.out" });
+      var mY = gsap.quickTo(magnet, "y", { duration: 0.4, ease: "power3.out" });
+      magnet.addEventListener("pointermove", function (ev) {
+        var r = magnet.getBoundingClientRect();
+        mX(gsap.utils.clamp(-6, 6, (ev.clientX - r.left - r.width / 2) * 0.18));
+        mY(gsap.utils.clamp(-5, 5, (ev.clientY - r.top - r.height / 2) * 0.3));
+      });
+      magnet.addEventListener("pointerleave", function () { mX(0); mY(0); });
+    }
+
+    // Footer: a quiet rise
+    rise(".foot__grid > *", { trigger: ".foot", start: "top 95%", stagger: 0.1, y: 18, duration: 0.9 });
+  }
+
   window.addEventListener("load", function () { ST.refresh(); });
 })();
 
@@ -495,8 +610,13 @@
       mode: mode,
       reps: reps,
       ready: !!(window.GymForge && window.GymForge.isReady()),
+      bend: window.GymForge && window.GymForge.getBend ? +window.GymForge.getBend().toFixed(3) : null,
+      prog: window.GymForge && window.GymForge.getProgress ? +window.GymForge.getProgress().toFixed(3) : null,
       on: body.classList.contains("forge-on")
     };
   };
   window.__forgeRep = function () { if (window.GymForge) window.GymForge.doRep(); };
+  window.__forgeProgress = function (p) {
+    if (window.GymForge) window.GymForge.setProgress("forge", Math.max(0, Math.min(1, +p || 0)));
+  };
 })();

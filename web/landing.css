@@ -610,3 +610,60 @@ body.forge-on .forge-dim { display: block; }
   transition: background-size .35s var(--ease), color .25s var(--ease);
 }
 .js .foot a:hover { background-size: 100% 1px, 100% 1px; }
+
+/* ---------- The journey: one take, the bar travels ----------
+   The forge canvas no longer lives in three places: it tours the
+   page — a stage inside the log's chalk frame, the ladder's photo
+   column, a full-bleed rack in Rest, a track under the progress
+   chart, a dim backdrop to Food, a silhouette across Yours — and
+   the controller re-parents the one canvas between them as you
+   scroll. The hosts below are empty and inert until the engine
+   boots (same gates as the forge layer); without it the page is
+   exactly the page. Two fixed overlays, created by the controller
+   only while the journey is live, sell the single film: grain +
+   vignette over everything, and a plate-yellow hairline at the
+   top of the viewport metering the whole journey. A third, the
+   cut layer, dips the page to black for a beat at the two seams
+   where a travelling match would lie — into and out of Rest. */
+.log__media { position: relative; }
+.ladder__media { position: relative; }
+.forge-host--rest { z-index: -1; }
+.progress__chart { position: relative; }
+.progress__chart .chart, .progress__chart figcaption { position: relative; z-index: 1; }
+.food { position: relative; isolation: isolate; }
+.forge-host--food { z-index: -1; }
+
+.journey-film {
+  position: fixed; inset: 0; z-index: 80;
+  pointer-events: none;
+  background: radial-gradient(120% 92% at 50% 42%, transparent 54%, rgba(3, 5, 7, .42) 100%);
+}
+.journey-film::after {
+  content: ""; position: absolute; inset: -70px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  opacity: .05;
+  animation: journey-grain 1.15s steps(1) infinite;
+}
+@keyframes journey-grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-26px, 14px); }
+  40% { transform: translate(18px, -30px); }
+  60% { transform: translate(-34px, -12px); }
+  80% { transform: translate(24px, 26px); }
+  100% { transform: translate(0, 0); }
+}
+.journey-cut {
+  position: fixed; inset: 0; z-index: 94;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .14s linear;
+}
+.journey-progress {
+  position: fixed; top: 0; left: 0; z-index: 96;
+  width: 100%; height: 2px;
+  background: var(--plate);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}

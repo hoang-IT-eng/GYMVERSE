@@ -2,10 +2,20 @@
    GymForge — "THE BARBELL" product-turntable engine for IronLog (GYMVERSE)
 
    One WebGL context, one canvas, re-parented across hosts by the
-   controller in landing.js: hero (plates assemble on, rest + sway +
-   pointer parallax) → forge (scroll-scrubbed turntable + exploded view,
-   one plate claimed per chapter beat) → closing (one slow press, then a
-   slow rotation behind the CTA).
+   controller in landing.js — THE JOURNEY: the bar tours the whole
+   page so the scroll reads as one unbroken take. hero (plates
+   assemble on, rest + sway + pointer parallax) → log (a macro
+   push-in on the knurling) → ladder (the load builds as the chapter
+   builds, camera low at the loaded end) → forge (scroll-scrubbed
+   turntable + exploded view, one plate claimed per chapter beat) →
+   rest (racked and still, dim and cool, between two film cuts) →
+   progress (a measuring dolly along the bar under the chart) →
+   food (small and dim, set dressing) → yours (a backlit silhouette)
+   → closing (one slow press, then a slow rotation behind the CTA).
+   Continuity is choreographed, not hoped for: every scene reads
+   its host's traversal progress and drifts the bar within the
+   frame — high while the host arrives, low as it leaves — so at a
+   host switch the bar is at the seam in both frames.
 
    The barbell is built entirely from primitives with procedural canvas
    textures (knurling bump, plate faces) — no external assets. Palette is
@@ -43,7 +53,14 @@
     rig: null, barbell: null, groundY: -1.585,
     units: [],            // [{plates:[{group,home,side}], mats:[...] }] claim units 20/10/5/collar
     shaftParts: [],       // [{obj, x}] every rigid shaft piece, flexed per frame
-    keyLight: null, fillLight: null, groundMat: null, pool: null,
+    keyLight: null, fillLight: null, hemiLight: null, rimLight: null,
+    keyWarm: null, keyCool: null, groundMat: null, pool: null,
+    rack: null,           // the rest chapter's rack, visible in that scene only
+    lights: { key: 2.6, fill: 0.35, hemi: 0.5, exp: 1.05, rim: 0, cool: 0 },
+    seat: [1, 1, 1, 1],   // per-unit seated factor (the ladder builds its load)
+    sceneP: 0.5,          // active host's traversal progress through the viewport
+    travel: 0,            // damped drift of the bar within its frame, from sceneP
+    chalkTimer: 0,        // ambient chalk motes in the log macro
     mood: 0, poolScale: 1, // profile-hold light mood + contact-pool spread, damped
     bend: 0, bendV: 0,    // static deflection spring (world units at the bar ends)
     whip: 0, whipV: 0,    // dynamic rep oscillation, same units
@@ -447,6 +464,35 @@
     });
   }
 
+  /* ---------------- the rack (Rest) ----------------
+     Two dark uprights on feet with a saddle each, standing at the
+     grip marks. The bar only rests on them in the rest scene; the
+     film cut at that chapter's edges covers the rack arriving and
+     leaving with the canvas. */
+  function buildRack(THREE) {
+    var g = new THREE.Group();
+    var mat = new THREE.MeshStandardMaterial({
+      color: 0x232c34, metalness: 0.7, roughness: 0.45, envMapIntensity: 0.6
+    });
+    var H = 1.58; /* post height: saddle top meets the shaft at the rest pose */
+    [-1.05, 1.05].forEach(function (x) {
+      var post = new THREE.Mesh(new THREE.BoxGeometry(0.17, H, 0.3), mat);
+      post.position.set(x, state.groundY + H / 2, 0);
+      post.castShadow = true;
+      g.add(post);
+      var foot = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.09, 1.05), mat);
+      foot.position.set(x, state.groundY + 0.045, 0);
+      foot.castShadow = true;
+      g.add(foot);
+      var saddle = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.07, 0.36), mat);
+      saddle.position.set(x, state.groundY + H + 0.035, 0);
+      saddle.castShadow = true;
+      g.add(saddle);
+    });
+    g.visible = false;
+    return g;
+  }
+
   /* ---------------- chalk dust ----------------
      One small Points pool, reused for every burst: chalk puffs off the
      grip when a plate slams home in the forge chapter and again at the
@@ -572,7 +618,11 @@
 
     /* room light — one warm key from above with shadows (the light in
        his photos), a whisper of cool fill, a dim blue-grey hemi base */
-    scene.add(new THREE.HemisphereLight(0x8fa3b0, 0x0c0e10, 0.5));
+    var hemi = new THREE.HemisphereLight(0x8fa3b0, 0x0c0e10, 0.5);
+    scene.add(hemi);
+    state.hemiLight = hemi;
+    state.keyWarm = new THREE.Color(0xffe9bb);
+    state.keyCool = new THREE.Color(0xdfe9f2);
     var key = new THREE.DirectionalLight(0xffe9bb, 2.6);
     key.position.set(5, 8, 4);
     key.castShadow = true;
@@ -588,6 +638,12 @@
     fill.position.set(-6, 3, -5);
     scene.add(fill);
     state.fillLight = fill;
+    /* a back rim, dark in every scene but Yours — there it is the
+       only real light, and the loaded bar reads as silhouette */
+    var rim = new THREE.DirectionalLight(0xffe2a8, 0);
+    rim.position.set(-2, 3.5, -7);
+    scene.add(rim);
+    state.rimLight = rim;
 
     /* ground: shadow catcher + a soft painted contact pool */
     var ground = new THREE.Mesh(
@@ -614,6 +670,8 @@
     var rig = new THREE.Group();       // rep / sway motion
     rig.add(built.group);
     scene.add(rig);
+    state.rack = buildRack(THREE);
+    scene.add(state.rack);
 
     state.renderer = renderer;
     state.scene = scene;
@@ -696,6 +754,13 @@
     state.progress[which] = clamp(p, 0, 1);
   }
 
+  /* the active host's traversal through the viewport: 0 as its top
+     reaches the viewport's bottom edge, 0.5 centred, 1 as its bottom
+     leaves the top — the journey's drift and several scenes read it */
+  function setSceneProgress(p) {
+    state.sceneP = clamp(p, 0, 1);
+  }
+
   function setPointer(nx, ny) {
     state.pointer.tx = clamp(nx, -1, 1);
     state.pointer.ty = clamp(ny, -1, 1);
@@ -724,6 +789,31 @@
      because a bending bar only reads from the side; then it swings on
      around for the exploded finale. The hold is deliberately long:
      most of the chapter's scroll dwell sits on the bent profile. */
+  /* per-scene grade: [key, fill, hemi, exposure, rim, cool]. One
+     room, retuned per chapter — Rest falls dim and steel-cool, Food
+     dims out of the way, Yours kills the key and fires the rim so
+     the bar is a silhouette. Cool never crosses into violet: it is
+     the blue-grey of the fill card, warmed back by the key's lerp. */
+  var LIGHT_TARGETS = {
+    veil:    [2.6, 0.35, 0.50, 1.05, 0, 0],
+    hero:    [2.6, 0.35, 0.50, 1.05, 0, 0],
+    log:     [2.2, 0.25, 0.40, 1.00, 0, 0],
+    ladder:  [2.8, 0.30, 0.50, 1.06, 0.35, 0],
+    forge:   [2.6, 0.35, 0.50, 1.05, 0, 0],
+    rest:    [1.15, 0.18, 0.32, 0.92, 0, 0.8],
+    progress: [2.4, 0.30, 0.48, 1.03, 0.15, 0],
+    food:    [1.2, 0.15, 0.30, 0.90, 0, 0],
+    yours:   [0.32, 0.06, 0.10, 0.80, 4.6, 0.15],
+    closing: [2.6, 0.35, 0.50, 1.05, 0.3, 0]
+  };
+  /* how far the bar drifts inside its frame as its host crosses the
+     viewport — the seam choreography. Rest sits on its rack, so it
+     barely drifts; the forge is pinned centre-frame at its peak. */
+  var TRAVEL_AMP = {
+    veil: 0, hero: 0.15, log: 0.5, ladder: 0.45, forge: 0.3,
+    rest: 0.18, progress: 0.4, food: 0.5, yours: 0.45, closing: 0.35
+  };
+
   var FORGE_KEYS = [[0, -0.55], [0.28, 0.84], [0.56, 0.10], [0.78, 0.16], [1, 2.45]];
   var FORGE_KEYS_P = [[0, -0.55], [0.60, 0.05], [1, 1.9]];
   function keyLerp(keys, p) {
@@ -815,10 +905,23 @@
       unit.mats.forEach(function (m) { m.emissiveIntensity = lv; });
     });
 
-    /* --- plate positions: home + explode + assemble offsets --- */
+    /* --- seat: which units are on the bar. The full stack is seated
+       everywhere except the ladder, where the load builds with the
+       chapter's own progress — a unit slides in from beyond the
+       sleeve tip in the same language as the opening assemble. --- */
+    var ladderP = state.progress.ladder || 0;
+    var SEAT_TH = [0.12, 0.42, 0.72, 0.9];
+    var seatedCount = 0;
+    for (var sui = 0; sui < 4; sui++) {
+      var seatT = mode === "ladder" ? (ladderP >= SEAT_TH[sui] ? 1 : 0) : 1;
+      if (seatT) seatedCount++;
+      state.seat[sui] = damp(state.seat[sui], seatT, 5, dt);
+    }
+
+    /* --- plate positions: home + explode + assemble/seat offsets --- */
     state.units.forEach(function (unit, i) {
       var aLocal = easeOutCubic(clamp(state.assemble * 1.45 - i * 0.14, 0, 1));
-      var assembleOff = (1 - aLocal) * 3.1;
+      var assembleOff = Math.max((1 - aLocal) * 3.1, (1 - state.seat[i]) * 3.1);
       var eLocal = easeOutCubic(clamp(explode * 1.3 - i * 0.09, 0, 1));
       var spread = unit.spec.explode * eLocal;
       unit.plates.forEach(function (p) {
@@ -830,7 +933,11 @@
 
     /* --- rep + sway on the rig --- */
     var repY = updateRep(dt);
-    var sway = (mode === "hero" || mode === "veil") ? 1 : 0.35;
+    var sway = (mode === "hero" || mode === "veil") ? 1
+      : mode === "rest" ? 0.05
+      : mode === "food" ? 0.15
+      : (mode === "log" || mode === "yours" || mode === "progress") ? 0.2
+      : 0.35;
     state.rig.position.y = repY + Math.sin(t * 0.85) * 0.035 * sway;
     state.rig.rotation.z = Math.sin(t * 0.55) * 0.008 * sway;
     state.rig.rotation.x = state.rep.rattle * Math.sin(t * 52) * 0.006;
@@ -843,6 +950,10 @@
     var bendTarget = 0;
     if (mode === "forge") bendTarget = BEND_STEPS[clamp(state.highlight + 1, 0, 4)] * BEND_MAX;
     else if (mode === "closing") bendTarget = BEND_MAX;
+    else if (mode === "ladder") bendTarget = BEND_STEPS[seatedCount] * BEND_MAX * 0.5;
+    else if (mode === "progress") bendTarget = BEND_MAX * 0.25;
+    else if (mode === "food") bendTarget = BEND_MAX * 0.2;
+    else if (mode === "yours") bendTarget = BEND_MAX * 0.35;
     if (mode === "forge" && state.highlight > state.prevHighlight && state.prevHighlight >= 0) {
       state.bendV += 1.5;
       spawnBurst(90, 0.8);
@@ -891,10 +1002,40 @@
     }
     state.mood = damp(state.mood, moodT, 4, dt);
     state.poolScale = damp(state.poolScale, poolT, 4, dt);
-    if (state.keyLight) state.keyLight.intensity = 2.6 + 0.55 * state.mood;
-    if (state.fillLight) state.fillLight.intensity = 0.35 - 0.13 * state.mood;
+    /* the per-scene grade damps underneath; the forge profile mood
+       still leans the key in on top of its own scene's base */
+    var LT = LIGHT_TARGETS[mode] || LIGHT_TARGETS.hero;
+    var LG = state.lights;
+    LG.key = damp(LG.key, LT[0], 3, dt);
+    LG.fill = damp(LG.fill, LT[1], 3, dt);
+    LG.hemi = damp(LG.hemi, LT[2], 3, dt);
+    LG.exp = damp(LG.exp, LT[3], 3, dt);
+    LG.rim = damp(LG.rim, LT[4], 3, dt);
+    LG.cool = damp(LG.cool, LT[5], 3, dt);
+    if (state.keyLight) {
+      state.keyLight.intensity = LG.key + 0.55 * state.mood;
+      if (state.keyWarm && state.keyCool) state.keyLight.color.copy(state.keyWarm).lerp(state.keyCool, LG.cool);
+    }
+    if (state.fillLight) state.fillLight.intensity = LG.fill - 0.13 * state.mood;
+    if (state.hemiLight) state.hemiLight.intensity = LG.hemi;
+    if (state.rimLight) state.rimLight.intensity = LG.rim;
+    if (state.renderer) state.renderer.toneMappingExposure = LG.exp;
     if (state.groundMat) state.groundMat.opacity = 0.42 + 0.05 * state.mood;
     if (state.pool) state.pool.scale.set(state.poolScale, state.poolScale, 1);
+
+    /* ambient chalk in the log macro: a few faint motes off the grip,
+       now and then — the air in that photograph, kept barely there */
+    if (mode === "log") {
+      state.chalkTimer += dt;
+      if (state.chalkTimer > 0.8) { state.chalkTimer = 0; spawnBurst(5, 0.22); }
+    }
+
+    /* travel: as the active host crosses the viewport the bar drifts
+       inside its frame — riding high while the host is still arriving
+       from below, sinking as it leaves above — so at a host switch
+       the bar sits at the seam in both frames: out through the
+       bottom of one, in from the top of the next */
+    state.travel = damp(state.travel, (0.5 - state.sceneP) * 2, 4, dt);
 
     /* --- pose targets per mode --- */
     var tgt;
@@ -945,16 +1086,83 @@
           rotY: keyLerp(FORGE_KEYS, forgeP)
         };
       }
+    } else if (mode === "log") {
+      /* macro push-in on the grip: the camera starts a little wide
+         and spends the whole visit closing on the knurling, tracking
+         slowly across the centre as the host crosses the viewport */
+      var pushP = state.sceneP;
+      tgt = {
+        grpX: 0, grpY: -0.05, camX: -0.25 + pushP * 0.5, camY: 0.28,
+        dist: 0, distRaw: 3.6 - pushP * 1.25,
+        lookX: -0.35 + pushP * 0.7, lookY: 0.02, rotY: 0.12 + pushP * 0.1
+      };
+    } else if (mode === "ladder") {
+      /* a study of the loaded end: low camera, the orbit turning with
+         the chapter's own build. The ladder's photo column is tall
+         and narrow on desktop, so there the framing crops into the
+         end itself — plates and collar, not the whole bar. */
+      var orbitL = -0.45 + ladderP * 0.85 + Math.sin(t * 0.3) * 0.05;
+      if ((state.camera.aspect || 1) < 0.8) {
+        tgt = {
+          grpX: 0, grpY: -0.2, camX: 1.1, camY: -0.55,
+          dist: 0, distRaw: 5.6,
+          lookX: 2.55, lookY: -0.1, rotY: orbitL
+        };
+      } else {
+        tgt = {
+          grpX: 0, grpY: -0.18, camX: 0.9, camY: -0.5,
+          dist: fitDistance(8.6),
+          lookX: 1.7, lookY: -0.05, rotY: orbitL
+        };
+      }
+    } else if (mode === "rest") {
+      /* racked and still: camera on the floor, the bar on its rack
+         against the bench photograph, breathing almost switched off */
+      tgt = {
+        grpX: 0, grpY: 0.1, camX: 0.15, camY: -1.08,
+        dist: fitDistance(11.2), lookX: 0, lookY: 0.05,
+        rotY: Math.sin(t * 0.13) * 0.05
+      };
+    } else if (mode === "progress") {
+      /* a measuring dolly: the camera tracks the bar's length from
+         sleeve to sleeve as the chart crosses the viewport, the bar
+         riding low under the line like the instrument it is */
+      var dollyX = -2.4 + state.sceneP * 4.8;
+      tgt = {
+        grpX: 0, grpY: -0.55, camX: dollyX, camY: 0.1,
+        dist: fitDistance(9.2), lookX: dollyX * 0.84, lookY: -0.15,
+        rotY: -0.06 + state.sceneP * 0.12
+      };
+    } else if (mode === "food") {
+      /* set dressing: small, far, dim and low — down in the
+         section's bottom margin, behind the copy and out of its
+         way. The meal is the subject of this chapter and the bar
+         knows it */
+      tgt = {
+        grpX: -2.5, grpY: -2.3, camX: 0, camY: 0.5,
+        dist: fitDistance(28), lookX: -1.0, lookY: 1.35,
+        rotY: -0.42 + Math.sin(t * 0.22) * 0.04
+      };
+    } else if (mode === "yours") {
+      /* silhouette across the photo band: backlit, mostly shape,
+         drifting a few degrees either way */
+      tgt = {
+        grpX: 0, grpY: -0.3, camX: 0, camY: 0.1,
+        dist: fitDistance(13), lookX: 0, lookY: -0.05,
+        rotY: -0.3 + Math.sin(t * 0.18) * 0.07
+      };
     } else { /* closing */
       state.spin += dt * 0.26;
       tgt = { grpX: 0.9, grpY: -0.55, camX: 0.3, camY: 0.5, dist: fitDistance((state.camera.aspect || 1) < 0.8 ? 9.5 : 11.0), lookX: 0.6, lookY: 0.2, rotY: state.spin };
     }
+    /* the seam drift, on top of every scene's own pose */
+    tgt.grpY += state.travel * (TRAVEL_AMP[mode] || 0);
     var K = 5; /* heavy-cinematic damping, this page's tone */
     pose.grpX = damp(pose.grpX, tgt.grpX, K, dt);
     pose.grpY = damp(pose.grpY, tgt.grpY, K, dt);
     pose.camX = damp(pose.camX, tgt.camX, K, dt);
     pose.camY = damp(pose.camY, tgt.camY, K, dt);
-    pose.dist = damp(pose.dist, tgt.dist, K, dt);
+    pose.dist = damp(pose.dist, tgt.distRaw != null ? tgt.distRaw : tgt.dist, K, dt);
     pose.lookX = damp(pose.lookX, tgt.lookX, K, dt);
     pose.lookY = damp(pose.lookY, tgt.lookY, K, dt);
     /* rotY damps toward target except in closing, where spin is absolute */
@@ -967,6 +1175,12 @@
        the full centre-to-end differential reads as the arc */
     state.barbell.position.y = pose.grpY + state.bend * 0.8;
     state.barbell.rotation.y = pose.rotY;
+
+    /* the rack stands under the bar in the rest scene, and only there */
+    if (state.rack) {
+      state.rack.visible = mode === "rest";
+      state.rack.position.x = pose.grpX;
+    }
 
     /* --- pointer parallax (clamped, eased) --- */
     var ptr = state.pointer;
@@ -1033,6 +1247,7 @@
     getBend: getBend,
     getProgress: getProgress,
     setProgress: setProgress,
+    setSceneProgress: setSceneProgress,
     setPointer: setPointer,
     doRep: doRep,
     start: start,

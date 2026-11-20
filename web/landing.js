@@ -389,13 +389,17 @@
   window.addEventListener("load", function () { ST.refresh(); });
 })();
 
-/* ---------- Forge: the barbell in 3D ----------
+/* ---------- Forge: the barbell in 3D — the journey ----------
    A separate, self-gating layer on top of the page above. It loads
-   three.js and the engine lazily, borrows the page's ScrollTrigger for
-   progress, and only then adds .forge-on to <body>. If anything is
+   three.js and the engine lazily, borrows the page's ScrollTrigger
+   for progress, and only then adds .forge-on to <body>. The one
+   canvas tours every stage on the page (see JOURNEY below) so the
+   scroll reads as a single take, with film grain over the whole
+   page and a hairline metering the journey. If anything is
    unavailable — ?forge=off, reduced motion, a low-end device, saved
-   data, software WebGL — nothing here runs and the page stands exactly
-   as it does without this block. */
+   data, software WebGL — nothing here runs, no overlay is ever
+   created, and the page stands exactly as it does without this
+   block. */
 (function () {
   "use strict";
 
@@ -423,8 +427,84 @@
   });
   if (!hosts.hero || !hosts.forge || !hosts.closing) return;
 
+  /* The forge chapter's pin is created NOW, at parse time — not in
+     wire() after the engine's lazy boot. ScrollTrigger measures
+     every trigger against the layout at its first refresh, and a
+     pin that joins afterwards leaves every trigger below it (the
+     rest pin, the chart, the reveals) measuring short by exactly
+     this pin's distance; no later refresh corrects them. Created
+     here — after the gates, before any refresh — its spacer is
+     part of the layout all of them measure against. Its onUpdate
+     simply no-ops until the engine exists. If the engine then
+     fails to boot, the pin is killed again (see boot/onDead), so
+     a page without the engine keeps no pin either. */
+  var forgePinST = null;
+  function killForgePin() {
+    if (forgePinST) { forgePinST.kill(); forgePinST = null; }
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  }
+  if (window.gsap && window.ScrollTrigger) {
+    var pinEarly = root.classList.contains("pin");
+    forgePinST = window.ScrollTrigger.create({
+      trigger: ".forge",
+      start: pinEarly ? "top top" : "top bottom",
+      end: pinEarly ? "+=140%" : "bottom top",
+      pin: pinEarly ? ".forge__pin" : false,
+      scrub: 0.6,
+      anticipatePin: pinEarly ? 1 : 0,
+      onUpdate: function (self) {
+        if (window.GymForge) window.GymForge.setProgress("forge", self.progress);
+      }
+    });
+  }
+
   var capEl = document.querySelector("[data-forge-cap]");
   var repsEl = document.querySelector("[data-forge-reps]");
+
+  /* The journey: every stage the bar visits, in scroll order. The
+     canvas lives in one at a time and is re-parented as the next
+     takes over the viewport — one take, start to finish. Programs
+     sits the tour out: its photograph is already full of racked
+     barbells, so the motif rests there in print. */
+  var JOURNEY = ["hero", "log", "ladder", "forge", "rest", "progress", "food", "yours", "closing"];
+
+  /* Filmic unity, created only while the journey is live: a grain +
+     vignette layer over the whole page, a black layer for the film
+     cuts, and the plate-yellow hairline metering the whole scroll.
+     If the engine never boots, none of these elements ever exist. */
+  var filmEl = null, cutEl = null, progEl = null;
+  function updateJourneyProgress() {
+    if (!progEl) return;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? window.scrollY / max : 0;
+    progEl.style.transform = "scaleX(" + Math.max(0, Math.min(1, p)).toFixed(4) + ")";
+  }
+  function createOverlays() {
+    if (filmEl) return;
+    filmEl = document.createElement("div");
+    filmEl.className = "journey-film";
+    filmEl.setAttribute("aria-hidden", "true");
+    cutEl = document.createElement("div");
+    cutEl.className = "journey-cut";
+    cutEl.setAttribute("aria-hidden", "true");
+    progEl = document.createElement("div");
+    progEl.className = "journey-progress";
+    progEl.setAttribute("aria-hidden", "true");
+    body.appendChild(filmEl);
+    body.appendChild(cutEl);
+    body.appendChild(progEl);
+    body.classList.add("journey-on");
+    updateJourneyProgress();
+    window.addEventListener("scroll", updateJourneyProgress, { passive: true });
+  }
+  function removeOverlays() {
+    [filmEl, cutEl, progEl].forEach(function (el) {
+      if (el && el.parentElement) el.parentElement.removeChild(el);
+    });
+    filmEl = cutEl = progEl = null;
+    body.classList.remove("journey-on");
+    window.removeEventListener("scroll", updateJourneyProgress);
+  }
 
   /* The two strings this layer owns (the rest of the chapter goes
      through the page's own data-i18n, above). Index 0 is the full
@@ -489,41 +569,80 @@
           onPlateChange: function (unit) { capUnit = unit; renderCap(); },
           onRep: function () { reps += 1; renderReps(); },
           onFirstFrame: function () { body.classList.add("forge-on"); },
-          onDead: function () { body.classList.remove("forge-on"); }
+          onDead: function () { body.classList.remove("forge-on"); removeOverlays(); killForgePin(); }
         });
         if (!ok) {
           if (canvas.parentElement) canvas.parentElement.removeChild(canvas);
           canvas = null;
+          killForgePin();
           return;
         }
+        createOverlays();
         wire();
       })
-      .catch(function () { /* engine unavailable: the page stands as-is */ });
+      .catch(function () { killForgePin(); /* engine unavailable: the page stands as-is */ });
   }
 
   function wire() {
     var F = window.GymForge;
 
-    function setMode(next) {
+    function applyMode(next) {
       if (!hosts[next]) return;
       if (mode !== next) {
         mode = next;
         hosts[next].appendChild(canvas);
         F.setMode(next);
         F.observeHost();
+        /* the forge chapter is the still centre of the film: the
+           pin holds it centred, so its seam drift rests at zero */
+        if (next === "forge") F.setSceneProgress(0.5);
       }
       F.resize();
       renderReps();
     }
 
-    /* The canvas lives in whichever host is most on screen. */
-    var ratios = { hero: 0, forge: 0, closing: 0 };
+    /* Film cuts: at the seams where a travelling match would lie —
+       into Rest and back out of it — the switch happens under a fast
+       dip to black instead. The dip is triggered by the switch
+       itself, so it always lands exactly on the pop it is hiding:
+       black in ~140 ms, the canvas moves, black out ~160 ms. */
+    var CUT_PAIRS = { "forge>rest": 1, "rest>forge": 1, "rest>progress": 1, "progress>rest": 1 };
+    var cutting = false, lastCutAt = 0;
+    function setMode(next) {
+      if (!hosts[next]) return;
+      if (next === mode) { F.resize(); renderReps(); return; }
+      var pair = (mode || "") + ">" + next;
+      if (cutEl && CUT_PAIRS[pair] && !cutting && performance.now() - lastCutAt > 700) {
+        cutting = true;
+        lastCutAt = performance.now();
+        cutEl.style.opacity = "1";
+        setTimeout(function () {
+          applyMode(next);
+          setTimeout(function () { cutEl.style.opacity = "0"; cutting = false; }, 160);
+        }, 150);
+      } else {
+        applyMode(next);
+      }
+    }
+
+    /* The canvas lives in whichever host is most on screen, with
+       hysteresis: a challenger must clearly beat the incumbent, so
+       the bar never flickers between two half-seen stages. */
+    var ratios = {};
+    JOURNEY.forEach(function (name) { ratios[name] = 0; });
     function pick() {
       var best = null, bestR = 0.22;
-      ["hero", "forge", "closing"].forEach(function (name) {
-        if (ratios[name] > bestR) { bestR = ratios[name]; best = name; }
+      JOURNEY.forEach(function (name) {
+        if (hosts[name] && ratios[name] > bestR) { bestR = ratios[name]; best = name; }
       });
-      if (best) { setMode(best); F.setActive(true); }
+      if (best) {
+        if (best !== mode && mode && hosts[mode] && ratios[mode] >= 0.15 && ratios[best] < ratios[mode] + 0.06) {
+          F.setActive(true);
+          return;
+        }
+        setMode(best);
+        F.setActive(true);
+      }
       else F.setActive(false);
     }
     setMode("hero");
@@ -546,17 +665,73 @@
         trigger: ".hero", start: "top top", end: "bottom top", scrub: true,
         onUpdate: function (self) { F.setProgress("hero", self.progress); }
       });
-      var pinOK = root.classList.contains("pin");
-      ST.create({
-        trigger: ".forge",
-        start: pinOK ? "top top" : "top bottom",
-        end: pinOK ? "+=140%" : "bottom top",
-        pin: pinOK ? ".forge__pin" : false,
-        scrub: 0.6,
-        anticipatePin: pinOK ? 1 : 0,
-        onUpdate: function (self) { F.setProgress("forge", self.progress); }
+      /* The forge pin itself was already created at parse time
+         (see forgePinST above), so its spacer is part of the layout
+         every other trigger measures against. Only if gsap was
+         somehow unavailable back then do we create it here. */
+      if (!forgePinST) {
+        var pinOK = root.classList.contains("pin");
+        forgePinST = ST.create({
+          trigger: ".forge",
+          start: pinOK ? "top top" : "top bottom",
+          end: pinOK ? "+=140%" : "bottom top",
+          pin: pinOK ? ".forge__pin" : false,
+          scrub: 0.6,
+          anticipatePin: pinOK ? 1 : 0,
+          onUpdate: function (self) { F.setProgress("forge", self.progress); }
+        });
+      }
+      /* Every other host reports its own traversal through the
+         viewport — the engine drifts the bar within the frame from
+         it (the seam choreography), and the log push-in and the
+         progress dolly are scrubbed by it directly. */
+      JOURNEY.forEach(function (name) {
+        if (!hosts[name] || name === "forge") return;
+        ST.create({
+          trigger: hosts[name], start: "top bottom", end: "bottom top", scrub: true,
+          onUpdate: function (self) { if (mode === name) F.setSceneProgress(self.progress); }
+        });
       });
+      /* The ladder's load builds on the chapter's own pinned range:
+         the same span the three bench sessions play over. */
+      if (hosts.ladder) {
+        ST.create({
+          trigger: ".ladder", start: "top top",
+          end: "+=" + Math.round(window.innerHeight * 2.4),
+          scrub: true,
+          onUpdate: function (self) { F.setProgress("ladder", self.progress); }
+        });
+      }
+      /* Re-measure EVERY trigger individually, here and once more
+         after load (this layer's listener registers after the
+         page's own, so it runs last). The page's triggers were
+         created before the forge pin existed, so they measured a
+         layout without its spacer and sit a pin-distance too high
+         — the rest pin would engage while the forge chapter is
+         still on screen. A global ScrollTrigger.refresh() leaves
+         those creation-time measurements in place (verified); a
+         per-trigger refresh re-measures against the live layout
+         and corrects them. */
+      function remeasure() {
+        ST.getAll().forEach(function (st) { try { st.refresh(); } catch (e) {} });
+      }
+      requestAnimationFrame(remeasure);
+      if (document.readyState !== "complete") {
+        window.addEventListener("load", remeasure);
+      }
     }
+
+    /* QA hooks for the journey, beside the forge ones below. */
+    window.__journeyMode = function (name) {
+      if (!hosts[name]) return null;
+      JOURNEY.forEach(function (n) { ratios[n] = 0; });
+      ratios[name] = 1;
+      pick();
+      return window.__forgeState ? window.__forgeState() : null;
+    };
+    window.__journeySceneP = function (p) {
+      F.setSceneProgress(Math.max(0, Math.min(1, +p || 0)));
+    };
 
     /* Pointer leans the camera; a tap on the bar's sections lifts. */
     window.addEventListener("pointermove", function (ev) {
@@ -608,11 +783,13 @@
   window.__forgeState = function () {
     return {
       mode: mode,
+      host: canvas && canvas.parentElement ? canvas.parentElement.getAttribute("data-forge-host") : null,
       reps: reps,
       ready: !!(window.GymForge && window.GymForge.isReady()),
       bend: window.GymForge && window.GymForge.getBend ? +window.GymForge.getBend().toFixed(3) : null,
       prog: window.GymForge && window.GymForge.getProgress ? +window.GymForge.getProgress().toFixed(3) : null,
-      on: body.classList.contains("forge-on")
+      on: body.classList.contains("forge-on"),
+      journey: body.classList.contains("journey-on")
     };
   };
   window.__forgeRep = function () { if (window.GymForge) window.GymForge.doRep(); };

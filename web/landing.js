@@ -29,6 +29,10 @@
     "ladder.body": "IronLog dùng double progression trên các hiệp nặng nhất: làm đầy khoảng rep rồi mới tăng tạ. Ví dụ dưới đây là Bench Press, khoảng 6–10 rep, mỗi bước 2.5&nbsp;kg.",
     "ladder.note": "Tắt tự tăng tạ trong mục Cá nhân thì ứng dụng giữ nguyên mức tạ. Mức tạ được làm tròn theo bánh tạ nhỏ nhất phòng tập của bạn có: 0.5, 1.25 hoặc 2.5&nbsp;kg.",
     "ladder.range": "6–10 rep, +2.5 kg",
+    "forge.title": "Thanh đòn, đã lắp tạ.",
+    "forge.body": "Hai mươi, mười, năm và khóa tạ, lắp theo đúng thứ tự đó ở mỗi bên của thanh 20 kg. Cuộn tiếp, thanh đòn sẽ xoay và tháo ra theo cùng thứ tự — thứ tự IronLog dùng khi làm tròn mức tạ tiếp theo theo bánh tạ nhỏ nhất phòng bạn có.",
+    "forge.capFull": "Trên thanh: 95 kg",
+    "forge.note": "Vẽ 3D ngay trong trình duyệt. Nếu bạn tắt chuyển động, chương này chỉ còn chữ.",
     "scene.last": "Buổi trước",
     "scene.next": "Hôm nay",
     "s1.name": "Đã đầy khoảng rep",
@@ -268,4 +272,231 @@
   gsap.from(".bar__fill", { scaleX: 0, duration: 1.2, ease: "expo.out", stagger: 0.06, scrollTrigger: { trigger: ".bars", start: "top 80%" } });
 
   window.addEventListener("load", function () { ST.refresh(); });
+})();
+
+/* ---------- Forge: the barbell in 3D ----------
+   A separate, self-gating layer on top of the page above. It loads
+   three.js and the engine lazily, borrows the page's ScrollTrigger for
+   progress, and only then adds .forge-on to <body>. If anything is
+   unavailable — ?forge=off, reduced motion, a low-end device, saved
+   data, software WebGL — nothing here runs and the page stands exactly
+   as it does without this block. */
+(function () {
+  "use strict";
+
+  var root = document.documentElement;
+  var body = document.body;
+  var params = new URLSearchParams(location.search);
+  var force = params.get("forge") === "on";
+  if (params.get("forge") === "off") return;
+
+  /* Capability gates. ?forge=on (QA) bypasses them all; the engine
+     still refuses software renderers unless forced. The page's own head
+     script withholds .motion when the user prefers reduced motion, so
+     that class doubles as the reduced-motion gate. */
+  if (!force) {
+    if (!root.classList.contains("motion")) return;
+    if (navigator.webdriver) return;
+    if ((navigator.hardwareConcurrency || 8) <= 2) return;
+    if ((navigator.deviceMemory || 8) <= 2) return;
+    if (navigator.connection && navigator.connection.saveData) return;
+  }
+
+  var hosts = {};
+  document.querySelectorAll("[data-forge-host]").forEach(function (el) {
+    hosts[el.getAttribute("data-forge-host")] = el;
+  });
+  if (!hosts.hero || !hosts.forge || !hosts.closing) return;
+
+  var capEl = document.querySelector("[data-forge-cap]");
+  var repsEl = document.querySelector("[data-forge-reps]");
+
+  /* The two strings this layer owns (the rest of the chapter goes
+     through the page's own data-i18n, above). Index 0 is the full
+     stack; 1–4 follow the claimed unit: 20, 10, 5, collars. */
+  var CAPS = {
+    en: ["On the bar: 95 kg", "Off first: the 20s", "Then the 10s", "Then the 5s", "Last, the collars"],
+    vi: ["Trên thanh: 95 kg", "Rời trước: bánh 20", "Rồi đến bánh 10", "Tiếp theo: bánh 5", "Cuối cùng: khóa tạ"]
+  };
+  var capUnit = -1;
+  var reps = 0;
+  var mode = null;
+  var canvas = null;
+  var started = false;
+
+  function lang() { return root.lang === "vi" ? "vi" : "en"; }
+  function renderCap() {
+    if (!capEl) return;
+    var set = CAPS[lang()];
+    capEl.textContent = set[capUnit + 1] || set[0];
+  }
+  function renderReps() {
+    if (!repsEl) return;
+    if (reps < 1 || mode !== "closing") { repsEl.hidden = true; return; }
+    repsEl.textContent = lang() === "vi"
+      ? "Số rep của bạn — " + reps + " · chạm vào thanh để nâng"
+      : "Your reps — " + reps + " · tap the bar to lift";
+    repsEl.hidden = false;
+  }
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = src;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error(src)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function boot() {
+    if (started) return;
+    started = true;
+    loadScript("vendor/three.min.js")
+      .then(function () { return loadScript("forge3d.js"); })
+      .then(function () {
+        /* plate faces are drawn on canvas at init: give Archivo a
+           moment to arrive so the numerals use the page's own type */
+        if (document.fonts && document.fonts.ready) {
+          return Promise.race([
+            document.fonts.ready,
+            new Promise(function (r) { setTimeout(r, 1200); })
+          ]);
+        }
+      })
+      .then(function () {
+        if (!window.GymForge) return;
+        canvas = document.createElement("canvas");
+        canvas.setAttribute("aria-hidden", "true");
+        hosts.hero.appendChild(canvas);
+        var ok = window.GymForge.init(canvas, {
+          force: force,
+          onPlateChange: function (unit) { capUnit = unit; renderCap(); },
+          onRep: function () { reps += 1; renderReps(); },
+          onFirstFrame: function () { body.classList.add("forge-on"); },
+          onDead: function () { body.classList.remove("forge-on"); }
+        });
+        if (!ok) {
+          if (canvas.parentElement) canvas.parentElement.removeChild(canvas);
+          canvas = null;
+          return;
+        }
+        wire();
+      })
+      .catch(function () { /* engine unavailable: the page stands as-is */ });
+  }
+
+  function wire() {
+    var F = window.GymForge;
+
+    function setMode(next) {
+      if (!hosts[next]) return;
+      if (mode !== next) {
+        mode = next;
+        hosts[next].appendChild(canvas);
+        F.setMode(next);
+        F.observeHost();
+      }
+      F.resize();
+      renderReps();
+    }
+
+    /* The canvas lives in whichever host is most on screen. */
+    var ratios = { hero: 0, forge: 0, closing: 0 };
+    function pick() {
+      var best = null, bestR = 0.22;
+      ["hero", "forge", "closing"].forEach(function (name) {
+        if (ratios[name] > bestR) { bestR = ratios[name]; best = name; }
+      });
+      if (best) { setMode(best); F.setActive(true); }
+      else F.setActive(false);
+    }
+    setMode("hero");
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          ratios[en.target.getAttribute("data-forge-host")] = en.isIntersecting ? en.intersectionRatio : 0;
+        });
+        pick();
+      }, { threshold: [0, 0.1, 0.22, 0.35, 0.5, 0.75, 1] });
+      Object.keys(hosts).forEach(function (name) { io.observe(hosts[name]); });
+    } else {
+      F.setActive(true);
+    }
+
+    /* Scroll progress, on the page's own ScrollTrigger. */
+    var gsap = window.gsap, ST = window.ScrollTrigger;
+    if (gsap && ST) {
+      ST.create({
+        trigger: ".hero", start: "top top", end: "bottom top", scrub: true,
+        onUpdate: function (self) { F.setProgress("hero", self.progress); }
+      });
+      var pinOK = root.classList.contains("pin");
+      ST.create({
+        trigger: ".forge",
+        start: pinOK ? "top top" : "top bottom",
+        end: pinOK ? "+=140%" : "bottom top",
+        pin: pinOK ? ".forge__pin" : false,
+        scrub: 0.6,
+        anticipatePin: pinOK ? 1 : 0,
+        onUpdate: function (self) { F.setProgress("forge", self.progress); }
+      });
+    }
+
+    /* Pointer leans the camera; a tap on the bar's sections lifts. */
+    window.addEventListener("pointermove", function (ev) {
+      F.setPointer(
+        (ev.clientX / window.innerWidth) * 2 - 1,
+        (ev.clientY / window.innerHeight) * 2 - 1
+      );
+    }, { passive: true });
+    [".hero", ".close"].forEach(function (sel) {
+      var sec = document.querySelector(sel);
+      if (!sec) return;
+      sec.addEventListener("click", function (ev) {
+        if (ev.target.closest("a, button")) return;
+        F.doRep();
+      });
+    });
+
+    /* The page's language switch flips <html lang>: follow it for the
+       two strings owned here. */
+    if (window.MutationObserver) {
+      new MutationObserver(function () { renderCap(); renderReps(); })
+        .observe(root, { attributes: true, attributeFilter: ["lang"] });
+    }
+    renderCap();
+  }
+
+  /* Lazy start: when the hero approaches, or on idle — never on the
+     critical path. */
+  var heroSeen = false;
+  function maybeBoot() { if (heroSeen) boot(); }
+  if ("IntersectionObserver" in window) {
+    var bio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { heroSeen = true; bio.disconnect(); maybeBoot(); }
+      });
+    }, { rootMargin: "600px" });
+    bio.observe(hosts.hero);
+  } else {
+    heroSeen = true;
+    maybeBoot();
+  }
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(function () { heroSeen = true; maybeBoot(); }, { timeout: 2500 });
+  } else {
+    setTimeout(function () { heroSeen = true; maybeBoot(); }, 1800);
+  }
+
+  /* QA hooks, in the open like the rest of the page. */
+  window.__forgeState = function () {
+    return {
+      mode: mode,
+      reps: reps,
+      ready: !!(window.GymForge && window.GymForge.isReady()),
+      on: body.classList.contains("forge-on")
+    };
+  };
+  window.__forgeRep = function () { if (window.GymForge) window.GymForge.doRep(); };
 })();

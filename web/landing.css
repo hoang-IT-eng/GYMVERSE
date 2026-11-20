@@ -492,3 +492,67 @@ ul, ol { list-style: none; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 @media (max-width: 700px) { .chart__tick { font-size: 22px; } }
+
+/* ---------- Forge: the barbell, live 3D ----------
+   One canvas, three hosts (hero, this chapter, the close). Everything
+   below is inert until the controller adds .forge-on to <body> after the
+   engine's first frame; with the engine off the page is exactly as it
+   was, and this chapter reads as text over an empty stage. */
+.forge { position: relative; background: var(--ground); }
+.forge__pin { padding-block: var(--section); }
+.forge__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+.forge__cap {
+  margin-top: 2.25rem;
+  padding: .85rem 1rem;
+  min-height: 3.55rem;
+  border-left: 2px solid var(--plate);
+  background: rgba(233, 195, 63, .06);
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.forge__head .small { margin-top: 1.25rem; max-width: 30em; }
+.forge__stage { position: relative; height: min(72vh, 42rem); min-height: 24rem; display: none; }
+body.forge-on .forge__stage { display: block; }
+.pin .forge__pin { min-height: 100vh; display: flex; align-items: center; padding-block: 6rem 4rem; }
+.pin .forge__grid { width: 100%; }
+
+.forge-host { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.forge-host--hero { z-index: 0; }
+.forge-host--close { z-index: 1; }
+.forge-host canvas, .forge__stage canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity .9s var(--ease);
+}
+.forge-host canvas.is-live, .forge__stage canvas.is-live { opacity: 1; }
+body.forge-on .hero__copy { position: relative; z-index: 1; }
+body.forge-on .close__copy { position: relative; z-index: 2; }
+
+.forge-dim {
+  position: absolute; inset: 0; z-index: 0; display: none;
+  background: linear-gradient(180deg, rgba(16, 23, 29, .3) 0%, rgba(16, 23, 29, .48) 55%, rgba(16, 23, 29, .62) 100%);
+}
+body.forge-on .forge-dim { display: block; }
+
+.forge-reps {
+  position: absolute; right: var(--gutter); bottom: clamp(1.5rem, 5vh, 3rem);
+  color: var(--haze);
+  font-size: .8rem; font-weight: 650; letter-spacing: .14em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.forge-reps[hidden] { display: none; }
+
+@media (max-width: 900px) {
+  .forge__grid { grid-template-columns: 1fr; }
+  .forge__stage { height: 56vh; min-height: 19rem; }
+  .forge-reps { right: 1.25rem; bottom: 1.25rem; font-size: .72rem; }
+}
